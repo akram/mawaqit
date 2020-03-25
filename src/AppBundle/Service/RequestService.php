@@ -28,22 +28,6 @@ class RequestService
             return true;
         }
 
-        if ($this->request->getHost() === 'mawaqit.local'){
-            return true;
-        }
-
-        if ($this->request->getHost() === 'localhost'){
-            return true;
-        }
-
-        if ($this->request->getHost() === '127.0.0.1'){
-            return true;
-        }
-
-        if (strpos($this->request->getHost(), "192.168") !== false){
-            return true;
-        }
-
-        return false;
+        return $this->request->getHost() === 'mawaqit.local';
     }
 }
