@@ -10,6 +10,9 @@ services:
     AppBundle\EventSubscriber\:
         resource: '../../src/AppBundle/EventSubscriber/*'
 
+    AppBundle\Security\:
+        resource: '../../src/AppBundle/Security/*'
+
     AppBundle\Controller\:
         resource: '../../src/AppBundle/Controller'
         tags: ['controller.service_arguments']

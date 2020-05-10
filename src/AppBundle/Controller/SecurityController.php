@@ -69,7 +69,7 @@ class SecurityController extends Controller
             ? $this->tokenManager->getToken('authenticate')->getValue()
             : null;
 
-        $recaptcha = $this->createForm(EWZRecaptchaType::class, null,['label' => false]);
+        $recaptcha = $this->createForm(EWZRecaptchaType::class, null, ['label' => false]);
 
         return $this->renderLogin(array(
             'last_username' => $lastUsername,
@@ -81,7 +81,6 @@ class SecurityController extends Controller
 
     public function checkAction()
     {
-        die("ok");
         throw new \RuntimeException('You must configure the check path to be handled by the firewall using form_login in your security firewall configuration.');
     }
 

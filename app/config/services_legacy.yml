@@ -26,10 +26,10 @@ services:
     tags:
       - { name: twig.extension }
 
-#  fos_user.security.controller:
-#    class: AppBundle\Controller\SecurityController
-#    arguments:
-#      - '@security.csrf.token_manager'
+  fos_user.security.controller:
+    class: AppBundle\Controller\SecurityController
+    arguments:
+      - '@security.csrf.token_manager'
 
   ## App services
   app.google_api:
@@ -111,11 +111,6 @@ services:
     class: AppBundle\Service\RequestService
     arguments:
       - "@request_stack"
-
-  app.security.uuid_token_authenticator:
-    class: AppBundle\Security\UuidTokenAuthenticator
-    public: false
-
 
   # Commands
   app.clean_old_users_command:

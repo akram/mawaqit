@@ -27,12 +27,13 @@ security:
             stateless: true
             pattern: ^/api
             simple_preauth:
-                authenticator: app.security.uuid_token_authenticator
+                authenticator: AppBundle\Security\UuidTokenAuthenticator
             provider: api_user
         main:
             pattern: ^/
             anonymous: true
-            form_login:
+            simple_form:
+                authenticator: AppBundle\Security\SimpleFormAuthenticator
                 provider: fos_userbundle
                 csrf_token_generator: security.csrf.token_manager
                 default_target_path: mosque_index
