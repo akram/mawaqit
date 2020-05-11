@@ -43,7 +43,7 @@ home:
     header4: Le matériel est à votre charge
 
     feature1: Horaires de prière
-    feature2: Adhan et Iqama
+    feature2: Athan et Iqama
     feature3: Rappels et invocations
     feature4: Annonces et actualités
     feature5: Thèmes et couleurs
@@ -570,13 +570,13 @@ configuration:
     adjustedTimes:
       label: Ajustement manuel des horaires
     maximumIshaTimeForNoWaiting:
-      label: Heure du `isha (iqâmah tout de suite après adhân)
-      title: Si cette valeur est renseignée le temps d'attente entre adhân et iqâmah sera automatiquement remplacé par un 0, afin d'indiquer aux fidèles que la prière du `isha se fera tout de suite après adhân
+      label: Heure du `isha (iqâmah tout de suite après athan)
+      title: Si cette valeur est renseignée le temps d'attente entre athan et iqâmah sera automatiquement remplacé par un 0, afin d'indiquer aux fidèles que la prière du `isha se fera tout de suite après athan
     imsakNbMinBeforeFajr:
       label: Afficher l'imsak (nombre de minute avant fajr)
       title: Ce champ permet d'indiquer l'heure du imsak, mettez ici le nombre de minutes souhaitées, par exemple si fajr est à 04:00 et que vous mettiez 30 min l'heure du imsak affichée sera 03:30. Mettez 0 si vous ne souhaitez pas l'afficher
     waitingTimes:
-      label: Temps d'attente entre adhân et iqâmah
+      label: Temps d'attente entre athan et iqâmah
     fixedTimes:
       label: Fixation des horaires
       help: "Exemple: fixer `isha en hiver à 19:00, tant que l'heure est en dessous de la valeur saisie, c'est cette dernière qui sera prise en compte"
@@ -612,16 +612,16 @@ configuration:
     hijriDateEnabled:
       label: Date hégirienne
     duaAfterAzanEnabled:
-      label: Du`aa après adhân
+      label: Du`aa après athan
     duaAfterPrayerEnabled:
       label: Invocations après salat
     azanBip:
-      label: Bip quand c'est l'heure du adhân
+      label: Bip quand c'est l'heure du athan
     azanVoiceEnabled:
-      label: Adhân audio (Adhân du Haram)
-      title: A l'heure de la prière l'adhân du haram sera lancé.
+      label: Athan audio (Athan du Haram)
+      title: A l'heure de la prière l'athan du haram sera lancé.
     wakeAzanVoice:
-      label: Choisir l'adhân du réveil
+      label: Choisir l'athan du réveil
       haram: Adhan du haram
       algeria: Adhan algérien
       quds: Adhan d'al-aqsa
@@ -632,7 +632,7 @@ configuration:
       label:  Compte à rebours en plein écran
     wakeForFajrTime:
       label:  Réveil avant fajr (minute)
-      title: Si vous souhaitez être réveillé avant fajr avec un premier adhân, mettez ici le nombre de minute avant fajr. Laissez vide sinon.
+      title: Si vous souhaitez être réveillé avant fajr avec un premier athan, mettez ici le nombre de minute avant fajr. Laissez vide sinon.
     blackScreenWhenPraying:
       label:  Écran noir pendant la prière
       title: Dès la fin du signal iqamâh, un écran noir sera observé jusqu'à la fin de la prière, cela dépend des valeurs saisies dans les champs "Durée estimée de chaque prière (en minute)"
@@ -673,7 +673,7 @@ configuration:
     footer:
       label: Pieds de l'écran
     showNextAdhanCountdown:
-      label: Compte à rebours du prochain adhân
+      label: Compte à rebours du prochain athan
     timeDisplayFormat:
       label: Format de l'heure
     temperatureUnit:
@@ -805,7 +805,7 @@ noJumua: 'Pas de<br>jumu`a'
 aid: 'Salât al-Aïd'
 imsak: Imsak
 iqama: Iqama
-azan: Al-Adhân
+azan: Al-Athan
 
 power-off-phones: Éteignez vos portables SVP !
 hi: Bonjour %name%
@@ -818,7 +818,7 @@ title: Titre
 content: Contenu
 subject: Sujet
 developed_by: MAWAQIT - Développé par ARCHILOG SAS
-next_prayer: Adhân dans
+next_prayer: Athan dans
 last_login: dernière connexion
 alarm: Essalatu khayrun mina ennawm
 
@@ -889,7 +889,7 @@ invocationAfterPrayer:
   title: (Al-Athkar) أذكار بعد الصلاة
 
 duaAfterAthan:
-  title: Invocation après l'adhân
+  title: Invocation après l'athan
   text: |
     Ô Allah, Maître de cet appel parfait et de la prière que l'on va accomplir, donne à Mohammed le pouvoir d'intercéder
     (le Jour du Jugement) et la place d'honneur [au Paradis], et ressuscite-le dans la position louable que Tu lui as promise
@@ -897,7 +897,7 @@ duaAfterAthan:
 duaBetweenAthanAndIqama:
   text: |
     Selon Anas Ibn Mâlik, le Prophète (sallallahu ‘alayhi wa sallam) a dit :
-    Les invocations entre l'Adhân et l’Iqâmah ne sont pas rejetées
+    Les invocations entre l'Athan et l’Iqâmah ne sont pas rejetées
 
 jumuaReminder:
   text: |

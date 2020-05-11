@@ -8,23 +8,23 @@ jumua: Jumua
 aid: Al-aid
 imsak: Imsak
 iqama: Al-Iqama
-azan: Al-Adhân
+azan: Al-Athan
 
 power-off-phones: Per favore spegnete il vostro cellulare !
-next_prayer: Adhân in
+next_prayer: Athan in
 searchOtherMosque: Cerca un'altra moschea
 your_mosque_informs_you: La tua moschea ti informa
 prayer_mobile_site: Mawaqit sul cellulare <a href='%site%'>%site%</a>
 
 duaAfterAthan:
-    title: Invocazioni dopo l'Adhân
+    title: Invocazioni dopo l'Athan
     text: |
         o Allah, Signore di questa chiamata perfetta e della preghiera che sta per essere celebrata,
         accorda a Muhammad il mezzo della intercessione (al-Wasilah) e l’eccellenza (al-fadîla) ed
         elevalo al nobile rango che Tu gli hai promesso
 duaBetweenAthanAndIqama:
     text: |
-      Anas Ibn Mâlik disse, il profeta Mohammad (pbsl) disse: L'invocazione tra Adhân e Iqama non è mai respinta
+      Anas Ibn Mâlik disse, il profeta Mohammad (pbsl) disse: L'invocazione tra Athan e Iqama non è mai respinta
 jumuaReminder:
     text: |
       Il profeta Muhammad (pace e benedizione su di lui) disse

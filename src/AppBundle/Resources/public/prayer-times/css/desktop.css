@@ -26,7 +26,7 @@ body {
 }
 
 .top-content {
-    height: 55%;
+    height: 56%;
     position: relative;
     overflow: hidden;
 }
@@ -38,6 +38,39 @@ body {
 
 .top-content .alarm-flash {
     font-size: 11vh;
+}
+
+.next-prayer-bloc {
+    padding: 10px;
+    color: #af360e;
+    font-size: 3vw;
+    border-radius: 2.5vw;
+    background-color: #FFFFFF;
+}
+
+.next-prayer-bloc-hadith{
+    display: flex;
+    font-size: 3vw;
+    justify-content: space-between;
+    padding: 0 10px;
+}
+
+.next-prayer-bloc-hadith .next-prayer, .next-prayer-bloc-hadith .currentTimeShort{
+    padding: 0 15px;
+    color: #af360e;
+    border-radius: 1vw;
+    background-color: #FFFFFF;
+}
+
+.next-prayer .countdown {
+    display: inline;
+}
+
+.dates-bloc {
+    font-size: 2.3vw;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
 }
 
 .prayers {
@@ -130,10 +163,6 @@ small {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-}
-
-.gregorianDate, .hijriDate {
-    font-size: 3vw;
 }
 
 .flash, .visibilty-hidden {
@@ -285,26 +314,6 @@ footer .info {
 .random-hadith .text div {
     line-height: 170%;
     margin: auto;
-}
-
-.next-prayer-bloc {
-    display: flex;
-    padding: 0 10px;
-    justify-content: space-between;
-}
-
-.next-prayer-bloc {
-    color: #ec7047;
-    font-size: 3.5vw;
-}
-
-.next-prayer .countdown {
-    display: inline;
-}
-
-.top-content .next-prayer-bloc {
-    position: absolute;
-    bottom: 0;
 }
 
 #weather {

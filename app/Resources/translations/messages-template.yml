@@ -8,24 +8,24 @@ jumua: Jumua
 aid: Al-aid
 imsak: Imsak
 iqama: Al-Iqama
-azan: Al-Adhan
+azan: Al-Athan
 
 power-off-phones: Please turn off your mobile phones !
-next_prayer: Adhan in
+next_prayer: Athan in
 iqama_in: Al-Iqamah in
 searchOtherMosque: Look for another mosque
 your_mosque_informs_you: Your mosque informs you
 prayer_mobile_site: Mawaqit on mobile <a href='%site%'>%site%</a>
 
 duaAfterAthan:
-    title: Invocation after adhân
+    title: Invocation after athan
     text: |
         O Allah, Master of this perfect call and the prayer that we are going to perform, gives Muhammad the power to intercede
         (the Day of Judgment) and the place of honor [in Paradise], and resurrect him in the laudable position that You promised him
 
 duaBetweenAthanAndIqama:
     text: |
-      According to Anas Ibn Mâlik, the Prophet (sallallahu 'alayhi wa sallam) said: The invocations between Adhân and Iqâmah are not rejected
+      According to Anas Ibn Mâlik, the Prophet (sallallahu 'alayhi wa sallam) said: The invocations between Athan and Iqâmah are not rejected
 
 jumuaReminder:
     text: |
