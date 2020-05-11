@@ -22,7 +22,6 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 /**
  * Controller managing security.
- *
  * @author Thibault Duplessis <thibault.duplessis@gmail.com>
  * @author Christophe Coevoet <stof@notk.org>
  */
@@ -69,19 +68,23 @@ class SecurityController extends Controller
             ? $this->tokenManager->getToken('authenticate')->getValue()
             : null;
 
-        $recaptcha = $this->createForm(EWZRecaptchaType::class, null, ['label' => false]);
+        $recaptcha = $this->createForm(EWZRecaptchaType::class, null, ['label' => false, 'required' => true]);
 
-        return $this->renderLogin(array(
-            'last_username' => $lastUsername,
-            'error' => $error,
-            'csrf_token' => $csrfToken,
-            'recaptcha' => $recaptcha->createView(),
-        ));
+        return $this->renderLogin(
+            array(
+                'last_username' => $lastUsername,
+                'error' => $error,
+                'csrf_token' => $csrfToken,
+                'recaptcha' => $recaptcha->createView(),
+            )
+        );
     }
 
     public function checkAction()
     {
-        throw new \RuntimeException('You must configure the check path to be handled by the firewall using form_login in your security firewall configuration.');
+        throw new \RuntimeException(
+            'You must configure the check path to be handled by the firewall using form_login in your security firewall configuration.'
+        );
     }
 
     public function logoutAction()

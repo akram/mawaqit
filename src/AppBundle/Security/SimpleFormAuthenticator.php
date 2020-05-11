@@ -1,4 +1,5 @@
 <?php
+
 namespace AppBundle\Security;
 
 use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaType;
@@ -36,6 +37,9 @@ class SimpleFormAuthenticator implements SimpleFormAuthenticatorInterface
 
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
     {
+
+        $this->checkRecaptcha();
+
         try {
             $user = $userProvider->loadUserByUsername($token->getUsername());
         } catch (UsernameNotFoundException $exception) {
@@ -59,23 +63,6 @@ class SimpleFormAuthenticator implements SimpleFormAuthenticatorInterface
             }
         }
 
-        $form = $this->formFactory->create(
-            EWZRecaptchaType::class,
-            null,
-            [
-                'constraints' => array(
-                    new IsTrue()
-                )
-            ]
-        );
-
-        $recaptchaResponse = $this->requestStack->getMasterRequest()->get('g-recaptcha-response');
-        $form->submit($recaptchaResponse);
-
-        if(!$form->isValid()){
-            throw new CustomUserMessageAuthenticationException($form->getErrors()->current()->getMessage());
-        }
-
         return new UsernamePasswordToken(
             $user,
             $user->getPassword(),
@@ -93,5 +80,27 @@ class SimpleFormAuthenticator implements SimpleFormAuthenticatorInterface
     public function createToken(Request $request, $username, $password, $providerKey)
     {
         return new UsernamePasswordToken($username, $password, $providerKey);
+    }
+
+    private function checkRecaptcha()
+    {
+        $form = $this->formFactory->create(
+            EWZRecaptchaType::class,
+            null,
+            [
+                'required' => true,
+                'constraints' => array(
+                    new IsTrue()
+                )
+            ]
+        );
+
+        $recaptchaResponse = $this->requestStack->getMasterRequest()->get('g-recaptcha-response');
+
+        $form->submit($recaptchaResponse);
+
+        if (!$form->isValid()) {
+            throw new CustomUserMessageAuthenticationException($form->getErrors()->current()->getMessage());
+        }
     }
 }

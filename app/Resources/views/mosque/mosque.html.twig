@@ -15,6 +15,7 @@
         "bundles/app/prayer-times/css/desktop.css"
         "bundles/app/prayer-times/css/slider.css"
         "bundles/app/weather/weather-icons.min.css"
+        "bundles/app/font-awesome/css/all.min.css"
         filter="cssrewrite" %}
         <link rel="stylesheet" href="{{ asset_url }}" type="text/css">
         <link href="{{ asset('bundles/app/prayer-times/css/themes/' ~ mosque.conf.theme ~ '.css') }}" type="text/css"
@@ -200,7 +201,7 @@
                     {% if mosque.configuration.showNextAdhanCountdown %}
                         <div class="next-prayer-bloc">
                             <div class="next-prayer">
-                                {{ 'next_prayer'|trans }}
+                                <i class="fas fa-history"></i> {{ 'next_prayer'|trans }}
                                 <div class="countdown"></div>
                             </div>
                         </div>
