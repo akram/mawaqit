@@ -40,11 +40,18 @@ body {
     font-size: 11vh;
 }
 
+.bottom-block {
+    padding: 5px 15px;
+    border-radius: 2vw 2vw 0 0;
+    background-color: rgba(74, 12, 87, 0.7);
+    min-width: 30%;
+}
+
 .next-prayer-bloc {
     padding: 10px;
     font-size: 3vw;
     border-radius: 2.5vw;
-    background-color: rgba(74, 12, 87, 0.8);
+    background-color: rgba(74, 12, 87, 0.7);
 }
 
 .next-prayer-bloc-hadith {
@@ -52,13 +59,9 @@ body {
     font-size: 3vw;
     justify-content: space-between;
     padding: 0 10px;
-}
-
-.next-prayer-bloc-hadith > div {
-    padding: 0 15px;
-    border-radius: 2vw;
-    background-color: rgba(74, 12, 87, 0.8);
-    width: 30%;
+    position: absolute;
+    width: 100%;
+    bottom: 5px;
 }
 
 .next-prayer .countdown {
@@ -75,13 +78,6 @@ body {
     width: 100%;
 }
 
-.dates-bloc > div {
-    padding: 0 15px;
-    border-radius: 2vw;
-    background-color: rgba(74, 12, 87, 0.8);
-    width: 30%;
-}
-
 .prayers {
     -webkit-box-shadow: 0px 0px 31px 4px rgba(255, 255, 255, 0.6);
     -moz-box-shadow: 0px 0px 31px 4px rgba(255, 255, 255, 0.6);
@@ -95,7 +91,7 @@ body {
     display: -webkit-flex;
     display: flex;
     justify-content: space-between;
-    border-radius: 2vw;
+    border-radius: 0 0 2vw 2vw;
 }
 
 .prayer-hilighted {
@@ -137,7 +133,7 @@ small {
     font-size: 3.5vw;
 }
 
-.joumouaa .prayer{
+.joumouaa .prayer {
     margin: auto;
 }
 
@@ -407,6 +403,6 @@ body.rtl .keyboardInputInitiator {
     right: auto;
 }
 
-.modal{
+.modal {
     z-index: 0;
 }

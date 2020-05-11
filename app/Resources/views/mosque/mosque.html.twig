@@ -99,11 +99,11 @@
                 <div></div>
             </div>
             <div class="next-prayer-bloc-hadith">
-                <div class="next-prayer">
-                    {{ 'next_prayer'|trans }}
+                <div class="next-prayer bottom-block">
+                    <i class="fas fa-history"></i>&nbsp;{{ 'next_prayer'|trans }}
                     <div class="countdown"></div>
                 </div>
-                <div class="currentTimeShort"></div>
+                <div class="currentTimeShort bottom-block"></div>
             </div>
         </div>
 
@@ -201,7 +201,7 @@
                     {% if mosque.configuration.showNextAdhanCountdown %}
                         <div class="next-prayer-bloc">
                             <div class="next-prayer">
-                                <i class="fas fa-history"></i> {{ 'next_prayer'|trans }}
+                                <i class="fas fa-history"></i>&nbsp;&nbsp;{{ 'next_prayer'|trans }}
                                 <div class="countdown"></div>
                             </div>
                         </div>
@@ -225,12 +225,12 @@
             </div>
             <div class="dates-bloc">
                 {% if mosque.configuration.hijriDateEnabled %}
-                    <div class="hijriDate">
+                    <div class="hijriDate bottom-block">
                         <span></span>
                         <img class="full-moon" src="{{ asset('bundles/app/prayer-times/img/full-moon.png') }}" alt="">
                     </div>
                 {% endif %}
-                <div class="gregorianDate"></div>
+                <div class="gregorianDate bottom-block"></div>
             </div>
         </div>
 
