@@ -889,7 +889,7 @@ var prayer = {
                 if (iqamaTime.getTime() > prayerTime.getTime()) {
                     wait = prayer.formatTime(fixedIqama);
                     if (!isMobile) {
-                        $(".prayers .wait, .prayers .time").css({"font-size": "8vh", "line-height": "8rem"});
+                        $(".prayers .wait, .prayers .time").css({"font-size": "3.5vw"});
                     }
                 }
             }

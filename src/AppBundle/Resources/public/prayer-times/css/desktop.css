@@ -66,44 +66,41 @@ body {
 }
 
 .prayers .name {
-    font-size: 6vh;
+    font-size: 3.5vw;
 }
 
 .prayers .wait {
-    font-size: 5vh;
+    font-size: 2.5vw;
 }
 
 .time {
     color: yellowgreen;
     font-weight: bold;
-    font-size: 9vh;
-    line-height: 10vh;
+    font-size: 5vw;
     padding: 0 10px;
 }
 
 small {
-    font-size: 4vh;
+    font-size: 2vw;
     margin-left: 5px;
 }
 
 .joumouaa, .custom-time {
     margin: 50px auto;
-    font-size: 6vh;
-    width: 80%;
+    font-size: 3.5vw;
 }
 
 .joumouaa .prayer{
-    width: 80%;
     margin: auto;
 }
 
 .joumouaa2-id {
     margin-top: -5px;
-    font-size: 6vh;
+    font-size: 3vw;
 }
 
 .header {
-    font-size: 7vh;
+    font-size: 4vw;
     color: yellowgreen;
     padding-top: 10px;
     padding-bottom: 15px;
@@ -123,11 +120,17 @@ small {
 
 .content .currentTime {
     text-shadow: 6px 6px 10px #632e2e;
-    font-size: 15vh;
+    font-size: 9vw;
+}
+
+.content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
 .gregorianDate, .hijriDate {
-    font-size: 5vh;
+    font-size: 3vw;
 }
 
 .flash, .visibilty-hidden {
@@ -181,16 +184,16 @@ small {
 }
 
 .site {
-    font-size: 3vh;
+    font-size: 1vw;
 }
 
 .assosciation {
-    font-size: 2.5vh;
+    font-size: 1.3vw;
 }
 
 .support {
     color: gray;
-    font-size: 2.5vh;
+    font-size: 1.3vw;
 }
 
 .support a {
@@ -289,7 +292,7 @@ footer .info {
 
 .next-prayer-bloc {
     color: #ec7047;
-    font-size: 6vh;
+    font-size: 3.5vw;
 }
 
 .next-prayer .countdown {
@@ -304,7 +307,7 @@ footer .info {
 #weather {
     top: 30px;
     right: 10px;
-    font-size: 5vh;
+    font-size: 3vw;
     position: fixed;
 }
 

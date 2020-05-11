@@ -181,7 +181,7 @@
             </div>
 
             <div class="content">
-                <div class="col-sm-3">
+                <div>
                     <div class="aid custom-time">
                         <div>{{ 'aid'|trans }}</div>
                         <div class="time aid-id"></div>
@@ -195,7 +195,7 @@
                         <div class="time imsak-id"></div>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div>
                     <div class="currentTime"></div>
                     <div class="date">
                         {% if mosque.configuration.hijriDateEnabled %}
@@ -206,7 +206,7 @@
                         <div class="gregorianDate"></div>
                     </div>
                 </div>
-                <div class="col-sm-3">
+                <div>
                     {% if mosque.configuration.jumua %}
                         <div class="joumouaa">
                             <div class="ar">{{ 'jumua'|trans }}</div>
