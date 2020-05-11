@@ -57,8 +57,12 @@ body {
 
 .prayer-hilighted {
     background-color: #0b5c00;
-    border-radius: 40px;
-    padding: 0 10px;
+    border-radius: 2vw;
+    padding: 0 1vw;
+}
+
+.prayers div {
+    line-height: 5vw;
 }
 
 .prayer-hilighted div {
@@ -103,7 +107,6 @@ small {
     font-size: 4vw;
     color: yellowgreen;
     padding-top: 10px;
-    padding-bottom: 15px;
     width: 75%;
     overflow: hidden;
     white-space: nowrap;
@@ -201,7 +204,7 @@ small {
 }
 
 .version {
-    font-size: 20px;
+    font-size: 1vw;
     color: #adadad;
     position: fixed;
     bottom: 5px;
@@ -209,7 +212,7 @@ small {
 }
 
 #mosque-id {
-    font-size: 20px;
+    font-size: 1vw;
     color: #adadad;
 }
 
