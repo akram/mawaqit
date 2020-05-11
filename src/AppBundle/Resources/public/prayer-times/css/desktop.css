@@ -71,6 +71,9 @@ body {
     display: flex;
     justify-content: space-between;
     padding: 0 10px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
 .prayers {
