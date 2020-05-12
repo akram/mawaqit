@@ -122,6 +122,9 @@ var prayer = {
         // if waiting fixed to < 2 min we adjust it to 2 min for adhan and dua`a
         if (waiting <= 2) {
             waiting = 2;
+            if (!prayer.isMosque){
+                waiting = 4;
+            }
         }
         return waiting;
     },
@@ -569,12 +572,12 @@ var prayer = {
     getAdhanFlashingTime: function (currentPrayerIndex) {
 
         // if short waiting
-        if (prayer.getWaitingByIndex(currentPrayerIndex) === 2) {
+        if (prayer.getWaitingByIndex(currentPrayerIndex) <= 2) {
             return prayer.oneSecond * 90;
         }
 
         // if azan enablded
-        if (prayer.confData.azanVoiceEnabled === true) {
+        if (!prayer.isMosque && prayer.confData.azanVoiceEnabled === true) {
             // if fajr
             if (currentPrayerIndex === 0) {
                 return prayer.oneSecond * 250;
