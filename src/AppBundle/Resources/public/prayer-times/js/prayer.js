@@ -805,8 +805,7 @@ var prayer = {
 
         $(".custom-time").hide();
         // if aid time enabled we set/show it
-        // if (this.confData.aidPrayerTime && this.aidIsCommingSoon()) {
-        if (true) {
+        if (this.confData.aidPrayerTime && this.aidIsCommingSoon()) {
             $(".aid").addClass("prayer-hilighted");
             $(".aid").show();
             return;
