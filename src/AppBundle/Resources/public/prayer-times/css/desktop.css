@@ -100,10 +100,6 @@ body {
     padding: 0 1vw;
 }
 
-.prayers div {
-    line-height: 5vw;
-}
-
 .prayer-hilighted div {
     color: #FFFFFF !important;
 }
@@ -156,13 +152,14 @@ small {
     color: #B0413E;
 }
 
-.aid-id {
-    color: #B0413E;
+.aid {
+    background-color: rgb(173, 101, 0);
 }
 
 .content .currentTime {
     text-shadow: 6px 6px 10px #632e2e;
     font-size: 9vw;
+    line-height: 11vw;
 }
 
 .content {

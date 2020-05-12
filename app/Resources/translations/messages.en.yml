@@ -379,7 +379,7 @@ mosque:
     janazaPrayer:
       label: Salât al-Janaza
     aidPrayer:
-      label: Salât al-Aïd
+      label: Salat El Eid
     childrenCourses:
       label: Children courses
     adultCourses:
@@ -760,8 +760,8 @@ maghrib: Maghrib
 isha: '`Isha'
 jumua: 'Jumu`a'
 noJumua: 'No jumu`a'
-jumuaPrayer: 'Salât al-Jumu`a'
-aid: 'Salât al-Aïd'
+jumuaPrayer: 'Salat al-Jumu`a'
+aid: Salat El Eid
 imsak: Imsak
 iqama: Iqama
 azan: Al-Athan

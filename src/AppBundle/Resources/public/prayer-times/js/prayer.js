@@ -805,7 +805,9 @@ var prayer = {
 
         $(".custom-time").hide();
         // if aid time enabled we set/show it
-        if (this.confData.aidTime && this.aidIsCommingSoon()) {
+        // if (this.confData.aidPrayerTime && this.aidIsCommingSoon()) {
+        if (true) {
+            $(".aid").addClass("prayer-hilighted");
             $(".aid").show();
             return;
         }
@@ -850,7 +852,7 @@ var prayer = {
         $(".joumouaa2-id").html(prayer.formatTime(prayer.confData.jumua2));
 
         // if aid time enabled we set/show it
-        $(".aid-id").html(prayer.formatTime(this.confData.aidTime));
+        $(".aid-id").html(prayer.formatTime(this.confData.aidPrayerTime));
 
         // set chourouk time
         $(".chourouk-id").html(prayer.formatTime(this.getChouroukTime()));
