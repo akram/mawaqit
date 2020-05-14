@@ -18,34 +18,35 @@
 
     <h3>Installations</h3>
     <div class="row">
-        <div class="col-sm-6 col-md-4">
-            <div class="thumbnail mosque">
+        <div class="col-sm-6 col-md-2">
+            <div class="thumbnail" style="background-color: #a96f6c">
                 <div class="caption">
-                    <h3>Nombre total d'installation : {{ mosques.total }}</h3>
-                    <p>Nombre d'installation tout type confondu</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-4">
-            <div class="thumbnail mosque">
-                <div class="caption">
-                    <h3>Nombre de mosquée : {{ mosques.totalMosques }}</h3>
-                    <p>...</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-4">
-            <div class="thumbnail mosque">
-                <div class="caption">
-                    <h3>Nombre de domicile : {{ mosques.totalHomes }}</h3>
-                    <p>...</p>
+                    <h3>TOTAL : <b>{{ items.total }}</b></h3>
                 </div>
             </div>
         </div>
 
+        {% for item in items.byType %}
+            <div class="col-sm-6 col-md-2">
+                <div class="thumbnail mosque">
+                    <div class="caption">
+                        <h3>{{ ('mosque.types.' ~ item.type)|trans }} : <b>{{ item.nb }}</b></h3>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
         <div class="col-sm-12 col-md-12">
-            <h3>Par pays</h3>
-            {% for item in mosques.byCountry %}
+            <h3>Mosquées par pays ({{ items.mosquesByCountry|length }})</h3>
+            {% for item in items.mosquesByCountry %}
+                <span class="btn btn-success mt-1">
+                   {{ item.country|country }} <span class="badge">{{ item.nb }}</span>
+                </span>
+            {% endfor %}
+        </div>
+        <div class="col-sm-12 col-md-12">
+            <h3>Toutes installation confondue par pays ({{ items.allByCountry|length }})</h3>
+            {% for item in items.allByCountry %}
                 <span class="btn btn-success mt-1">
                    {{ item.country|country }} <span class="badge">{{ item.nb }}</span>
                 </span>
@@ -55,27 +56,24 @@
 
     <h3>{{ 'users'|trans }}</h3>
     <div class="row">
-        <div class="col-sm-6 col-md-4">
+        <div class="col-sm-6 col-md-2">
             <div class="thumbnail user">
                 <div class="caption">
-                    <h3>Nombre total d'utilisateurs inscrits : {{ users.total }}</h3>
-                    <p>...</p>
+                    <h3>TOTAL : {{ users.total }}</h3>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 col-md-4">
+        <div class="col-sm-6 col-md-2">
             <div class="thumbnail user">
                 <div class="caption">
-                    <h3>Nombre d'utilisateurs activés : {{ users.enabled }}</h3>
-                    <p>...</p>
+                    <h3>ACTIVÉS : {{ users.enabled }}</h3>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 col-md-4">
+        <div class="col-sm-6 col-md-2">
             <div class="thumbnail user">
                 <div class="caption">
-                    <h3>Nombre d'utilisateurs désactivés : {{ users.disabled }}</h3>
-                    <p>...</p>
+                    <h3>DÉSACTIVÉS : {{ users.disabled }}</h3>
                 </div>
             </div>
         </div>

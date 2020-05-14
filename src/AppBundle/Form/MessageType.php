@@ -3,6 +3,7 @@
 namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -29,7 +30,6 @@ class MessageType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
 
         $builder
             ->add('title', null, [
@@ -75,6 +75,12 @@ class MessageType extends AbstractType
                     'help' => $this->translator->trans('message.form.image.title'),
                 ]
             ])
+            ->add('video', UrlType::class, [
+                'attr' => [
+                    'placeholder' => 'https://www.youtube.com/watch?v=XXXXXXXXXXX',
+                    'help' => $this->translator->trans('message.form.video.title'),
+                ]
+            ])
             ->add('save', SubmitType::class, [
                 'label' => 'save',
                 'attr' => [
@@ -87,7 +93,8 @@ class MessageType extends AbstractType
     {
         $resolver->setDefaults(array(
             'label_format' => 'message.form.%name%.label',
-            'data_class' => Message::class
+            'data_class' => Message::class,
+            'required' => false,
         ));
     }
 

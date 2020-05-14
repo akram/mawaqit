@@ -10,7 +10,11 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
+/**
+ * Obsolete
+ * Class initUuidMosqueCommand
+ * @package AppBundle\Command
+ */
 class initUuidMosqueCommand extends Command
 {
 

@@ -9,7 +9,7 @@
 
     <style>
         @page {
-            margin: 20px 60px;
+            margin: 10px 50px;
         }
 
         @font-face {
@@ -30,7 +30,8 @@
         }
 
         footer {
-            margin: 20px 5px 0;
+            margin: 10px 5px 0;
+            font-size: 90%;
         }
 
         header {
@@ -81,16 +82,15 @@
     </style>
 </head>
 <body>
+{% set jumuaTime = (mosque.conf.jumua and mosque.conf.jumuaTime ? mosque.conf.jumuaTime ~ ( mosque.conf.jumuaTime2 ? ' & ' ~ mosque.conf.jumuaTime2 : '')) %}
 {% for month,days in calendar %}
     <div class="page">
         <header>
             <img class="logo left" src="https://mawaqit.net/android-chrome-192x192.jpg"/>
             <img class="logo right" src="https://mawaqit.net/android-chrome-192x192.jpg"/>
             <h2>{{ mosque.title }}</h2>
-            <h4>{{ 'calendar_times'|trans }} <b>{{ "now"|date("Y") }}</b></h4>
-            {% if  mosque.conf.jumuaTime %}
-                <p>{{ 'jumua'|trans }} {{ mosque.conf.jumuaTime }} {{ mosque.conf.jumuaTime2 ? ' / ' ~ mosque.conf.jumuaTime2 : '' }}</p>
-            {% endif %}
+            {% set translatedMonth = ("now"|date("Y") ~ "-"~ (month+1) ~"-"~"01")|date('F')|lower|trans %}
+            <h4>{{ 'calendar_times'|trans }} <b>{{ translatedMonth }} {{ "now"|date("Y") }}</b></h4>
         </header>
 
         <main>
@@ -111,13 +111,13 @@
                 <tbody>
                 {% for day,prayers in days %}
                     {% set theDate = "now"|date("Y") ~ "-"~ (month+1) ~"-"~day %}
-                    <tr style="{{ theDate|date("N") == 5 ? 'background-color: #93EEAA' : '' }}">
+                    <tr style="{{ theDate|date("N") == 5 ? 'background-color: #93EEAA; font-weight: bold' : '' }}">
                         <td style="text-align: {{ locale == 'ar' ? 'right' : 'left' }};">
                             {{ theDate|date('d') }}&nbsp;
                             {{ theDate|date('F')|lower|trans }}
                         </td>
                         <td style="text-align: {{ locale == 'ar' ? 'right' : 'left' }};">
-                            {{ theDate|date('l')|lower|trans|capitalize }}
+                            {{ theDate|date('l')|lower|trans|capitalize }} {{ theDate|date("N") == 5 ? jumuaTime : '' }}
                         </td>
                         {% for prayer in prayers %}
                             <td>{{ prayer }}</td>
@@ -130,14 +130,18 @@
 
         <footer>
             {% if mosque.associationName %}
-                <div>{{ mosque.associationName }}</div>
+                {{ mosque.associationName }} |
             {% endif %}
-            <div>{{ mosque.localisation }}</div>
-            {% if mosque.email %}
-                <span>{{ mosque.email }}</span>
-            {% endif %}
-            {% if mosque.phone %}
-                - <span>{{ mosque.phone }}</span>
+            {{ mosque.localisation }}
+            {% if mosque.email or mosque.phone %}
+                <div>
+                    {% if mosque.email %}
+                        {{ mosque.email }}
+                    {% endif %}
+                    {% if mosque.phone %}
+                        | {{ mosque.phone }}
+                    {% endif %}
+                </div>
             {% endif %}
             {% if mosque.rib or mosque.paymentWebsite %}
                 <div>

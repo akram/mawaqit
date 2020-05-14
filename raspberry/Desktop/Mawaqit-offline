@@ -1,3 +1,8 @@
 #!/bin/bash
 
-chromium-browser --app=http://mawaqit.local/mosquee --start-fullscreen
+url=`cat ~/mawaqit/docker/data/offline_url.txt`
+if [ -z "$url" ]; then
+    url=http://mawaqit.local/en/id/1
+fi
+
+chromium-browser --app=$url --start-fullscreen

@@ -1,0 +1,44 @@
+<style>
+    .mawaqit-message {
+        width: 100%;
+        background-color: #4b5a65;
+        padding: 0.5em;
+        position: fixed;
+        top: 0;
+        color: #FFFFFF;
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+    }
+</style>
+
+<div class="mawaqit-message hidden">
+    <div style="margin: auto; padding: 0.5rem"><i class="fa fa-info-circle" style="font-size: 130%"></i>&nbsp;&nbsp; <span id="mawaqit-message-text"></span></div>
+    <button class="btn btn-success" onclick="gotMawaqitMessage()">{{ 'cookies_accept.button'|trans }}</button>
+</div>
+
+{% block additional_javascripts %}
+    <script>
+        $(function () {
+            $.ajax('{{ path("mawaqit_team_message_ajax") }}').success(
+                function (response) {
+                    if (response.message !== null) {
+                        if (localStorage.getItem("mawaqit-message-text") !== response.message || localStorage.getItem("mawaqit-message") === null) {
+                            localStorage.setItem('mawaqit-message-text', response.message);
+                            localStorage.removeItem('mawaqit-message');
+                            $("#mawaqit-message-text").html(response.message);
+                            $(".mawaqit-message").removeClass('hidden');
+                        }
+                    }
+                }
+            );
+        });
+
+        function gotMawaqitMessage() {
+            $('.mawaqit-message').hide();
+            localStorage.setItem('mawaqit-message', true);
+        }
+    </script>
+{% endblock %}
+

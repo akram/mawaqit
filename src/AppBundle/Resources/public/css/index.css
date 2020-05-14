@@ -34,3 +34,14 @@
     font-size: 3rem;
     direction: ltr !important;
 }
+
+.connected-object {
+    width: 200px;
+    height: 200px;
+    margin: 3rem auto;
+}
+
+.connected-object img {
+    width: 160px;
+    height: 160px;
+}

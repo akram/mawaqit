@@ -3,6 +3,8 @@ body {
     overflow: hidden;
     background-size: cover;
     height: 100vh;
+    font-weight: bold;
+    font-family: 'koufi', Arial, Helvetica, sans-serif;
 }
 
 .widget {
@@ -51,10 +53,21 @@ body {
 }
 
 .iqama {
-    font-size: 3vw;
+    font-size: 4vw;
+    font-weight: bold;
 }
 
 small {
     font-size: 3vw;
     margin-left: 3px;
+}
+
+.prayer-hilighted {
+    background-color: #0b5c00;
+    border-radius: 1rem;
+    padding: 0.5rem;
+}
+
+.prayer-hilighted div {
+    color: #FFFFFF !important;
 }

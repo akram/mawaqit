@@ -1,6 +1,9 @@
 $(".iframe-button").click(function () {
-    var iframe = '<iframe src="' + $(this).data('url') + '" frameborder="0" scrolling="no" style="width: 400px; height: 200px;"></iframe>'
-    $('#iframe-modal #iframe-text').text(iframe);
-    $('#iframe-modal #iframe-html').html(iframe);
+    let iframeW = '<iframe src="' + $(this).data('urlw') + '" frameborder="0" scrolling="no" class="widget"></iframe>'
+    let iframeM = '<iframe src="' + $(this).data('urlm') + '" frameborder="0" scrolling="no" class="mobile"></iframe>'
+    $('#iframe-modal #iframe-w-text').text(iframeW);
+    $('#iframe-modal #iframe-w-html').html(iframeW);
+    $('#iframe-modal #iframe-m-text').text(iframeM);
+    $('#iframe-modal #iframe-m-html').html(iframeM);
     $('#iframe-modal').modal();
 });

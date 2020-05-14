@@ -18,19 +18,15 @@ class StatsController extends Controller
         $em = $this->getDoctrine()->getManager();
         $mosqueRepository = $em->getRepository("AppBundle:Mosque");
         $userRepository = $em->getRepository("AppBundle:User");
-
-        $totalMosquesAndHomes = $mosqueRepository->getCount();
-        $totalMosques = $mosqueRepository->countMosques();
-
         $totalUsers = $userRepository->getCount();
-        $totalUsersEnabled = $userRepository->countEnabled();
+        $totalUsersEnabled = $userRepository->getCount(true);
 
         $stats = [
-            "mosques" => [
-                "total" => $totalMosquesAndHomes,
-                "totalMosques" => $totalMosques,
-                "totalHomes" => $totalMosquesAndHomes - $totalMosques,
-                "byCountry" => $mosqueRepository->getNumberByCountry(),
+            "items" => [
+                "total" => $mosqueRepository->getCount(),
+                "byType" => $mosqueRepository->getNumberByType(),
+                "mosquesByCountry" => $mosqueRepository->getNumberByCountry(true),
+                "allByCountry" => $mosqueRepository->getNumberByCountry(),
             ],
             "users" => [
                 "total" => $totalUsers,

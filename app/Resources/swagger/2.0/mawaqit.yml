@@ -1,0 +1,499 @@
+swagger: '2.0'
+info:
+  description: |
+      Our API  need authentication by token, please feel free to contact us by email to obtain your access token.<br> 
+      <strong>NB: We authorise our API only for non commercial use.</strong>
+  version: "2.0"
+  title: Mawaqit
+  contact:
+    email: contact@mawaqit.net
+ 
+host: mawaqit.net
+basePath: /api/2.0
+schemes:
+ - https
+
+paths:
+  /mosque/search:
+    get:
+      summary: Search mosques by city, zipcode, name...
+      description: If the lon and lat parameters are present the result will contain the first 20 nearest mosques ignoring word query (use it for geoloc search)<br/>The result contains only valid mawaqit mosques.<br/> The list is paginated, you can request any page by adding the page query parameter
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Api-Access-Token
+          required: true
+          type: string
+        - in: query
+          name: word
+          required: false
+          type: string
+          description: "key words for serach. Exp: Grande mosquée de paris"
+        - in: query
+          name: lon
+          required: false
+          type: number
+          description: The longitude to obtain nearby mosques, for example 2.294359
+        - in: query
+          name: lat
+          required: false
+          type: number    
+          description: The longitude to obtain near mosques, for example 48.858205
+        - in: query
+          name: page
+          required: false
+          type: number    
+          description: The requested page, if not present the first page is returned by default 
+      responses:
+        200:
+          description: Search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Mosque'
+        400:
+          description: Bad input parameter
+        500:
+          description: Internal Server Error
+        503:
+          description: Not available service  
+          
+  /mosque/{uuid}/prayer-times:
+    get:
+      summary: Get prayer times and other information for the requested mosque
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Api-Access-Token
+          required: true
+          type: string      
+        - in: path
+          name: uuid
+          description: The uuid of the mosque returned in search api
+          type: string
+          required: true
+        - in: query
+          name: calendar
+          type: string
+          required: false          
+          description: if this parameter is present, the full year calendar of prayer times is returned
+        - in: query
+          name: updatedAt
+          type: string
+          required: false          
+          description: timestamp (ex. 1585158388) if present, the api will check updates, so if no upadate vailable, no body will returned and the http status will be 304 (Not modified)
+      responses:
+        200:
+          description: The result
+          schema:
+            $ref: '#/definitions/PrayerTimes'
+          headers:
+            Last-Modified:
+              type: string
+              description: The last update date of the mosque           
+        304:
+          description: Not modified          
+        404:
+          description: The mosque has not been found
+        500:
+          description: Internal Server Error
+        503:
+          description: Not available service             
+          
+  /hadith/random:
+    get:
+      summary: Return a random hadith from ryadh essalihine or hisn muslim
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Api-Access-Token
+          required: true
+          type: string      
+        - in: query
+          name: lang
+          required: false
+          type: string
+          description: The language of the hadith ( "ar", "en", "fr", "tr", "en-ar", "fr-ar", "tr-ar"), default to ar
+        - in: query
+          name: maxLength
+          required: false
+          type: integer
+          description: The max length of the hadith, default to 500 characters, if you want short hadith you can put 200 for exemple 
+      responses:
+        200:
+          description: The hadith
+          schema:
+            $ref: '#/definitions/Hadith'
+        400:
+          description: Bad input parameter
+        500:
+          description: Internal Server Error
+        503:
+          description: Not available service 
+    
+definitions:
+  Mosque:
+    type: object
+    required:
+      - id
+      - uuid
+      - name
+      - latitude
+      - longitude
+      - associationName
+      - phone
+      - paymentWebsite
+      - email
+      - site
+      - womenSpace
+      - janazaPrayer
+      - aidPrayer
+      - hildrenCourses
+      - adultCourses
+      - ramadanMeal
+      - handicapAccessibility
+      - ablutions
+      - parking
+      - otherInfo
+      - localisation
+      - image
+      - url
+      - jumua
+      - jumua2
+    properties:
+      id:
+        type: integer
+      uuid:
+        type: string
+        example: 4d0a22d1-3dad-4612-9df4-be444bc7c603
+      name:
+        type: string
+        example: Mosquée Essunna
+      latitude:
+        type: number
+        example: 2.893254         
+      longitude:
+        type: number
+        example: 48.12356
+      associationName:
+        type: string
+      phone:
+        type: string
+        description: The phone of the mosque, can be null
+      paymentWebsite:
+        type: string
+        example: https://payapal.com/mosque-essunna
+        description: The mosque paiement website
+      email:
+        type: string
+        example: exemple@exemple.net
+        description: The email of the mosque, can be null
+      site:
+        type: string
+        example: https://mosque-website.com 
+        description: The website of the mosque, can be null    
+      womenSpace:
+        type: boolean
+        description: If null that means information not available
+      janazaPrayer:
+        type: boolean
+        description: If null that means information not available
+      aidPrayer:
+        type: boolean
+        description: If null that means information not available
+      childrenCourses:
+        type: boolean
+        description: If null that means information not available
+      adultCourses:
+        type: boolean
+        description: If null that means information not available
+      ramadanMeal:
+        type: boolean
+        description: If null that means information not available
+      handicapAccessibility:
+        type: boolean
+        description: If null that means information not available
+      ablutions:
+        type: boolean
+        description: If null that means information not available
+      parking:
+        type: boolean
+        description: If null that means information not available
+      otherInfo:  
+        type: string
+        example: 
+        description: Some other info od the mosque, like opening times
+      localisation:
+        type: string
+        description: The full address of the mosque
+        example: 14 rue condorcet 78800 Houilles France     
+      image:
+        type: string
+        example: https://mawaqit.net/upload/sqd654dqsd654qsdd.png
+        description: A picture of the mosque, can be null        
+      url:
+        type: string
+        example: https://mawaqit.net/fr/mosquee-essunna-houilles
+        description: The mawaqit url screen
+      jumua:
+        type: string
+        example: "13:00"
+        description: The jumua time
+      jumua2:
+        type: string
+        example: "14:00"
+        description: The second jumua time, null if not available
+      proximity:
+        type: number
+        description: The proximity in meter, distance between GPS position and the mosque
+        example: 1500
+
+
+  PrayerTimes:
+    type: object
+    required:
+      - id
+      - uuid
+      - name
+      - localisation
+      - phone
+      - email
+      - site
+      - url
+      - image
+      - association
+      - jumua
+      - jumua2
+      - jumuaAsDuhr
+      - imsakNbMinBeforeFajr
+      - maximumIshaTimeForNoWaiting
+      - shuruq
+      - longitude
+      - latitude
+      - times
+      - iqama
+      - fixedTimes
+      - fixedIqama
+      - womenSpace
+      - janazaPrayer
+      - aidPrayer
+      - childrenCourses
+      - adultCourses
+      - ramadanMeal
+      - handicapAccessibility
+      - ablutions
+      - parking
+      - otherInfo
+      - flashMessage
+      - announcements
+      - updatedAt
+    properties:
+      id:
+        type: integer
+        example: 1250
+      uuid:
+        type: string
+        example: 4d0a22d1-3dad-4612-9df4-be444bc7c603        
+      name:
+        type: string
+        example: Mosquée Essunna
+      email:
+        type: string
+        example: exemple@exemple.net
+        description: The email of the mosque, can be null
+      phone:
+        type: string
+        example: 06.00.00.00.00      
+        description: The phone of the mosque, can be null
+      url:
+        type: string
+        example: https://mawaqit.net/fr/mosquee-essunna-houilles
+        description: The mawaqit url screen        
+      image:
+        type: string
+        example: https://mawaqit.net/upload/sqd654dqsd654qsdd.png
+        description: A picture of the mosque, can be null        
+      site:
+        type: string
+        example: https://mosque-website.com
+        description: The website of the mosque, can be null
+      association:
+        type: string
+        description: The association name
+        example: Association SFI      
+      jumua:
+        type: string
+        description: Jumu`a time
+        example: "13:00"
+      jumua2:
+        type: string
+        description: The second Jumu`a time can be null if not available
+        example: "14:00"      
+      jumuaAsDuhr:
+        type: boolean
+        description: True if Jumu`a time is identical to duhr time
+        example: true  
+      imsakNbMinBeforeFajr:
+        type: integer
+        description: Number of minutes before fajr (stop eating)
+        example: 20  
+      maximumIshaTimeForNoWaiting:
+        type: string
+        description: The maximum time for isha, to fixe iqama to 0 min
+        example: "22:30"       
+      shuruq:
+        type: string
+        description: Shuruk time
+        example: "07:30"
+      localisation:
+        type: string
+        description: The full address of the mosque
+        example: 14 rue condorcet 78800 Houilles France
+      longitude:
+        type: number
+        example: 48.12356
+      latitude:
+        type: number
+        example: 2.893254
+      times:
+        type: array
+        items:
+          type: string
+        description: Prayer times [fajr, dhuhr, asr, maghrib, `isha]
+        example: ["06:12", "12:35", "15:02", "17:28", "19:20"]
+      iqama:
+        type: array
+        items:
+          type: string
+        description: Iqama waiting times after adhan, in minutes [fajr, dhuhr, asr, maghrib, `isha]
+        example: [20, 10, 10, 5, 10]
+      fixedTimes:
+        type: array
+        items:
+          type: string
+        description: fixed prayer times [fajr, dhuhr, asr, maghrib, `isha]
+        example: ["", "13:00", "", "", "19:20"]
+      fixedIqama:
+        type: array
+        items:
+          type: string
+        description: fixed iqama times [fajr, dhuhr, asr, maghrib, `isha]
+        example: ["", "14:00", "", "", "20:00"]
+      womenSpace:
+        type: boolean
+        description: If null that means information not available    
+      janazaPrayer:
+        type: boolean
+        description: If null that means information not available       
+      aidPrayer:
+        type: boolean
+        description: If null that means information not available       
+      childrenCourses:
+        type: boolean
+        description: If null that means information not available       
+      adultCourses:
+        type: boolean
+        description: If null that means information not available       
+      ramadanMeal:
+        type: boolean
+        description: If null that means information not available       
+      handicapAccessibility:
+        type: boolean
+        description: If null that means information not available       
+      ablutions:
+        type: boolean
+        description: If null that means information not available       
+      parking:
+        type: boolean
+        description: If null that means information not available 
+      otherInfo:
+        type: string
+        description: other useful info about the mosque
+      flashMessage:
+        type: string
+        example: Salat eljanaza demain après el asr
+        description: A flash short message
+      updatedAt:
+        type: integer
+        example: 15231564654
+        description: Last updated timestamp, to be saved on client side and sent for every call
+      flash:
+        $ref: '#/definitions/Flash'
+      announcements:
+        type: array
+        items:
+          $ref: '#/definitions/Announcement'
+        description: A list of announcements
+      calendar:
+        type: array
+        items: 
+          type: object
+        description: The full year prayer times calendar    
+        
+  Announcement:
+    type: object
+    required:
+    - id
+    - title
+    - content
+    - isMobile
+    - isDesktop
+    - image
+    properties:
+      id:
+        type: integer
+        example: 55    
+      title:
+        type: string
+        description: The announcement title, can be null
+        example: "Conference"
+      content:
+        type: string
+        description: The announcement content, can be null
+        example: Yout mosque communicate with you   
+      isMobile:
+        type: boolean
+        description: the annoucement is visible on mobile
+      isDesktop:
+        type: boolean
+        description: the annoucement is visible on desktop
+      image:
+        type: string
+        description: The announcement image, can be null 
+        example: https://mawaqit.net/upload/5bdf1a6dcf38b078788723.jpg
+        
+  Flash:
+    type: object
+    required:
+    - content
+    - expire
+    properties:
+      content:
+        type: string
+        description: The flash message content, can be null
+        example: Salat eljanaza demain après el asr
+      orientation:
+        type: string
+        description: The flash message orientation rtl or ltr (for arabic message it will be rtl)
+        example: rtl
+      expire:
+        type: integer
+        example: 15231564654
+        description: Last updated     
+        
+  Hadith:
+    type: object
+    required:
+    - lang
+    - text
+    properties:
+      text:
+        type: string
+        example: "Ibn ‘Omar (رَضِيَ اللهُ عَنْهُ) a dit: «On nous a interdit toute affectation"
+      lang:
+        type: string
+        description: The language of hadith (fr or ar), fr means french hadith and ar means arabic hadith
+        example: ar

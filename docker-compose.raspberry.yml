@@ -10,7 +10,7 @@ services:
     working_dir: /application
     volumes:
       - .:/application
-      - ./docker/php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini
+      - ./docker/php-fpm/php.prod.ini:/usr/local/etc/php/conf.d/99-overrides.ini
       - /etc/localtime:/etc/localtime:ro
 
   mawaqit_nginx:
@@ -40,4 +40,3 @@ services:
     image: arm32v6/composer
     volumes:
       - ./:/app
-    command: install -o -n

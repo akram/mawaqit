@@ -53,8 +53,14 @@ var prayer = {
      * check for update every 2 minute
      */
     initUpdateConfData: function () {
-        if (typeof isLocal !== 'undefined' && isLocal) {
+        if (isLocal) {
             return;
+        }
+
+        let frequency = 5;
+        if(!isMosque)
+        {
+            frequency = 10;
         }
 
         var remote = $(".main").data("remote");
@@ -74,7 +80,7 @@ var prayer = {
                     }
                 }
             });
-        }, prayer.oneMinute * 2);
+        }, prayer.oneMinute * frequency);
     },
     /**
      * load prayer times
@@ -116,6 +122,9 @@ var prayer = {
         // if waiting fixed to < 2 min we adjust it to 2 min for adhan and dua`a
         if (waiting <= 2) {
             waiting = 2;
+            if (!prayer.isMosque){
+                waiting = 4;
+            }
         }
         return waiting;
     },
@@ -407,20 +416,6 @@ var prayer = {
                 }
             }, prayer.oneSecond);
         },
-        initNotif: function () {
-            setInterval(function () {
-                var currentTime = dateTime.getCurrentTime();
-                var options = {hour: '2-digit', minute: '2-digit'};
-                $(prayer.getTimes()).each(function (currentPrayerIndex, time) {
-                    var prayerDateTime = prayer.getCurrentDateForPrayerTime(time);
-                    var tenMinBeforAdhan = prayerDateTime.setMinutes(prayerDateTime.getMinutes() - 10);
-                    tenMinBeforAdhan = (new Date(tenMinBeforAdhan)).toLocaleString('fr', options);
-                    if (currentTime === tenMinBeforAdhan) {
-                        MawaqitNotification.showNotification(prayerTimeIn10MinTitle, prayerTimeIn10MinBody);
-                    }
-                });
-            }, prayer.oneMinute);
-        },
         /**
          * Flash adhan, play sound if enabled
          * @param {Number} currentPrayerIndex
@@ -564,12 +559,12 @@ var prayer = {
     getAdhanFlashingTime: function (currentPrayerIndex) {
 
         // if short waiting
-        if (prayer.getWaitingByIndex(currentPrayerIndex) === 2) {
+        if (prayer.getWaitingByIndex(currentPrayerIndex) <= 2) {
             return prayer.oneSecond * 90;
         }
 
         // if azan enablded
-        if (prayer.confData.azanVoiceEnabled === true) {
+        if (!prayer.isMosque && prayer.confData.azanVoiceEnabled === true) {
             // if fajr
             if (currentPrayerIndex === 0) {
                 return prayer.oneSecond * 250;
@@ -797,7 +792,8 @@ var prayer = {
 
         $(".custom-time").hide();
         // if aid time enabled we set/show it
-        if (this.confData.aidTime && this.aidIsCommingSoon()) {
+        if (this.confData.aidPrayerTime && this.aidIsCommingSoon()) {
+            $(".aid").addClass("prayer-hilighted");
             $(".aid").show();
             return;
         }
@@ -842,7 +838,7 @@ var prayer = {
         $(".joumouaa2-id").html(prayer.formatTime(prayer.confData.jumua2));
 
         // if aid time enabled we set/show it
-        $(".aid-id").html(prayer.formatTime(this.confData.aidTime));
+        $(".aid-id").html(prayer.formatTime(this.confData.aidPrayerTime));
 
         // set chourouk time
         $(".chourouk-id").html(prayer.formatTime(this.getChouroukTime()));
@@ -884,7 +880,7 @@ var prayer = {
                 if (iqamaTime.getTime() > prayerTime.getTime()) {
                     wait = prayer.formatTime(fixedIqama);
                     if (!isMobile) {
-                        $(".prayers .wait, .prayers .time").css({"font-size": "8vh", "line-height": "8rem"});
+                        $(".prayers .wait, .prayers .time").css({"font-size": "3.5vw"});
                     }
                 }
             }

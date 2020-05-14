@@ -8,14 +8,14 @@ jumua: Djoemoe’ah
 aid: Eid
 imsak: Imsaak
 iqama: Al-Iqama
-azan: Al-Adhan
+azan: Al-Athan
 
 searchOtherMosque: Een andere moskee zoeken
 power-off-phones: Vriendelijk verzoek om uw telefoon uit te zetten!
-next_prayer: Adhan in
+next_prayer: Athan in
 
 duaAfterAthan:
-  title: Smeekbede na Adhan
+  title: Smeekbede na Athan
   text: |
     Allah, Heer van deze perfecte oproep en van het te verrichten gebed, schenk Mohammed
     al-wasielah en al-fadielah en schenk hem de verheven positie die U hem heeft beloofd.
@@ -24,7 +24,7 @@ duaAfterAthan:
 duaBetweenAthanAndIqama:
   text: |
     Volgens Anas Ibn Mâlik, de profeet (vrede en zegeningen zij met hem) said: "De
-    smeekbede tussen de Adhan en de Iqama wordt niet geweigerd, dus verricht smeekbeden (tot Allah)".
+    smeekbede tussen de Athan en de Iqama wordt niet geweigerd, dus verricht smeekbeden (tot Allah)".
 
 jumuaReminder:
   text: |

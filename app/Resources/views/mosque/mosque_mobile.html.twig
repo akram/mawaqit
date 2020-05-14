@@ -36,6 +36,12 @@
 
     {% include "partial/background_style.html.twig" %}
 </head>
+
+{% set showNotification = app.request.query.get('showNotification', 1) %}
+{% set showSearchButton = app.request.query.get('showSearchButton', 1) %}
+{% set showFlashMessage = app.request.query.get('showFlashMessage', 1) %}
+{% set showFooter = app.request.query.get('showFooter', 1) %}
+
 <body class="text-center">
 
 <div id="spinner"></div>
@@ -50,9 +56,11 @@
 {% include 'partial/dua-between-adhan-and-iqama.html.twig' %}
 {% include 'partial/jumua-dhikr-reminder.html.twig' %}
 
-<div id="main" class="main mobile display-none" data-remote="{{ path('mosque_has_been_updated', {slug: mosque.slug}) }}">
+<div id="main" class="main mobile display-none"
+     data-remote="{{ path('mosque_has_been_updated', {slug: mosque.slug}) }}"
+     data-api-access-token="{{ mawaqitApiAccessToken }}">
 
-    {% if mosque.isMosque %}
+    {% if mosque.isMosque and showNotification != 0 %}
         <div class="toggle"><i class="fa fa-bell"></i></div>
         <div class="toggle-number">{{ messages|length }}</div>
 
@@ -61,9 +69,14 @@
             {% for message in messages %}
                 <div class="notibox">
                     <h4>{{ message.title }}</h4>
-                    <p>{{ message.content|raw }}</p>
-                    {% if message.image is not empty %}
-                        <img src="/upload/{{ message.image }}" alt="{{ message.title }}"/>
+                    {% if message.embedVideo %}
+                        <iframe style="width: 100%" src="{{ message.embedVideo }}" frameborder="0" allow="picture-in-picture" allowfullscreen></iframe>
+                    {% elseif message.image %}
+                        <a href="{{ vich_uploader_asset(message, 'file') }}" target="_blank">
+                            <img src="{{ vich_uploader_asset(message, 'file') | imagine_filter('small_370x210') }}" alt="{{ message.title }}"/>
+                        </a>
+                    {% else %}
+                        {{ message.content|raw }}
                     {% endif %}
                     {#<div class="cancel" data-id="{{ message.id }}">✕</div>#}
                 </div>
@@ -73,19 +86,27 @@
         </div>
     {% endif %}
 
-    <input type="text" id="search" placeholder="{{ 'searchOtherMosque'|trans }}" data-remote="{{ path('public_mosque_search_ajax') }}">
+    {% if showSearchButton != 0 %}
+        <input type="text" id="search" placeholder="{{ 'searchOtherMosque'|trans }}" data-remote="{{ path('app_api_v2_mosque_search') }}">
+    {% endif %}
 
     <div class="header">{{ mosque.isMosque ? mosque.title : mosque.title|trans({'%city%': mosque.city}) }}</div>
 
-    <div class="top-content">
-        <div class="currentTime"></div>
+    <div class="currentTime"></div>
+
+    <div class="next-prayer text-center">
+        {{ 'next_prayer'|trans }}
+        <div class="countdown"></div>
+    </div>
+
+    <div class="dates">
         {% if mosque.configuration.hijriDateEnabled %}
             <div class="hijriDate"><span></span> <img class="full-moon" src="{{ asset('bundles/app/prayer-times/img/full-moon.png') }}" alt=""></div>
         {% endif %}
         <div class="gregorianDate"></div>
     </div>
 
-    {% if mosque.flashMessage and mosque.flashMessage.available %}
+    {% if mosque.flashMessage and mosque.flashMessage.available and showFlashMessage != 0 %}
         <div class="textSlide {{ mosque.flashMessage.orientation == 'rtl' ? 'textSlide-rtl' }}">
             <div class="{{ mosque.flashMessage.orientation }}"
                style="color:{{ mosque.flashMessage.color }};
@@ -96,7 +117,6 @@
             </div>
         </div>
     {% endif %}
-
 
     <div class="prayers">
         <div>
@@ -128,13 +148,6 @@
             <div class="adhan hidden"><img src="{{ asset('bundles/app/prayer-times/img/loudspeaker.png') }}"></div>
             <div class="time"></div>
             <div class="wait"></div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="next-prayer text-center">
-            {{ 'next_prayer'|trans }}
-            <div class="countdown"></div>
         </div>
     </div>
 
@@ -202,29 +215,34 @@
                         <div><span class="fa fa-{{ mosque.parking ? 'check-circle text-success' :  'times-circle text-danger' }}"></span> {{ 'mosque.form.parking.label'|trans }}</div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-xs-12 mt-2">
-                        <p>{{ mosque.otherInfo|nl2br }}</p>
+                {% if mosque.otherInfo is not empty %}
+                    <div class="row">
+                        <div class="col-xs-12 mt-2">
+                            <p>{{ mosque.otherInfo|nl2br }}</p>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             </div>
         </div>
     {% endif %}
 
+
     <div class="footer ltr">
-        <div class="assosciation text-center">
-            <div>{{ mosque.associationName }}</div>
-            {% if mosque.phone %}
-                &nbsp;<i class="glyphicon glyphicon-phone"></i> {{ mosque.phone }}
-            {% endif %}
-            {% if mosque.email %}
-                &nbsp;<i class="glyphicon glyphicon-envelope"></i> {{ mosque.email }}
-            {% endif %}
-            {% if mosque.site %}
-                <div><i class="glyphicon glyphicon-link"></i> <a href="{{ mosque.site }}">{{ mosque.site }}</a></div>
-            {% endif %}
-            <div>{{ mosque.localisation }} <i id="navigate" class="fa fa-location-arrow"></i></div>
-        </div>
+        {% if showFooter != 0  %}
+            <div class="assosciation text-center">
+                <div>{{ mosque.associationName }}</div>
+                {% if mosque.phone %}
+                    &nbsp;<i class="glyphicon glyphicon-phone"></i> {{ mosque.phone }}
+                {% endif %}
+                {% if mosque.email %}
+                    &nbsp;<i class="glyphicon glyphicon-envelope"></i> {{ mosque.email }}
+                {% endif %}
+                {% if mosque.site %}
+                    <div><i class="glyphicon glyphicon-link"></i> <a href="{{ mosque.site }}">{{ mosque.site }}</a></div>
+                {% endif %}
+                <div>{{ mosque.localisation }} <i id="navigate" class="fa fa-location-arrow"></i></div>
+            </div>
+        {% endif %}
         <div class="support">
             <div>{{ 'developed_by'|trans }}</div>
             <i class="glyphicon glyphicon-link"></i> <a href="{{ site }}">{{ site }}</a>
@@ -251,14 +269,7 @@
     var confData = {{ confData|json_encode|raw }};
     var lang = '{{ app.request.locale }}';
     var locale = '{{ app.request.locale }}-{{ mosque.country }}';
-    var prayerTimeIn10MinTitle = '{{ 'prayerTimeIn10MinTitle'|trans }}';
-    var prayerTimeIn10MinBody = '{{ 'prayerTimeIn10MinBody'|trans }}';
 
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function () {
-            navigator.serviceWorker.register('/sw.js');
-        });
-    }
 </script>
 
 {% javascripts

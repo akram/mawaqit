@@ -11,7 +11,8 @@ services:
     working_dir: /application
     volumes:
       - .:/application
-      - ./docker/php-fpm/php-ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini
+      - ./docker/php-fpm/php.prod.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini
+      - ./docker/php-fpm/www.conf:/etc/php/7.3/fpm/pool.d/z-overrides.conf
       - ~/.ssh:/root/.ssh
       - /etc/localtime:/etc/localtime:ro
 
@@ -41,10 +42,12 @@ services:
       - .env
 
   elasticsearch:
+    container_name: mawaqit_elasticsearch
     image: elasticsearch:6.8.6
     environment:
       - http.host=0.0.0.0
       - transport.host=127.0.0.1
       - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms1g -Xmx2g"
     volumes:
       - ./docker/data/es:/usr/share/elasticsearch/data

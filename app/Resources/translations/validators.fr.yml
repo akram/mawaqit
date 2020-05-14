@@ -1,7 +1,7 @@
 form:
   mosque:
-    address_mandatory: L'adresse postale est obligatoire pour les mosquées.
-    max_reached: Vous avez atteint le nombre maximum d'installation, veuillez nous contacter par mail contact@mawaqit.net pour débloquer votre quota.
+    address_mandatory: L'adresse postale est obligatoire pour les mosquées
+    max_reached: Vous avez atteint le nombre maximum d'installation, veuillez nous contacter par mail contact@mawaqit.net pour débloquer votre quota
     justificatoryMandatory: Le justificatif est obligatoire
     imageMandatory: Les photos de la mosquée sont obligatoires
   configuration:
@@ -11,9 +11,10 @@ form:
     jumua_mandatory: Vous devez saisir l'heure du jumua
     calendar_not_valid: Queslques valeurs du calendrier ne sont pas valides
   registration:
-    wrong_password_message: Le mot de passe doit contenir 8 caractères minimum, dont une majuscule, une minuscule et un nombre
+    wrong_password_message: Le mot de passe ne repecte pas nos règles
   message:
     max_enabled_reached: |
       Vous avez atteint le nombre maximum de 8 annonces activées,
-      pour pouvoir ajouter d'autres annonces veuillez supprimer ou désactiver les anciennes.
-    max_reached: Vous avez atteint le nombre maximum de 20 annonces autorisées.
+      pour pouvoir ajouter d'autres annonces veuillez supprimer ou désactiver les anciennes
+    minmum_content_required: Vous devez saisir au minimum un contenu, une image ou vidéo
+    max_reached: Vous avez atteint le nombre maximum de 20 annonces autorisées

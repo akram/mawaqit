@@ -2,17 +2,29 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4>{{'mosqueList.iframeAddTitle'|trans}}</h4>
+                <h4>{{ 'mosqueList.iframeAddTitle'|trans }}</h4>
             </div>
             <div class="modal-body">
-                {{'mosqueList.iframeCopyText'|trans}} <br>  <br>
-
-                <div id="iframe-text"></div><br>
-                <div id="iframe-html" class="text-center" ></div>
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#horizontal">{{ 'horizontal'|trans }}</a></li>
+                    <li><a data-toggle="tab" href="#vertical">{{ 'vertical'|trans }}</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="horizontal" class="tab-pane fade in active">
+                        <p class="mt-2">{{ 'mosqueList.iframeCopyText'|trans }}</p>
+                        <code id="iframe-w-text"></code>
+                        <div id="iframe-w-html" class="text-center mt-2"></div>
+                    </div>
+                    <div id="vertical" class="tab-pane fade">
+                        <p class="mt-2">{{ 'mosqueList.iframeCopyText'|trans }}</p>
+                        <code id="iframe-m-text"></code>
+                        <div id="iframe-m-html" class="text-center mt-2"></div>
+                    </div>
+                </div>
             </div>
             <br>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">{{'close'|trans}}</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'close'|trans }}</button>
             </div>
         </div>
     </div>

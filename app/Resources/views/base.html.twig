@@ -47,7 +47,9 @@
     <body class="{{ app.request.locale == 'ar' ? 'rtl' : '' }}">
 {#        {% include "partial/fb_messenger.html.twig" %}#}
 
-        {% include "partial/navbar.html.twig" %}
+        {% block navbar %}
+            {% include "partial/navbar.html.twig" %}
+        {% endblock %}
 
         <div class="main">
             {% block body %}
@@ -78,5 +80,8 @@
         {% block additional_javascripts %}
         {% endblock %}
         <div class="version">v{{ version }}</div>
+
+        {% include 'partial/cookies_accept.html.twig' %}
+        {% include 'partial/mawaqit_team_message.html.twig' %}
     </body>
 </html>

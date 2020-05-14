@@ -3,9 +3,10 @@
 namespace AppBundle\Controller\API\V2;
 
 use AppBundle\Entity\Mosque;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,7 +14,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -42,10 +42,9 @@ class MosqueController extends Controller
     }
 
     /**
+     * @Cache(public=true, maxage="86400", smaxage="86400", expires="+86400 sec")
      * @Route("/list-uuid")
      * @Method("GET")
-     * @Cache(public=true, maxage="300", smaxage="300", expires="+300 sec")
-
      * @param Request $request
      *
      * @return JsonResponse
@@ -59,37 +58,55 @@ class MosqueController extends Controller
 
     /**
      * Get pray times and other info of the mosque by uuid
+     *
      * @Route("/{uuid}/prayer-times", name="app_api_mosque_praytimes")
-     * @ParamConverter("mosque", options={"mapping": {"uuid": "uuid"}})
-     * @Cache(public=true, maxage="300", smaxage="300", expires="+300 sec")
      * @Method("GET")
+     *
+     * @ParamConverter("mosque", options={"mapping": {"uuid": "uuid"}})
      *
      * @param Request $request
      * @param Mosque  $mosque
      *
-     * @return Response
+     * @return JsonResponse|Response
+     *
+     * @throws \Exception
      */
     public function prayTimesAction(Request $request, Mosque $mosque)
     {
 
+        $response = new JsonResponse();
+
+        $response->setPublic();
+
         if (!$mosque->isFullyValidated()) {
-            throw new NotFoundHttpException();
+            $response->setStatusCode(Response::HTTP_NOT_FOUND);
+            return $response;
         }
 
-        if ($request->query->has('updatedAt')) {
-            $updatedAt = $request->query->get('updatedAt');
+        /** Begin Deprecated */
+        if ($updatedAt = $request->query->get('updatedAt')) {
             if (!is_numeric($updatedAt)) {
                 throw new BadRequestHttpException();
             }
 
             if ($mosque->getUpdated()->getTimestamp() <= $updatedAt) {
-                return new Response(null, Response::HTTP_NOT_MODIFIED);
+                $response->setStatusCode(Response::HTTP_NOT_MODIFIED);
+                return $response;
             }
+        }
+        /** End Deprecated */
+
+        $response->setLastModified($mosque->getUpdated());
+        if ($response->isNotModified($request)) {
+            return $response;
         }
 
         $calendar = $request->query->has('calendar');
         $result = $this->get('app.prayer_times')->prayTimes($mosque, $calendar);
-        return new JsonResponse($result);
+
+        $response->setData($result);
+
+        return $response;
     }
 
     /**
@@ -116,8 +133,12 @@ class MosqueController extends Controller
             'user',
             'id',
             'uuid',
+            'label',
             'created',
             'updated',
+            'file1',
+            'file2',
+            'file3',
             'image3',
             'localisation',
             'justificatory',
@@ -126,9 +147,13 @@ class MosqueController extends Controller
             "enabledMessages",
             "comments",
             'calendarCompleted',
+            'decodedCalendar',
             'gpsCoordinates',
             'types',
             'synchronized',
+            'emailScreenPhotoReminder',
+            'reason',
+            'image',
             'slug',
             'locale',
             'status',
@@ -140,7 +165,6 @@ class MosqueController extends Controller
         });
 
         $serializer = new Serializer([new DateTimeNormalizer(), $normalizer], [new JsonEncoder()]);
-        $mosque->setSite($mosque->getUrl());
         $result = $serializer->serialize($mosque, 'json');
 
         return new Response($result, Response::HTTP_OK, ['Content-Type' => 'application/json']);

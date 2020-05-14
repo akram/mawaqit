@@ -17,9 +17,9 @@ $("#search").autocomplete({
     source: function (request, response) {
         $.ajax({
             url: $("#search").data("remote"),
-            dataType: "json",
+            headers: {'Api-Access-Token': $("#main").data("apiAccessToken")},
             data: {
-                term: request.term
+                word: request.term
             },
             success: function (data) {
                 response(data);
@@ -28,6 +28,6 @@ $("#search").autocomplete({
     },
     minLength: 2,
     select: function (event, ui) {
-        window.location.href = 'https://mawaqit.net/fr/' + ui.item.slug;
+        window.location.href = 'https://mawaqit.net/' + lang + '/' + ui.item.slug;
     }
 });

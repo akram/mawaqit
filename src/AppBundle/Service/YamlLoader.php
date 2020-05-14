@@ -2,6 +2,7 @@
 
 namespace AppBundle\Service;
 
+use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
 class YamlLoader
@@ -13,6 +14,7 @@ class YamlLoader
 
     /**
      * YamlLoader constructor.
+     *
      * @param string $rootDir
      */
     public function __construct($rootDir)
@@ -32,6 +34,10 @@ class YamlLoader
 
     private function get($file)
     {
-        return Yaml::parseFile("{$this->rootDir}/Resources/yaml/{$file}.yml");
+        try {
+            return Yaml::parseFile("{$this->rootDir}/Resources/yaml/{$file}.yml");
+        } catch (ParseException $e) {
+            return [];
+        }
     }
 }

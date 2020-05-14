@@ -1,6 +1,26 @@
 {% extends "base.html.twig" %}
+{% trans_default_domain 'FOSUserBundle' %}
+
 {% block body %}
     {% block fos_user_content %}
-        {% include "@FOSUser/Profile/show_content.html.twig" %}
+        <h3>{{ 'my_profile'|trans({}, 'messages') }}</h3>
+        <div class="fos_user_user_show">
+            <p><strong>{{ 'profile.show.username'|trans }} :</strong> {{ user.username }}</p>
+            <p><strong>{{ 'profile.show.email'|trans }} :</strong> {{ user.email }}</p>
+            {% if user.apiAccessToken %}
+                <p><strong>Api Token :</strong> {{ user.apiAccessToken }}</p>
+                <p><strong>Api Token use :</strong> {{ user.apiCallNumber + 0 }}/{{ user.apiQuota }}</p>
+                <p><strong>Api use description :</strong> {{ user.apiUseDescription|nl2br }}</p>
+            {% endif %}
+            <p><strong>Mosque Quota
+                    :</strong> {{ user.mosqueQuota ? user.mosqueQuota : constant('AppBundle\\Validator\\Constraints\\MosqueValidator::MAX_DEFAULT_MOSQUE_QUOTA') }}
+            </p>
+            <div>
+                <a href="{{ path('fos_user_profile_edit') }}"
+                   class="btn btn-primary">{{ 'form.edit.action'|trans({}, 'messages') }}</a>
+                <a href="{{ path('fos_user_change_password') }}"
+                   class="btn btn-danger">{{ 'change_password.submit'|trans }}</a>
+            </div>
+        </div>
     {% endblock fos_user_content %}
 {% endblock body %}

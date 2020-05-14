@@ -1,9 +1,5 @@
 #!/bin/bash
 
-if [[ -f ~/Desktop/online_site.txt ]]; then
-    url=`cat ~/Desktop/online_site.txt`
-fi
-
 if [[ -f ~/mawaqit/docker/data/online_url.txt ]]; then
     url=`cat ~/mawaqit/docker/data/online_url.txt`
 fi
@@ -11,7 +7,10 @@ fi
 wget -q --spider $url
 
 if [ $? -ne 0 ]; then
-    url=http://mawaqit.local/mosquee
+    url=`cat ~/mawaqit/docker/data/offline_url.txt`
+    if [ -z "$url" ]; then
+        url=http://mawaqit.local/en/id/1
+    fi
 fi
 
 chromium-browser --app=$url --start-fullscreen --start-maximized

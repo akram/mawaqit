@@ -31,6 +31,10 @@ class ToolsService
         $this->googleService = $container->get("app.google_service");
     }
 
+    public static function getCountryNameByCode($countryCode, $locale = null)
+    {
+        return Intl::getRegionBundle()->getCountryName($countryCode, $locale);
+    }
 
     public function updateLocations($offset = 0)
     {
@@ -53,7 +57,6 @@ class ToolsService
 
         $editedMosques = [];
         foreach ($mosques as $mosque) {
-
             $latBefore = $mosque->getLatitude();
             $lonBefore = $mosque->getLongitude();
 
@@ -63,76 +66,85 @@ class ToolsService
                 $mosque->setLatitude($gps->lat);
                 $mosque->setLongitude($gps->lng);
                 $this->em->persist($mosque);
-
             } catch (GooglePositionException $e) {
                 $status = "KO";
             }
 
-            $editedMosques[] = $mosque->getId() . ',' . $mosque->getName() . ',' . $mosque->getCity() . ',' . $mosque->getCountry() . ',' . $latBefore . ',' . $lonBefore . ',' . $mosque->getLatitude() . ',' . $mosque->getLongitude() . ',' . $status;
+            $editedMosques[] = $mosque->getId() . ',' . $mosque->getName() . ',' . $mosque->getCity(
+                ) . ',' . $mosque->getCountry() . ',' . $latBefore . ',' . $lonBefore . ',' . $mosque->getLatitude(
+                ) . ',' . $mosque->getLongitude() . ',' . $status;
         }
 
         file_put_contents("/tmp/rapport_gps_$offset.csv", implode("\t\n", $editedMosques));
         $this->em->flush();
     }
 
-
-    public function updateFrCalendar()
+    public function fixTimetable($firstDayInMarch, $lastDayInMarch, $offsetHour, $id = null)
     {
         ini_set('memory_limit', '512M');
-        $mosques = $this->em
-            ->getRepository("AppBundle:Mosque")
-            ->createQueryBuilder("m")
-            ->innerJoin("m.configuration", "m")
-            ->where("c.sourceCalcul = 'calendar'")
-            ->andWhere("c.dst = 2")
-            ->getQuery()
-            ->getResult();
+        $repo = $this->em->getRepository(Mosque::class);
+        $mosques = [];
+        if (null !== $id) {
+            $mosques[] = $repo->find((int)$id);
+        }
 
-        /**
-         * @var $mosqque Mosque
-         */
+        if (null === $id) {
+            $mosques = $repo
+                ->createQueryBuilder("m")
+                ->innerJoin("m.configuration", "c")
+                ->where("m.type = 'mosque'")
+                ->andWhere("c.timezoneName like 'Europe%'")
+                ->andWhere("c.sourceCalcul = 'calendar'")
+                ->andWhere("c.dst = 0")
+                ->getQuery()
+                ->getResult();
+        }
 
         $editedMosques = [];
-        foreach ($mosques as $mosqque) {
-            $cal = $mosqque->getConfiguration()->getCalendar();
+        foreach ($mosques as $mosque) {
+            $cal = $mosque->getConfiguration()->getDecodedCalendar();
             if (!empty($cal) && is_array($cal)) {
-                $editedMosques[] = $mosqque->getName() . ',' . $mosqque->getCity() . ',' . $mosqque->getCountry() . ',' . $mosqque->getUser()->getEmail();
-                for ($month = 3; $month <= 9; $month++) {
-                    for ($day = 1; $day <= count($cal[$month]); $day++) {
+                $editedMosques[] = $mosque->getId() . ',' . $mosque->getUser()->getEmail();
+                for ($month = 2; $month <= 9; $month++) {
+                    $firstDay = 1;
+                    $lastDay = count($cal[$month]);
+
+                    if ($month === 2) {
+                        $firstDay = $firstDayInMarch;
+                    }
+                    if ($month === 9) {
+                        $lastDay = $lastDayInMarch;
+                    }
+
+                    for ($day = (int)$firstDay; $day <= (int)$lastDay; $day++) {
                         for ($prayer = 1; $prayer <= count($cal[$month][$day]); $prayer++) {
                             if (!empty($cal[$month][$day][$prayer])) {
-                                $cal[$month][$day][$prayer] = $this->removeOneHour($cal[$month][$day][$prayer]);
+                                $cal[$month][$day][$prayer] = $this->fixHour($cal[$month][$day][$prayer], $offsetHour);
                             }
                         }
                     }
                 }
 
+                $mosque->getConfiguration()->setDst(2);
+                $mosque->getConfiguration()->setCalendar(json_encode($cal));
 
-                $mosqque->getConfiguration()->setCalendar($cal);
-                $this->em->persist($mosqque);
+                if ($mosque->isSuspended() && $mosque->getReason() === 'prayer_times_not_correct') {
+                    $mosque->setStatus(Mosque::STATUS_VALIDATED);
+                }
             }
         }
 
-        file_put_contents("/tmp/rapport.csv", implode("\t\n", $editedMosques));
+        file_put_contents("/application/docker/data/rapport.csv", implode("\t\n", $editedMosques));
         $this->em->flush();
-
+        return count($mosques);
     }
 
-    private function removeOneHour($time)
+    private function fixHour($time, $offsetHour)
     {
         try {
-            $date = new \DateTime("2018-03-01 $time:00");
-            $date->sub(new \DateInterval('PT1H'));
-            return $date->format("H:i");
+            return (new \DateTime("$time:00"))->modify("$offsetHour hours")->format("H:i");
         } catch (\Exception $e) {
-
         }
         return $time;
     }
-
-    public static function getCountryNameByCode($countryCode, $locale = null)
-    {
-        return Intl::getRegionBundle()->getCountryName($countryCode, $locale);
-    }
-
 }

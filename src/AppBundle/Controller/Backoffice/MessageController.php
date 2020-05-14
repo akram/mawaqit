@@ -80,7 +80,6 @@ class MessageController extends Controller
             return new Response($messageViolation, Response::HTTP_BAD_REQUEST);
         }
 
-        $em->persist($conf);
         $em->flush();
 
         return new Response();

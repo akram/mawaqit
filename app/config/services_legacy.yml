@@ -1,251 +1,279 @@
 services:
-    ## Tiers services
-    gedmo.listener.sluggable:
-        class: Gedmo\Sluggable\SluggableListener
-        tags:
-            - { name: doctrine.event_subscriber, connection: default }
-        calls:
-            - [ setAnnotationReader, [ "@annotation_reader" ] ]
-            
-    gedmo.listener.timestampable:
-        class: Gedmo\Timestampable\TimestampableListener
-        tags:
-            - { name: doctrine.event_subscriber, connection: default }
-        calls:
-            - [ setAnnotationReader, [ "@annotation_reader" ] ]
+  ## Tiers services
+  gedmo.listener.sluggable:
+    class: Gedmo\Sluggable\SluggableListener
+    tags:
+      - { name: doctrine.event_subscriber, connection: default }
+    calls:
+      - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
-    gedmo.listener.sortable:
-        class: Gedmo\Sortable\SortableListener
-        tags:
-            - { name: doctrine.event_subscriber, connection: default }
-        calls:
-            - [ setAnnotationReader, [ "@annotation_reader" ] ]
+  gedmo.listener.timestampable:
+    class: Gedmo\Timestampable\TimestampableListener
+    tags:
+      - { name: doctrine.event_subscriber, connection: default }
+    calls:
+      - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
-    twig.extension.text:
-        class: Twig_Extensions_Extension_Text
-        tags:
-            - { name: twig.extension }
+  gedmo.listener.sortable:
+    class: Gedmo\Sortable\SortableListener
+    tags:
+      - { name: doctrine.event_subscriber, connection: default }
+    calls:
+      - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
-    ## App services
-    app.google_api:
-        abstract: true
-        class: AppBundle\Service\Api\GoogleApi
-        arguments: 
-          - '%google_api_endpoint%'
-          - '%google_api_key%'
-          
-    app.weather_api:
-        abstract: true
-        class: AppBundle\Service\Api\WeatherApi
-        arguments: 
-          - '%weather_api_endpoint%'
-          - '%weather_api_key%'
-          - '@logger'
-          
-    app.google_service:
-        public: true
-        parent: app.google_api
-        class: AppBundle\Service\GoogleService
-        calls:
-          - [setLogger, ['@logger']]
+  twig.extension.text:
+    class: Twig_Extensions_Extension_Text
+    tags:
+      - { name: twig.extension }
 
-    app.weather_service:
-        parent: app.weather_api
-        class: AppBundle\Service\WeatherService
-          
-    app.prayer_times:
-        class: AppBundle\Service\PrayerTime
-        arguments:
-            - "@logger"
-            - "%kernel.cache_dir%"
+  fos_user.security.controller:
+    class: AppBundle\Controller\SecurityController
+    arguments:
+      - '@security.csrf.token_manager'
 
-    app.mail_service:
-        class: AppBundle\Service\MailService
-        arguments:
-            - "@swiftmailer.mailer"
-            - "@twig"
-            - {"%support_email%" : "%name%"}
-            - {"%no_reply_address%" : "%name%"}
-            - {"%postmaster_address%" : "%name%"}
+  ## App services
+  app.google_api:
+    abstract: true
+    class: AppBundle\Service\Api\GoogleApi
+    arguments:
+      - '%google_api_endpoint%'
+      - '%google_api_key%'
 
-    app.user_service:
-        class: AppBundle\Service\UserService
-        arguments:
-            - "@swiftmailer.mailer.file"
-            - "@doctrine.orm.entity_manager"
-            - "@twig"
-            - "@knp_paginator"
-            - ["%no_reply_address%", "%name%"]
+  app.weather_api:
+    abstract: true
+    class: AppBundle\Service\Api\WeatherApi
+    arguments:
+      - '%weather_api_endpoint%'
+      - '%weather_api_key%'
+      - '@logger'
 
-    app.tools_service:
-        class: AppBundle\Service\ToolsService
-        arguments:
-            - "@service_container"
+  app.google_service:
+    public: true
+    parent: app.google_api
+    class: AppBundle\Service\GoogleService
+    calls:
+      - [setLogger, ['@logger']]
 
-    app.mosque_service:
-        class: AppBundle\Service\MosqueService
-        arguments:
-            - "@doctrine.orm.entity_manager"
-            - "@serializer"
-            - "@vich_uploader.upload_handler"
-            - "@app.mail_service"
-            - "@app.prayer_times"
-            - "@csa_guzzle.client.elastic"
-            - "@logger"
+  app.weather_service:
+    parent: app.weather_api
+    class: AppBundle\Service\WeatherService
 
-    app.user_repository:
-        class: Doctrine\ORM\EntityRepository
-        factory: ["@doctrine.orm.entity_manager", "getRepository"]
-        arguments:
-            - AppBundle\Entity\User
+  app.prayer_times:
+    class: AppBundle\Service\PrayerTime
+    arguments:
+      - "@logger"
+      - "@router"
+      - "@vich_uploader.templating.helper.uploader_helper"
+      - "%kernel.cache_dir%"
+      - "%site%"
 
-    app.request_service:
-        class: AppBundle\Service\RequestService
-        arguments:
-          - "@request_stack"
+  app.mail_service:
+    class: AppBundle\Service\MailService
+    arguments:
+      - "@swiftmailer.mailer"
+      - "@twig"
+      - {"%support_email%": "%name%"}
+      - {"%no_reply_address%": "%name%"}
+      - {"%postmaster_address%": "%name%"}
 
-    app.security.uuid_token_authenticator:
-        class: AppBundle\Security\UuidTokenAuthenticator
-        public: false
+  app.user_service:
+    class: AppBundle\Service\UserService
+    arguments:
+      - "@swiftmailer.mailer.file"
+      - "@doctrine.orm.entity_manager"
+      - "@twig"
+      - "@knp_paginator"
+      - ["%no_reply_address%", "%name%"]
 
+  app.tools_service:
+    class: AppBundle\Service\ToolsService
+    arguments:
+      - "@service_container"
 
-    # Commands
-    app.clean_old_users_command:
-        class: AppBundle\Command\CleanOldUsersCommand
-        arguments:
-            - "@app.user_repository"
-        tags:
-            - { name: 'console.command', command: 'app:clean-old-users' }
+  app.mosque_service:
+    class: AppBundle\Service\MosqueService
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@serializer"
+      - "@vich_uploader.upload_handler"
+      - "@app.mail_service"
+      - "@app.prayer_times"
+      - "@csa_guzzle.client.elastic"
+      - "@logger"
 
-    app.reset_api_counters.command:
-        class: AppBundle\Command\ResetApiCountersCommand
-        arguments:
-            - "@app.user_repository"
-        tags:
-            - { name: 'console.command', command: 'app:reset-api-counters' }
+  app.user_repository:
+    class: Doctrine\ORM\EntityRepository
+    factory: ["@doctrine.orm.entity_manager", "getRepository"]
+    arguments:
+      - AppBundle\Entity\User
 
-    app.clean_mosques_command:
-        class: AppBundle\Command\CleanNotValidatedMosquesCommand
-        arguments:
-            - "@doctrine.orm.entity_manager"
-        tags:
-            - { name: 'console.command', command: 'app:clean-mosques' }
+  app.request_service:
+    class: AppBundle\Service\RequestService
+    arguments:
+      - "@request_stack"
 
-    app.clean_photos_command:
-        class: AppBundle\Command\CleanPhotoCommand
-        arguments:
-            - "@doctrine.orm.entity_manager"
-        tags:
-            - { name: 'console.command', command: 'app:clean-photo' }
+  # Commands
+  app.clean_old_users_command:
+    class: AppBundle\Command\CleanOldUsersCommand
+    arguments:
+      - "@app.user_repository"
+    tags:
+      - { name: 'console.command', command: 'app:clean-old-users' }
 
-    app.mosque_screen_photo_reminder:
-        class: AppBundle\Command\MosqueScreenPhotoReminderCommand
-        arguments:
-            - "@app.user_service"
-        tags:
-            - { name: 'console.command' }
+  app.reset_api_counters.command:
+    class: AppBundle\Command\ResetApiCountersCommand
+    arguments:
+      - "@app.user_repository"
+    tags:
+      - { name: 'console.command', command: 'app:reset-api-counters' }
 
-    app.init_uuid_mosque:
-        class: AppBundle\Command\initUuidMosqueCommand
-        arguments:
-            - "@doctrine.orm.entity_manager"
-        tags:
-            - { name: 'console.command' }
+  app.clean_mosques_command:
+    class: AppBundle\Command\CleanNotValidatedMosquesCommand
+    arguments:
+      - "@doctrine.orm.entity_manager"
+    tags:
+      - { name: 'console.command', command: 'app:clean-mosques' }
 
-    app.elastic_mosque_populate:
-        class: AppBundle\Command\ElasticMosquePopulateCommand
-        arguments:
-            - "@doctrine.orm.entity_manager"
-            - "@knp_paginator"
-            - "@app.mosque_service"
-        tags:
-            - { name: 'console.command' }
+  app.clean_photos_command:
+    class: AppBundle\Command\CleanPhotoCommand
+    arguments:
+      - "@doctrine.orm.entity_manager"
+    tags:
+      - { name: 'console.command', command: 'app:clean-photo' }
 
-    # Twig extension
-    app.twig.country_extension:
-        class: AppBundle\Twig\ToolsExtension
-        arguments:
-          - "@app.tools_service"
-        tags:
-            - { name: twig.extension }
+  app.mosque_screen_photo_reminder:
+    class: AppBundle\Command\MosqueScreenPhotoReminderCommand
+    arguments:
+      - "@app.user_service"
+    tags:
+      - { name: 'console.command' }
 
-    app.twig.local:
-        class: AppBundle\Twig\LocalExtension
-        arguments:
-          - "@app.request_service"
-        tags:
-            - { name: twig.extension }
+  app.init_uuid_mosque:
+    class: AppBundle\Command\initUuidMosqueCommand
+    arguments:
+      - "@doctrine.orm.entity_manager"
+    tags:
+      - { name: 'console.command' }
 
-    # Forms
-    app.form_configuration:
-        class: AppBundle\Form\ConfigurationType
-        arguments:
-            - "@translator"
-        tags:
-            - { name: form.type }
+  app.fix_european_timetables:
+    class: AppBundle\Command\FixTimetablesCommand
+    arguments:
+      - "@app.tools_service"
+    tags:
+      - { name: 'console.command' }
 
-    app.form_mosque_sync:
-        class: AppBundle\Form\MosqueSyncType
-        arguments:
-            - "%languages%"
-        tags:
-            - { name: form.type }
+  app.elastic_mosque_populate:
+    class: AppBundle\Command\ElasticMosquePopulateCommand
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@knp_paginator"
+      - "@app.mosque_service"
+    tags:
+      - { name: 'console.command' }
 
-    app.form_message:
-        class: AppBundle\Form\MessageType
-        arguments:
-            - "@translator"
-        tags:
-            - { name: form.type }
+  # Twig extension
+  app.twig.country_extension:
+    class: AppBundle\Twig\ToolsExtension
+    arguments:
+      - "@app.tools_service"
+    tags:
+      - { name: twig.extension }
 
-    app.form_prayer:
-        class: AppBundle\Form\PrayerType
-        arguments:
-            - "@translator"
-        tags:
-            - { name: form.type }
-            
-    app.form_mosque:
-        class: AppBundle\Form\MosqueType
-        arguments:
-            - "@security.authorization_checker"
-            - "@doctrine.orm.entity_manager"
-            - "@app.google_service"
-        tags:
-            - { name: form.type }
+  app.twig.local:
+    class: AppBundle\Twig\LocalExtension
+    arguments:
+      - "@app.request_service"
+    tags:
+      - { name: twig.extension }
 
-    app.form.registration:
-        class: AppBundle\Form\RegistrationType
-        tags:
-            - { name: form.type, alias: app_user_registration }
+  # Forms
+  app.form_configuration:
+    class: AppBundle\Form\ConfigurationType
+    arguments:
+      - "@translator"
+      - "@security.authorization_checker"
+    tags:
+      - { name: form.type }
 
-    # Listeners
-    app.event.vich_uploader_post_upload:
-        class: AppBundle\EventListener\VichImageHandling
-        tags:
-            - { name: kernel.event_listener, event: vich_uploader.post_upload , method: resizeImage }
+  app.form_mosque_sync:
+    class: AppBundle\Form\MosqueSyncType
+    arguments:
+      - "@request_stack"
+      - "%languages%"
+    tags:
+      - { name: form.type }
 
-    app.event.request:
-        class: AppBundle\EventListener\LocalRequest
-        arguments: ['@security.token_storage', '@doctrine.orm.entity_manager']
-        tags:
-            - { name: kernel.event_listener, event: kernel.request , method: onKernelRequest }
+  app.form_message:
+    class: AppBundle\Form\MessageType
+    arguments:
+      - "@translator"
+    tags:
+      - { name: form.type }
 
-    app.event.api_call_counter:
-        class: AppBundle\EventListener\ApiCallCounter
-        arguments: ['@security.token_storage', '@doctrine.orm.entity_manager']
-        tags:
-            - { name: kernel.event_listener, event: kernel.request , method: onKernelRequest, priority: -10 }
+  app.form_prayer:
+    class: AppBundle\Form\PrayerType
+    arguments:
+      - "@translator"
+    tags:
+      - { name: form.type }
 
-    app.event.terms_of_use:
-        class: AppBundle\EventListener\TermsOfUse
-        arguments: ['@security.token_storage', '@router']
-        tags:
-            - { name: kernel.event_listener, event: kernel.request , method: onKernelRequest }
+  app.form_mosque:
+    class: AppBundle\Form\MosqueType
+    arguments:
+      - "@security.authorization_checker"
+      - "@doctrine.orm.entity_manager"
+      - "@app.google_service"
+    tags:
+      - { name: form.type }
 
-    # Validators
-    app.validator.mosque:
-        class: AppBundle\Validator\Constraints\MosqueValidator
-        arguments: ['@security.token_storage', '@security.authorization_checker']
-        tags:
-            - { name: validator.constraint_validator }
+  app.form.registration:
+    class: AppBundle\Form\RegistrationType
+    arguments:
+      - "%password_pattern%"
+    tags:
+      - { name: form.type, alias: app_user_registration }
+
+  app.form.change_password:
+    class: AppBundle\Form\ChangePasswordType
+    arguments:
+      - "%password_pattern%"
+    tags:
+      - { name: form.type, alias: app_user_change_password }
+
+  app.form.resetting:
+    class: AppBundle\Form\ResettingType
+    arguments:
+      - "%password_pattern%"
+    tags:
+      - { name: form.type, alias: app_user_resetting }
+
+  # Listeners
+  app.event.vich_uploader_post_upload:
+    class: AppBundle\EventListener\VichImageHandling
+    tags:
+      - { name: kernel.event_listener, event: vich_uploader.post_upload , method: resizeImage }
+
+  app.event.request:
+    class: AppBundle\EventListener\LocalRequest
+    arguments: ['@security.token_storage', '@doctrine.orm.entity_manager']
+    tags:
+      - { name: kernel.event_listener, event: kernel.request , method: onKernelRequest }
+
+  app.event.api_call_counter:
+    class: AppBundle\EventListener\ApiCallCounter
+    arguments: ['@security.token_storage', '@doctrine.orm.entity_manager']
+    tags:
+      - { name: kernel.event_listener, event: kernel.request , method: onKernelRequest, priority: -10 }
+
+  app.event.terms_of_use:
+    class: AppBundle\EventListener\TermsOfUse
+    arguments: ['@security.token_storage', '@router']
+    tags:
+      - { name: kernel.event_listener, event: kernel.request , method: onKernelRequest }
+
+  # Validators
+  app.validator.mosque:
+    class: AppBundle\Validator\Constraints\MosqueValidator
+    arguments: ['@security.token_storage', '@security.authorization_checker']
+    tags:
+      - { name: validator.constraint_validator }

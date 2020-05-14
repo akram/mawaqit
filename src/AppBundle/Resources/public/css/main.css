@@ -214,3 +214,8 @@ a.disabled {
     pointer-events: none;
     cursor: default;
 }
+
+.g-recaptcha > div
+{
+    margin: auto;
+}

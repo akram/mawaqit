@@ -58,3 +58,7 @@ body {
     border-top: 1px solid;
     color: yellowgreen;
 }
+
+.aid {
+    background-color: rgb(173, 101, 0) !important;
+}

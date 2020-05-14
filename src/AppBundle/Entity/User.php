@@ -56,6 +56,11 @@ class User extends BaseUser
     private $mosqueQuota;
 
     /**
+     * @var boolean
+     */
+    private $unsubscribeEmails;
+
+    /**
      * @var \DateTime
      */
     private $created;
@@ -248,6 +253,25 @@ class User extends BaseUser
     public function setMosqueQuota($mosqueQuota): void
     {
         $this->mosqueQuota = $mosqueQuota;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUnsubscribeEmails(): ?bool
+    {
+        return $this->unsubscribeEmails;
+    }
+
+    /**
+     * @param bool $unsubscribeEmails
+     *
+     * @return User
+     */
+    public function setUnsubscribeEmails(bool $unsubscribeEmails): User
+    {
+        $this->unsubscribeEmails = $unsubscribeEmails;
+        return $this;
     }
 
     /**

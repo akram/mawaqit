@@ -61,4 +61,4 @@ setTimeout(function () {
         });
         setLocalTTL("photo-reminder-modal", "", 86400000)
     }
-}, 3000);
+}, 1000);

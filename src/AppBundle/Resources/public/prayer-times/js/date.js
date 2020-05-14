@@ -62,7 +62,8 @@ var dateTime = {
      * @param  withSeconds bool
      * @returns string
      */
-    getCurrentTime: function (withSeconds= false) {
+    getCurrentTime: function (withSeconds) {
+        withSeconds = withSeconds === undefined ? false : withSeconds;
         var date = new Date();
 
         var second = addZero(date.getSeconds());
@@ -76,12 +77,19 @@ var dateTime = {
      * get current gregorian date
      * @returns string
      */
-    getCurrentDate: function (locale, weekday = "long", year = "numeric", month = "short", day = "numeric") {
+    getCurrentDate: function (locale, weekday , year, month, day) {
+        weekday = weekday || "long";
+        year = year || "numeric";
+        month = month || "short";
+        day = day || "numeric";
         var date = new Date();
         var options = {weekday: weekday, year: year, month: month, day: day};
 
-        if (locale.startsWith("ar")) {
+        if (locale.indexOf("ar") === 0) {
             options = {month: "short"};
+            if(locale === "ar-FR"){
+                locale = "ar-DZ";
+            }
             return addZero(date.getDate()) + ' ' + date.toLocaleDateString(locale, options) + ' ' + date.getFullYear();
         }
 
@@ -130,6 +138,10 @@ var dateTime = {
     formatTime: function (time, timeDisplayFormat) {
 
         if (timeDisplayFormat === "24") {
+            return time;
+        }
+
+        if (!time.includes(':') ) {
             return time;
         }
 

@@ -7,23 +7,30 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <title>Manintenance | Mawaqit</title>
 </head>
-    <body style="background-color: #000000; text-align: center; font-family: Arial; font-size: 1.2rem">
-        <div style="color: yellowgreen; padding: 20px">
-            <h1>MAINTENANCE</h1>
-            <h2>Mawaqit s'améliore pour vous apporter toujours le meilleur</h2>
-        </div>
+<body style="background-color: #000000; text-align: center; font-family: Arial, sans-serif; font-size: 1.2rem">
+<div style="padding: 20px">
+    <h1 style="color: #9bcd33;">MAINTENANCE</h1>
+    <div style="color: #FFFFFF;">
+        <h2>Mawaqit s'améliore pour vous apporter toujours le meilleur</h2>
+        <h2>Mawaqit improves to always bring you the best</h2>
+    </div>
+</div>
 
-        <script>
-            setInterval(function () {
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET',  window.location.href);
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        location.reload();
-                    }
-                };
-                xhr.send();
-            }, 5000);
-        </script>
-    </body>
+<div>
+    <img style="margin: auto" src="/maintenance.png" alt="">
+</div>
+
+<script>
+    setInterval(function () {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', window.location.href);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                location.reload();
+            }
+        };
+        xhr.send();
+    }, 10000);
+</script>
+</body>
 </html>

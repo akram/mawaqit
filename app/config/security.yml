@@ -27,12 +27,13 @@ security:
             stateless: true
             pattern: ^/api
             simple_preauth:
-                authenticator: app.security.uuid_token_authenticator
+                authenticator: AppBundle\Security\UuidTokenAuthenticator
             provider: api_user
         main:
             pattern: ^/
             anonymous: true
-            form_login:
+            simple_form:
+                authenticator: AppBundle\Security\SimpleFormAuthenticator
                 provider: fos_userbundle
                 csrf_token_generator: security.csrf.token_manager
                 default_target_path: mosque_index
@@ -58,6 +59,7 @@ security:
         - { path: /clone, role: ROLE_ADMIN }
 
         - { path: /admin, role: ROLE_SUPER_ADMIN }
+        - { path: /superadmin, role: ROLE_SUPER_ADMIN }
 
         - { path: /backoffice, role: ROLE_USER }
         - { path: /api, role: ROLE_USER }

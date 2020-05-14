@@ -3,8 +3,9 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
 {% block body %}
-    {% block fos_user_content %}
-        <p>{{ 'registration.check_email'|trans({'%email%': user.email}) }}</p>
-    {% endblock fos_user_content %}
+    <div class="container">
+        <h3>{{ 'registration.check_email'|trans({'%email%': user.email}) }}</h3>
+        <h3 style="color: #ff391e">{{ 'registration.check_spams'|trans({}, 'messages') }}</h3>
+    </div>
 {% endblock body %}
 

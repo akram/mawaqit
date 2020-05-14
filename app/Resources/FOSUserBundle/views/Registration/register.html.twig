@@ -1,12 +1,34 @@
 {% extends "base.html.twig" %}
 {% block body %}
-    {% block fos_user_content %}
-        {% include "@FOSUser/Registration/register_content.html.twig" %}
-        {% include 'modals//terms_of_use_modal.html.twig' %}
-    {% endblock fos_user_content %}
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <h3>{{ 'registration.registration'|trans({}, 'messages') }}</h3><br>
+                {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register'}}) }}
+                {{ form_row(form.email) }}
+                <div class="alert alert-info"><i
+                            class="fas fa-info-circle"></i> {{ 'registration.please_enter_right_email'|trans({}, 'messages') }}
+                </div>
+                {{ form_row(form.plainPassword) }}
+                {% include 'partial/_password_rules.html.twig' %}
+                {{ form_row(form.tou) }}
+                {{ form_row(form.recaptcha) }}
+                <div class="mt-3">
+                    <button id="validate-btn" type="submit" class="btn btn-primary"
+                            disabled="disabled">{{ 'validate'|trans({}, 'messages') }}</button>
+                    <a href="{{ path("fos_user_security_login") }}"
+                       class="btn btn-danger">{{ 'cancel'|trans({}, 'messages') }}</a>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+        {% include 'modals/terms_of_use_modal.html.twig' %}
 {% endblock body %}
 
 {% block additional_javascripts %}
+    {% javascripts
+        '@AppBundle/Resources/public/js/password.js' %}
+        <script src="{{ asset_url }}" type="text/javascript"></script>
+    {% endjavascripts %}
     <script>
         function handleTou(touCheckbox) {
             var $validButton = $('#validate-btn');

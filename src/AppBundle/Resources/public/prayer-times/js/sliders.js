@@ -128,6 +128,11 @@ var messageInfoSlider = {
         if (!$(".sub-main").is(":visible")) {
             return;
         }
+
+        if (randomHadith.isVisible) {
+            return;
+        }
+
         var nbSlides = $('.message-slider li').length;
 
         if (nbSlides === 0) {

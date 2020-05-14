@@ -1,7 +1,7 @@
 form:
   mosque:
-    address_mandatory: The address is mandatory for mosques.
-    max_reached: You have reached the maximum number of installations, please contact us by email contact@mawaqit.net to unlock your quota.
+    address_mandatory: The address is mandatory for mosques
+    max_reached: You have reached the maximum number of installations, please contact us by email contact@mawaqit.net to unlock your quota
     justificatoryMandatory: The supporting document is mandatory
     imageMandatory: The mosque pictures are mandatory
   configuration:
@@ -11,10 +11,10 @@ form:
     jumua_mandatory: You must fill jumua time
     calendar_not_valid: Some entries of the calendar are not valid
   registration:
-    wrong_password_message: The password must contain at least 8 characters, including a capital letter, a small letter and a number
+    wrong_password_message: The password dosn't repect our rules
   message:
     max_enabled_reached: |
       You have reached the maximum number of 8 activated messages,
-      to be able to add other messages please delete or deactivate the old ones.
-    max_reached: |
-      You have reached the maximum number of 20 messages allowed.
+      to be able to add other messages please delete or deactivate the old ones
+    max_reached: You have reached the maximum number of 20 messages allowed
+    minmum_content_required: You must enter at least one content, image or video

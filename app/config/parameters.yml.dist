@@ -31,7 +31,12 @@ parameters:
     weather_api_key: ''
 
     # Slack
-    slack_token: 'fake-slack-token'
+    slack_token: ''
 
     # pdfshift
-    pdfshift_api_token: 'fake-pdfshift-token'
+    pdfshift_api_token: ''
+
+    # cloudflare
+    cloudflare_api_token: ''
+    cloudflare_api_email: ''
+    cloudflare_api_mawaqit_id: ''

@@ -4,7 +4,7 @@ WORKDIR "/application"
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN docker-php-ext-install pdo_mysql calendar
+RUN docker-php-ext-install pdo_mysql calendar opcache
 
 RUN set -ex \
     && apk add --no-cache --virtual .phpize-deps $PHPIZE_DEPS imagemagick-dev libtool \

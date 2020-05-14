@@ -21,15 +21,20 @@
 </head>
 
 <body>
-<div id="full-screen" title="{{ 'full_screen'|trans }}">
-    <i class="glyphicon glyphicon-resize-full" aria-hidden="true"></i>
+<div id="top-buttons">
+    <i class="glyphicon glyphicon-resize-full" title="{{ 'full_screen'|trans }}" aria-hidden="true"></i>
+    {% if isLocal() %}
+        <a title="{{ 'form.sync.action'|trans }}" href="{{ path('mosque_reset_sync', {id: mosque.id}) }}"> <i class="glyphicon glyphicon-refresh"></i></a>
+    {% endif %}
 </div>
 
 <main id="slider" data-remote="{{ path('mosque_has_been_updated', {slug: mosque.slug}) }}">
     <ul>
         {% for message in mosque.enabledMessages(true) %}
             <li>
-                {% if message.image %}
+                {% if message.embedVideo %}
+                    <iframe id="youtube-{{ message.id }}" src="{{ message.embedVideo }}&autoplay=1&mute=1&&showinfo=0" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+                {% elseif message.image %}
                     <img src="{{ vich_uploader_asset(message, 'file') }}"/>
                 {% elseif message.content %}
                     <div class="text">
@@ -68,6 +73,19 @@
     var lastUpdated = {{ mosque.updated.timestamp }};
     var timeToDisplayMessage = {{ mosque.configuration.timeToDisplayMessage }};
     var locale = '{{ app.request.locale }}-{{ mosque.country }}';
+    function onYouTubeIframeAPIReady() {
+        $("iframe[src*='youtube']").each(function (i, frame) {
+
+            let player = new YT.Player($(frame).attr("id"), {
+                events: {
+                    onReady: function () {
+                        let duration = player.getDuration();
+                        $(frame).attr("data-duration", duration);
+                    }
+                }
+            });
+        });
+    }
 </script>
 
 {% javascripts
@@ -77,7 +95,9 @@
     '@AppBundle/Resources/public/js/full_message_slider.js'
     '@AppBundle/Resources/public/prayer-times/js/fullscreen.js' %}
     <script src="{{ asset_url }}"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
 {% endjavascripts %}
+
 </body>
 
 </html>

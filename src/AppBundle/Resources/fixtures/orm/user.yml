@@ -1,7 +1,7 @@
 AppBundle\Entity\User:
     LOCAL:
         username: local
-        plainPassword: local
+        plainPassword: Local101010.
         email: local\@local.com
         enabled: true
         tou: true

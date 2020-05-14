@@ -9,7 +9,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 /**
  * @Route("/api/2.0/hadith", options={"i18n"="false"})
@@ -19,7 +18,6 @@ class HadithController extends Controller
 
     /**
      * @Route("/random", name="random_hadith")
-     * @Cache(public=true, maxage="7200", smaxage="7200", expires="+7200 sec")
      * @Method("GET")
      * @param Request $request
      * @return Response

@@ -2,6 +2,7 @@
 
 ## Install the project
 ### Requirements 
+* Linux OS
 * make, docker and docker-compose must be installed on your computer or server
 * The 10001, 10002, 10003 ports must be free
 
@@ -10,4 +11,4 @@
 2. `cd mawaqit && make install`
 
 
-Plase visite our website [https://mawaqit.net]((https://mawaqit.net)) for more information.
+Please visite our website [https://mawaqit.net]((https://mawaqit.net)) for more information.

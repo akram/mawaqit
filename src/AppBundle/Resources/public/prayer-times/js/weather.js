@@ -36,7 +36,7 @@ var weather = {
         });
     },
     initUpdateWeather: function () {
-        if (prayer.confData.temperatureEnabled === true) {
+        if (!isLocal && prayer.confData.temperatureEnabled === true) {
             weather.getWeather();
             setInterval(function () {
                 weather.getWeather();

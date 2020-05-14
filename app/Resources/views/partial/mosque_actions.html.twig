@@ -10,46 +10,50 @@
                 <li><a href="{{ path('mosque_reset_sync', {id: mosque.id}) }}"><i class="fas fa-sync"></i> {{ 'form.sync.action'|trans }}</a></li>
             {% else %}
 
-                {% if (is_granted('ROLE_ADMIN') or mosque.isEditAllowed)  %}
-                    <li><a href="{{ path('mosque_edit', {id: mosque.id}) }}"><i class="fas fa-pen-square"></i> {{ 'form.edit.action'|trans }}</a></li>
-                {% endif %}
+            {% if is_granted('ROLE_ADMIN') or mosque.isEditAllowed %}
+                <li><a href="{{ path('mosque_edit', {id: mosque.id}) }}"><i class="fas fa-pen-square"></i> {{ 'form.edit.action'|trans }}</a></li>
+            {% endif %}
 
-                {% if is_granted('ROLE_ADMIN') or mosque.configurationAllowed %}
-                    <li><a href="{{ path('mosque_configure', {id: mosque.id}) }}"><i class="fas fa-cog"></i> {{ 'form.configure.action'|trans }}</a></li>
-                    <li><a href="{{ path('message_index', {mosque: mosque.id}) }}" class="{{ disabled }}"><i class="fas fa-envelope"></i> {{ 'message.manage'|trans }}</a></li>
-                    <li><a href="#" data-url="{{ path('mosque_refresh', {id: mosque.id}) }}" class="btn-refresh {{ disabled }}" title="{{ 'mosque.refresh'|trans }}"><i class="fas fa-sync"></i> {{ 'refresh'|trans }} </a></li>
-                    <li><a href="{{ path('stream_edit', {id: mosque.id}) }}" class="{{ disabled }}"><i class="fas fa-video"></i> {{ 'form.stream.action'|trans }}</a></li>
-                    <li><a href="{{ path('calendar_csv', {id: mosque.id}) }}" target="_blank" class="{{ disabled }}"><i class="fa fa-file-csv"></i> {{ 'configuration.list.download_csv_files'|trans }}</a></li>
-                    {% if mosque.isMosque %}
-                        <li><a href="{{ path('calendar_pdf', {id: mosque.id}) }}" target="_blank" class="{{ disabled }}"><i class="fa fa-file-pdf"></i> {{ 'configuration.list.download_pdf_files'|trans }}</a></li>
-                        <li><a href="{{ path('mosque_qr_code', {id: mosque.id}) }}" target="_blank" title=" {{ 'mosqueList.qrcodeTitle'|trans }}" class="{{ disabled }}"><i class="fa fa-qrcode"></i> Qr Code</a></li>
-                    {% endif %}
+            {% if is_granted('ROLE_ADMIN') or mosque.configurationAllowed %}
+                <li><a href="{{ path('mosque_configure', {id: mosque.id}) }}"><i class="fas fa-cog"></i> {{ 'form.configure.action'|trans }}</a></li>
+                <li><a href="{{ path('message_index', {mosque: mosque.id}) }}" class="{{ disabled }}"><i class="fas fa-envelope"></i> {{ 'message.manage'|trans }}</a></li>
+                <li><a href="{{ path('stream_edit', {id: mosque.id}) }}" class="{{ disabled }}"><i class="fas fa-video"></i> {{ 'form.stream.action'|trans }}</a></li>
+                <li><a href="#" data-url="{{ path('mosque_refresh', {id: mosque.id}) }}" class="btn-refresh {{ disabled }}" title="{{ 'mosque.refresh'|trans }}"><i class="fas fa-sync"></i> {{ 'refresh'|trans }} </a></li>
+                <li><a href="{{ path('calendar_csv', {id: mosque.id}) }}" target="_blank"><i class="fa fa-file-csv"></i> {{ 'configuration.list.download_csv_files'|trans }}</a></li>
+                {% if mosque.isMosque %}
+                    <li><a href="{{ path('calendar_pdf', {id: mosque.id}) }}" target="_blank" class="{{ disabled }}"><i class="fa fa-file-pdf"></i> {{ 'configuration.list.download_pdf_files'|trans }}</a></li>
+                    <li><a href="{{ path('mosque_qr_code', {id: mosque.id}) }}" target="_blank" title=" {{ 'mosqueList.qrcodeTitle'|trans }}" class="{{ disabled }}"><i class="fa fa-qrcode"></i> Qr Code</a></li>
                 {% endif %}
+            {% endif %}
 
-                {% if is_granted('ROLE_SUPER_ADMIN') %}
-                    <li><a href="{{ path('easyadmin', {entity: "Mosque", id: mosque.id, action: "edit"}) }}"><i class="fas fa-comment"></i> Commentaires</a></li>
-                    <li><a href="{{ path('mosque_watch', {id: mosque.id}) }}"><i class="fas fa-eye"></i> Surveiller</a></li>
-                    <li class="check"><a href="{{ path('mosque_check', {id: mosque.id}) }}"><i class="fas fa-exclamation-circle"></i> {{ 'form.check.action'|trans }}</a></li>
-                    <li class="duplicated"><a href="{{ path('mosque_duplicated', {id: mosque.id}) }}"><i class="fas fa-check-double"></i> {{ 'form.duplicated.action'|trans }}</a></li>
-                    {% if mosque.screenPhotoAdded %}
-                        <li class="screen_photo_added"><a href="{{ path('mosque_reject_screen_photo', {id: mosque.id}) }}"><i class="fas fa-ban"></i> {{ 'form.photo_reject.action'|trans }}</a></li>
-                    {% endif %}
-                    {% if mosque.screenPhotoAdded %}
-                        <li class="screen_photo_added"><a href="{{ path('mosque_accept_screen_photo', {id: mosque.id}) }}"><i class="fas fa-check"></i> {{ 'form.photo_accept.action'|trans }}</a></li>
-                    {% endif %}
-                    <li class="suspended"><a href="{{ path('mosque_suspend', {id: mosque.id}) }}"><i class="fas fa-pause"></i> {{ 'form.suspend.action'|trans }}</a></li>
-                    {% if not mosque.isValidated %}
-                        <li class="alert-success"><a href="{{ path('mosque_validate', {id: mosque.id}) }}"><i class="fas fa-check-circle"></i> {{ 'form.validate.action'|trans }}</a></li>
-                    {% endif %}
-                {% endif %}
+            {% if is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('mosque_clone', {id: mosque.id}) }}"><i class="fas fa-copy"></i> {{ 'form.clone.action'|trans }}</a></li>
+            {% endif %}
 
-                {% if is_granted('ROLE_ADMIN') %}
-                    <li><a href="{{ path('mosque_clone', {id: mosque.id}) }}"><i class="fas fa-copy"></i> {{ 'form.clone.action'|trans }}</a></li>
+            {% if is_granted('ROLE_SUPER_ADMIN') %}
+                <li><a href="{{ path('easyadmin', {entity: "Mosque", id: mosque.id, action: "edit"}) }}"><i class="fas fa-comment"></i> Commentaires</a></li>
+                <li><a href="{{ path('mosque_watch', {id: mosque.id}) }}"><i class="fas fa-eye"></i> Surveiller</a></li>
+                <li class="check"><a href="{{ path('mosque_check', {id: mosque.id}) }}"><i class="fas fa-exclamation-circle"></i> {{ 'form.check.action'|trans }}</a></li>
+                <li class="duplicated"><a href="{{ path('mosque_duplicated', {id: mosque.id}) }}"><i class="fas fa-check-double"></i> {{ 'form.duplicated.action'|trans }}</a></li>
+                {% if mosque.screenPhotoAdded %}
+                    <li class="screen_photo_added"><a href="{{ path('mosque_reject_screen_photo', {id: mosque.id}) }}"><i class="fas fa-ban"></i> {{ 'form.photo_reject.action'|trans }}</a></li>
                 {% endif %}
+                {% if mosque.screenPhotoAdded %}
+                    <li class="screen_photo_added"><a href="{{ path('mosque_accept_screen_photo', {id: mosque.id}) }}"><i class="fas fa-check"></i> {{ 'form.photo_accept.action'|trans }}</a></li>
+                {% endif %}
+                <li class="suspended"><a href="{{ path('mosque_suspend', {id: mosque.id}) }}"><i class="fas fa-pause"></i> {{ 'form.suspend.action'|trans }}</a></li>
+                {% if not mosque.isValidated %}
+                    <li class="alert-success"><a href="{{ path('mosque_validate', {id: mosque.id}) }}"><i class="fas fa-check-circle"></i> {{ 'form.validate.action'|trans }}</a></li>
+                {% endif %}
+            {% endif %}
 
-                {% if mosque.new or not mosque.mosque %}
-                    <li><a href="#" class="delete-button" data-id="{{ mosque.id }}"><i class="fa fa-trash"></i> {{ 'form.delete.action'|trans }}</a></li>
-                {% endif %}
+            {% if mosque.mosque and not is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('web_support', {'country': mosque.country}) }}" target="_blank"><i class="fab fa-whatsapp"></i> {{ 'form.contact.action'|trans }}</a></li>
+            {% endif %}
+
+            {% if is_granted('ROLE_ADMIN') or mosque.new or not mosque.mosque %}
+                <li role="separator" class="divider"></li>
+                <li><a href="#" class="delete-button" data-id="{{ mosque.id }}"><i class="fa fa-trash"></i> {{ 'form.delete.action'|trans }}</a></li>
             {% endif %}
         </ul>
     </div>

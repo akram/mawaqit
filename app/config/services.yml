@@ -7,6 +7,12 @@ services:
         autoconfigure: true
         public: false
 
+    AppBundle\EventSubscriber\:
+        resource: '../../src/AppBundle/EventSubscriber/*'
+
+    AppBundle\Security\:
+        resource: '../../src/AppBundle/Security/*'
+
     AppBundle\Controller\:
         resource: '../../src/AppBundle/Controller'
         tags: ['controller.service_arguments']
@@ -14,6 +20,19 @@ services:
     AppBundle\Service\YamlLoader:
         arguments:
             - "%kernel.root_dir%"
+
+    AppBundle\Service\Cloudflare:
+        arguments:
+            - "@csa_guzzle.client.cloudflare"
+            - "@logger"
+            - "%cloudflare_api_mawaqit_id%"
+            - "%site%"
+            - "%languages%"
+
+    AppBundle\Service\Statistic:
+        arguments:
+            - "@csa_guzzle.client.elastic"
+            - "@logger"
 
     AppBundle\EventListener\CommentListener:
         arguments:
@@ -26,6 +45,14 @@ services:
             - "@app.mosque_service"
             - "@doctrine.orm.entity_manager"
             - "@app.request_service"
+        tags:
+            - { name: 'doctrine.event_subscriber' }
+
+    AppBundle\EventSubscriber\ForcePasswordChangeSubscriber:
+        arguments:
+            $passwordPattern: "%password_pattern%"
+
+    AppBundle\EventListener\MosqueCacheListener:
         tags:
             - { name: 'doctrine.event_subscriber' }
 

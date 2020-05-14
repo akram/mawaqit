@@ -48,9 +48,9 @@ class ElasticMosquePopulateCommand extends Command
             ->createQueryBuilder('m')
             ->select()
             ->where("m.type = :type")
-            ->andWhere("m.status = :status")
+            ->andWhere("m.status IN (:status)")
             ->setParameter(":type", Mosque::TYPE_MOSQUE)
-            ->setParameter(":status", Mosque::STATUS_VALIDATED);
+            ->setParameter(":status", [Mosque::STATUS_VALIDATED, Mosque::STATUS_CHECK]);
 
         $this->mosqueService->elasticDropIndex();
         $this->mosqueService->initElasticIndex();

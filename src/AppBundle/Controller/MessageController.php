@@ -27,4 +27,12 @@ class MessageController extends Controller
         return $this->render("message/show_message_slider.html.twig", ['mosque' => $mosque]);
     }
 
+    /**
+     * @Route("/id/{id}", name="messages_id_index")
+     */
+    public function indexByIdAction(Mosque $mosque)
+    {
+        return $this->forward("AppBundle:Message:index", ['slug' => $mosque->getSlug()]);
+    }
+
 }

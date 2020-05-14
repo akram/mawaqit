@@ -20,7 +20,7 @@
                         {{ 'message.info'|trans|raw }}
                     </p>
                     <p>
-                        {{ 'message.display_messages_in_screen_1'|trans }} : <a target="_blank" href="{{ path("messages", {slug: mosque.slug}) }}">{{ url("messages", {slug: mosque.slug}) }}</a><br>
+                        {{ 'message.display_messages_in_screen_1'|trans }} : <a target="_blank" href="{{ path("messages_id_index", {id: mosque.id}) }}">{{ url("messages_id_index", {id: mosque.id}) }}</a><br>
                         {{ 'message.display_messages_in_screen_2'|trans }}
                     </p>
                 </div>
@@ -71,9 +71,11 @@
                                 <td><i class="fa fa-arrows"></i></td>
                                 <td>{{ message.title }}</td>
                                 <td>
-                                    {% if message.image %}
+                                    {% if message.embedVideo %}
+                                        <iframe width="370" height="210" src="{{ message.embedVideo }}" frameborder="0" allow="picture-in-picture" allowfullscreen></iframe>
+                                    {% elseif message.image %}
                                         <a href="{{ vich_uploader_asset(message, 'file') }}" target="_blank">
-                                            <img src="{{ vich_uploader_asset(message, 'file') }}" alt="" width="100px" height="70px"/>
+                                            <img src="{{ vich_uploader_asset(message, 'file') | imagine_filter('small_370x210') }}" />
                                         </a>
                                     {% else %}
                                         {{ message.content|raw }}
@@ -124,8 +126,12 @@
                                 </div>
                             </div>
                             <div class="col-xs-5">
-                                {% if message.image %}
-                                    <img src="{{ vich_uploader_asset(message, 'file') }}" alt="" width="100px" height="70px"/>
+                                {% if message.embedVideo %}
+                                    <iframe style="width: 100%; height: 100px" src="{{ message.embedVideo }}" frameborder="0" allow="picture-in-picture" allowfullscreen></iframe>
+                                {% elseif message.image %}
+                                    <a href="{{ vich_uploader_asset(message, 'file') }}" target="_blank">
+                                        <img src="{{ vich_uploader_asset(message, 'file') }}" alt="" style="width: 100%"/>
+                                    </a>
                                 {% else %}
                                     {{ message.content|raw }}
                                 {% endif %}

@@ -1,0 +1,35 @@
+<style>
+    .cookies-accept {
+        width: 100%;
+        background-color: #222222;
+        padding: 0.5em;
+        position: fixed;
+        bottom: 0;
+        color: #FFFFFF;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+    }
+</style>
+
+<div class="cookies-accept hidden">
+    <div style="margin: auto; padding: 0.5rem">{{ 'cookies_accept.text'|trans }}</div>
+    <button class="btn btn-success" onclick="acceptCookies()">{{ 'cookies_accept.button'|trans }}
+    </button>
+</div>
+
+{% block additional_javascripts %}
+    <script>
+        $(function () {
+            if (localStorage.getItem("cookies-accept") === null) {
+                $(".cookies-accept").removeClass('hidden');
+            }
+        });
+
+        function acceptCookies() {
+            $('.cookies-accept').hide();
+            localStorage.setItem('cookies-accept', true);
+        }
+    </script>
+{% endblock %}
+

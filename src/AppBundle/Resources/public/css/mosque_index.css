@@ -54,11 +54,28 @@
     cursor: pointer;
 }
 
-#iframe-text {
-    color: #005fb3;
+#iframe-modal {
+    word-break: break-word;
 }
 
-iframe{
+#iframe-modal .widget {
+    width: 320px;
+    height: 160px;
+}
+
+#iframe-modal .mobile {
+    width: 320px;
+    height: 560px;
+}
+
+@media (min-width: 768px) {
+    #iframe-modal .widget {
+        width: 500px;
+        height: 240px;
+    }
+}
+
+iframe {
     resize: both;
 }
 

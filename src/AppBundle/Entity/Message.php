@@ -36,7 +36,6 @@ class Message
      */
     private $mobile = true;
 
-
     /**
      * Display on main mosque screen
      * @var boolean
@@ -57,6 +56,11 @@ class Message
      * @var string
      */
     private $image;
+
+    /**
+     * @var string
+     */
+    private $video;
 
     /**
      * @var \DateTime
@@ -247,6 +251,34 @@ class Message
     public function setDesktop(bool $desktop): void
     {
         $this->desktop = $desktop;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVideo(): ?string
+    {
+        return $this->video;
+    }
+
+    public function getEmbedVideo(): ?string
+    {
+        if(empty($this->video)){
+            return null;
+        }
+
+        preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $this->video, $match);
+        return "https://www.youtube.com/embed/{$match[1]}?enablejsapi=1&rel=0&loop=1&iv_load_policy=3&playlist={$match[1]}";
+    }
+    /**
+     * @param string $video
+     *
+     * @return Message
+     */
+    public function setVideo(?string $video): Message
+    {
+        $this->video = $video;
+        return $this;
     }
 
 }

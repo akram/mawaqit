@@ -15,6 +15,7 @@
 /vendor/
 /node_modules/
 docker-compose.yml
+app/Resources/yaml/support.yml
 .env
 /web/bundles/
 /web/css/

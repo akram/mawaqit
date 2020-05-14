@@ -60,28 +60,6 @@ class MailService
     }
 
     /**
-     * @param $title
-     * @param $mosque
-     * @param $to
-     * @param $from
-     * @param $status
-     *
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
-     */
-    private function sendEmail(Mosque $mosque, $title, $to, $from, $status)
-    {
-        $body = $this->twig->render("email_templates/mosque_$status.html.twig", ['mosque' => $mosque]);
-        $message = $this->mailer->createMessage();
-        $message->setSubject($title)
-            ->setFrom($from)
-            ->setTo($to)
-            ->setBody($body, 'text/html');
-        $this->mailer->send($message);
-    }
-
-    /**
      * Send email when mosque has been validated by admin
      *
      * @param Mosque $mosque
@@ -90,7 +68,7 @@ class MailService
      */
     function mosqueValidated(Mosque $mosque)
     {
-        $title = $mosque->getTitle() . " (ID " . $mosque->getId() . ") | a été validée / has been validated";
+        $title = "Mosque validated";
         $this->sendEmail($mosque, $title, $mosque->getUser()->getEmail(), $this->doNotReplyEmail, 'validated');
     }
 
@@ -103,7 +81,7 @@ class MailService
      */
     function mosqueSuspended(Mosque $mosque)
     {
-        $title = $mosque->getTitle() . " (ID " . $mosque->getId() . ") | a été suspendue / has been suspended";
+        $title = "Mosque suspended";
         $this->sendEmail($mosque, $title, $mosque->getUser()->getEmail(), $this->postmasterEmail, 'suspended');
     }
 
@@ -116,7 +94,7 @@ class MailService
      */
     function checkMosque(Mosque $mosque)
     {
-        $title = $mosque->getTitle() . " (ID " . $mosque->getId() . ") | Nous avons besoin d'informations / We need informations";
+        $title = "We need informations";
         $this->sendEmail($mosque, $title, $mosque->getUser()->getEmail(), $this->postmasterEmail, 'check');
     }
 
@@ -129,7 +107,7 @@ class MailService
      */
     function duplicatedMosque(Mosque $mosque)
     {
-        $title = $mosque->getTitle() . " (ID " . $mosque->getId() . ") | est en double sur Mawaqit / is duplicated on Mawaqit";
+        $title = "Duplicated mosque";
         $this->sendEmail($mosque, $title, $mosque->getUser()->getEmail(), $this->postmasterEmail, 'duplicated');
     }
 
@@ -142,8 +120,40 @@ class MailService
      */
     function rejectScreenPhoto(Mosque $mosque)
     {
-        $title = $mosque->getTitle() . " (ID " . $mosque->getId() . ") | Screen photo";
-        $this->sendEmail($mosque, $title, $mosque->getUser()->getEmail(), $this->postmasterEmail, 'screen_photo_rejected');
+        $title = "Screen photo";
+        $this->sendEmail($mosque, $title, $mosque->getUser()->getEmail(), $this->postmasterEmail,
+            'screen_photo_rejected');
+    }
+
+    /**
+     * @param Mosque $mosque
+     * @param        $title
+     * @param        $to
+     * @param        $from
+     * @param        $status
+     *
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
+    private function sendEmail(Mosque $mosque, $title, $to, $from, $status)
+    {
+        $body = $this->twig->render("email_templates/mosque_$status.html.twig", ['mosque' => $mosque]);
+
+        /**
+         * @var \Swift_Message $message
+         */
+        $message = $this->mailer->createMessage();
+
+        $message->setSubject($title)
+            ->setCharset("utf-8")
+            ->setFrom($from)
+            ->setTo($to)
+            ->setBody($body, 'text/html')
+            ->addPart(strip_tags($body), 'text/plain');
+        $message->getHeaders()->addTextHeader('List-Unsubscribe', "https://mawaqit.net/fr/backoffice/profile/edit");
+
+        $this->mailer->send($message);
     }
 
 }

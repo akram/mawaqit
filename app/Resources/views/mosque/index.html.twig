@@ -15,24 +15,19 @@
 
     <div class="row">
         <div class="col-md-11">
-            {% if isNotLocal() %}
-                {% if app.request.get('search') %}
-                    <h1>{{ 'found'|trans }} {{ mosques.totalItemCount }}</h1>
-                {% else %}
-                    <h1>{{ 'my_mosques'|trans }} {{ mosques.totalItemCount }}</h1>
-                {% endif %}
+            {% if app.request.get('search') %}
+                <h1>{{ 'found'|trans }} {{ mosques.totalItemCount }}</h1>
+            {% else %}
+                <h1>{{ 'my_mosques'|trans }} {{ mosques.totalItemCount }}</h1>
             {% endif %}
         </div>
 
         <div class="col-md-1 mt-2 text-right">
-            {% if isNotLocal() %}
-                <a href="{{ path('mosque_create') }}" class="btn btn-primary"><i
-                            class="fa fa-plus"></i> {{ 'add'|trans }}</a>
-            {% endif %}
+            <a href="{{ path('mosque_create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ 'add'|trans }}</a>
         </div>
     </div>
 
-    {% if isNotLocal() and is_granted('ROLE_ADMIN') %}
+    {% if is_granted('ROLE_ADMIN') %}
         <div class="panel-group mt-1">
             <div class="panel panel-default">
                 <div class="panel-heading" style="background-color: #b7d4c8">
@@ -71,31 +66,27 @@
         <table class="table table-inverse">
             <thead>
             <tr class="warning">
-                {% if isNotLocal() %}
-                    <th>{{ 'ID' }}</th>{% endif %}
-                <th width="20%">{{ 'name'|trans }}</th>
-                <th width="15%">{{ 'contact'|trans }}</th>
-                <th width="30%">{{ 'prayer_sites'|trans }}</th>
-                {% if isNotLocal() %}
-                    <th>{{ 'status'|trans }}</th>
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <th>{{ 'user'|trans }}</th>
-                    {% endif %}
-                    <th>{{ 'date'|trans }}</th>
+                <th>{{ 'ID' }}</th>
+                <th width="18%">{{ 'name'|trans }}</th>
+                <th width="12%">{{ 'contact'|trans }}</th>
+                <th width="20%">{{ 'prayer_sites'|trans }}</th>
+                <th>{{ 'status'|trans }}</th>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <th>{{ 'user.label'|trans }}</th>
+                    <th>Statistiques</th>
                 {% endif %}
+                <th>{{ 'date'|trans }}</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
             {% for mosque in mosques %}
                 <tr class="{{ mosque.statusClass }}">
-                    {% if isNotLocal() %}
-                        <td>
-                            {{ mosque.id }} <br/><br/>
-                            <i class="fas fa-{{ mosque.icon }}" style="font-size: 2rem"
-                               title="{{ ('mosque.types.' ~ mosque.type)|trans }}"></i>
-                        </td>
-                    {% endif %}
+                    <td>
+                        {{ mosque.id }} <br/><br/>
+                        <i class="fas fa-{{ mosque.icon }}" style="font-size: 2rem"
+                           title="{{ ('mosque.types.' ~ mosque.type)|trans }}"></i>
+                    </td>
                     <td>
                         {{ mosque.name }}<br/>
                         {% if is_granted('ROLE_SUPER_ADMIN') and mosque.isNew and mosque.similar is not empty %}
@@ -145,7 +136,7 @@
                     </td>
                     <td>
                         {% if mosque.isValidated %}
-                            <select class="form-control linkSelector" style="width: 50%">
+                            <select class="form-control linkSelector" style="width: 100%">
                                 <option>{{ 'selectLanguage'|trans }}</option>
                                 {% for lang in languages %}
                                     <option value="{{ lang }}"
@@ -153,16 +144,17 @@
                                 {% endfor %}
                             </select>
 
-                            <div class="mt-1 mb-1"><a class="hidden link" {{ isLocal() ? '' : 'target="_blank"' }}
-                                                      href=""></a></div>
+                            <div class="mt-1 mb-1"><a class="hidden link" href="" target="_blank"></a></div>
 
-                            {% if mosque.isMosque and isNotLocal() %}
+                            {% if mosque.isMosque %}
                                 <div>
-                                    {{ 'mosqueList.widgetForYourSite'|trans }} <a class="iframe-button"
-                                                                                  data-url="{{ url('mosque_widget', {slug: mosque.slug}) }}">{{ 'show'|trans }}</a>
+                                    {{ 'mosqueList.widgetForYourSite'|trans }}
+                                    <a class="iframe-button" data-urlw="{{ url('mosque_widget', {slug: mosque.slug}) }}" data-urlm="{{ url('mosque_mobile', {slug: mosque.slug, showNotification:0, showSearchButton:0, showFooter:0, showFlashMessage:1 }) }}">
+                                        {{ 'show'|trans }}
+                                    </a>
                                 </div>
                             {% endif %}
-                            {% if isNotLocal() and mosque.daysBeforeRemove is not null %}
+                            {% if mosque.daysBeforeRemove is not null %}
                                 <div class="alert alert-{{ mosque.daysBeforeRemove > 15 ? 'warning' : 'danger' }} mt-1"
                                      style="padding: 5px">
                                     <i class="fas fa-exclamation-triangle"></i>
@@ -194,25 +186,26 @@
 
                         {% endif %}
                     </td>
-                    {% if isNotLocal() %}
-                        <td>
-                            {% if mosque.status == constant('STATUS_WATCHED', mosque) %}
-                                {{ ('mosque.statuses.' ~ constant('STATUS_VALIDATED', mosque))|trans }}
-                            {% else %}
-                                {{ ('mosque.statuses.' ~  mosque.status)|trans }}
-                            {% endif %}
-                        </td>
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <td>
-                                <a href="{{ path('easyadmin', { action: 'edit', entity: 'User', id: mosque.user.id}) }}">{{ mosque.user.email }}</a>
-                                <a href="{{ path('mosque_index', {userId: mosque.user.id}) }}">
-                                    | {{ mosque.user.mosques|length }} </a>
-                            </td>
+
+                    <td>
+                        {% if mosque.status == constant('STATUS_WATCHED', mosque) %}
+                            {{ ('mosque.statuses.' ~ constant('STATUS_VALIDATED', mosque))|trans }}
+                        {% else %}
+                            {{ ('mosque.statuses.' ~  mosque.status)|trans }}
                         {% endif %}
+                    </td>
+                    {% if is_granted('ROLE_ADMIN') %}
                         <td>
-                            {{ mosque.created|date('d/m/Y H:i') }}
+                            <a href="{{ path('easyadmin', { action: 'edit', entity: 'User', id: mosque.user.id}) }}">{{ mosque.user.email }}</a>
+                            <a href="{{ path('mosque_index', {userId: mosque.user.id}) }}">
+                                | {{ mosque.user.mosques|length }} </a>
                         </td>
+                        <td><div>Nb d'abonnés mobile: {{ mosque.mobileFavoriteCounter is null ? 'NA' : mosque.mobileFavoriteCounter}}</div></td>
                     {% endif %}
+                    <td>
+                        {{ mosque.created|date('d/m/Y H:i') }}
+                    </td>
+
                     <td class="text-right">
                         {% include 'partial/mosque_actions.html.twig' %}
                     </td>
@@ -228,7 +221,7 @@
                 <div class="col-xs-12" style="position: relative">
                     <div class="row">
                         <div class="col-xs-10">
-                            <h4><strong>{{ mosque.name }}</strong>
+                            <h4><b>{{ mosque.name }}</b>
                                 <small>ID {{ mosque.id }}</small>
                             </h4>
                             {% if is_granted('ROLE_SUPER_ADMIN') and mosque.isNew and mosque.similar is not empty %}
@@ -260,7 +253,7 @@
 
                     <div>
                         {% if mosque.isValidated %}
-                            <strong>{{ 'links'|trans }}</strong>:
+                            <b>{{ 'links'|trans }}</b>:
                             <select class="form-control linkSelector" style="width: 60%">
                                 <option>{{ 'selectLanguage'|trans }}</option>
                                 {% for lang in languages %}
@@ -268,8 +261,15 @@
                                             data-link="{{ url("mosque", {slug: mosque.slug, _locale: lang}) }}">{{ lang|langTrans(app.request.locale)|capitalize }}</option>
                                 {% endfor %}
                             </select>
-                            <div class="mt-1 mb-1"><a class="hidden link" {{ isLocal() ? '' : 'target="_blank"' }}
-                                                      href=""></a></div>
+                            <div class="mt-1 mb-1"><a class="hidden link" href="" target="_blank"></a></div>
+                            {% if mosque.isMosque %}
+                                <div>
+                                    {{ 'mosqueList.widgetForYourSite'|trans }}
+                                    <a class="iframe-button" data-urlw="{{ url('mosque_widget', {slug: mosque.slug}) }}" data-urlm="{{ url('mosque_mobile', {slug: mosque.slug, showNotification:0, showSearchButton:0, showFooter:0, showFlashMessage:1 }) }}">
+                                        {{ 'show'|trans }}
+                                    </a>
+                                </div>
+                            {% endif %}
                         {% else %}
                             <p>{{ ('mosque.statuses_message.' ~  mosque.status)|trans }}</p>
                             {% if mosque.justificatory %}
@@ -279,7 +279,7 @@
                         {% endif %}
                     </div>
                     <div>
-                        <strong>{{ 'status'|trans }}:</strong>
+                        <b>{{ 'status'|trans }}:</b>
                         {% if mosque.status == constant('STATUS_WATCHED', mosque) %}
                             {{ ('mosque.statuses.' ~ constant('STATUS_VALIDATED', mosque))|trans }}
                         {% else %}
@@ -292,14 +292,15 @@
                     {% endif %}
                     {% if is_granted('ROLE_ADMIN') %}
                         <div>
-                            <strong>{{ 'user'|trans }}:</strong>
+                            <b>{{ 'user.label'|trans }}:</b>
                             <a href="{{ path('easyadmin', { action: 'edit', entity: 'User', id: mosque.user.id}) }}">{{ mosque.user.email }}</a>
                             <a href="{{ path('mosque_index', {userId: mosque.user.id}) }}">
                                 ({{ mosque.user.mosques|length }})</a>
                         </div>
                     {% endif %}
-                    <div><strong>{{ 'creation_date'|trans }}:</strong> {{ mosque.created|date('d/m/Y H:i') }}</div>
-                    <div><strong>{{ 'type'|trans }} :</strong> {{ ('mosque.types.' ~ mosque.type ) | trans }}</div>
+                    <div><b>Nb d'abonnés mobile:</b> {{ mosque.mobileFavoriteCounter is null ? 'NA' : mosque.mobileFavoriteCounter}}</div>
+                    <div><b>{{ 'creation_date'|trans }}:</b> {{ mosque.created|date('d/m/Y H:i') }}</div>
+                    <div><b>{{ 'type'|trans }} :</b> {{ ('mosque.types.' ~ mosque.type ) | trans }}</div>
 
                     {% if mosque.isValidated and mosque.daysBeforeRemove is not null %}
                         <div class="alert alert-{{ mosque.daysBeforeRemove > 15 ? 'warning' : 'danger' }} mt-1"

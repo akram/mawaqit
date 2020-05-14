@@ -22,9 +22,9 @@ class MosqueSuspensionType extends AbstractType
             ])
             ->add('reason', ChoiceType::class, [
                 'choices' => [
-                    'mosque.suspensionReason.mosque_closed' => Mosque::SUSPENSION_REASON_MOSQUE_CLOSED,
                     'mosque.suspensionReason.prayer_times_not_correct' => Mosque::SUSPENSION_REASON_MOSQUE_PRAYER_TIMES_INCORRECT,
                     'mosque.suspensionReason.missing_photo' => Mosque::SUSPENSION_REASON_MISSING_PHOTO,
+                    'mosque.suspensionReason.mosque_closed' => Mosque::SUSPENSION_REASON_MOSQUE_CLOSED,
                     'mosque.suspensionReason.non_existing_mosque' => Mosque::SUSPENSION_REASON_MOSQUE_NOT_EXIST,
                     'mosque.suspensionReason.other' => Mosque::SUSPENSION_REASON_OTHER,
                 ],

@@ -3,7 +3,8 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Service\PrayerTime;
-use Meezaan\PrayerTimes\PrayerTimes;
+use IslamicNetwork\PrayerTimes\Method;
+use IslamicNetwork\PrayerTimes\PrayerTimes;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -185,7 +186,7 @@ class Configuration
     /**
      * @var string
      */
-    private $prayerMethod = PrayerTimes::METHOD_ISNA;
+    private $prayerMethod = Method::METHOD_ISNA;
 
     /**
      * @var string
@@ -203,7 +204,7 @@ class Configuration
     private $timezoneName = "Europe/Paris";
 
     /**
-     * @var integer
+     * @var int
      * default to 2 = auto
      * possible values 0 (disabled), 1 (enabled), 2 (auto)
      */
@@ -238,13 +239,13 @@ class Configuration
     /**
      * @var array
      */
-    private $calendar = [];
+    private $calendar = '[]';
 
     /**
      * @var array
      * @Groups({"screen"})
      */
-    private $iqamaCalendar = [];
+    private $iqamaCalendar = '[]';
     /**
      * @var \DateTime
      */
@@ -537,9 +538,12 @@ class Configuration
      */
     public function getWaitingTimes()
     {
-        return array_map(function ($value) {
-            return (int)$value;
-        }, $this->waitingTimes);
+        return array_map(
+            function ($value) {
+                return (int)$value;
+            },
+            $this->waitingTimes
+        );
     }
 
     /**
@@ -876,11 +880,16 @@ class Configuration
 
     /**
      * Get calendar
-     * @return array
+     * @return string
      */
-    public function getCalendar(): array
+    public function getCalendar()
     {
         return $this->calendar;
+    }
+
+    public function getDecodedCalendar()
+    {
+        return json_decode($this->calendar, true);
     }
 
     /**
@@ -890,7 +899,7 @@ class Configuration
      *
      * @return Configuration
      */
-    public function setCalendar(array $calendar)
+    public function setCalendar($calendar)
     {
         $this->calendar = $calendar;
 
@@ -900,7 +909,7 @@ class Configuration
     /**
      * @return array
      */
-    public function getIqamaCalendar(): array
+    public function getIqamaCalendar()
     {
         return $this->iqamaCalendar;
     }
@@ -908,7 +917,7 @@ class Configuration
     /**
      * @param array $iqamaCalendar
      */
-    public function setIqamaCalendar(array $iqamaCalendar): void
+    public function setIqamaCalendar($iqamaCalendar): void
     {
         $this->iqamaCalendar = $iqamaCalendar;
     }

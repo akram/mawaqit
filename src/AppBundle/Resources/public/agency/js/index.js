@@ -10,11 +10,12 @@ $(window).load(function () {
 
 $("#find-mosque").autocomplete({
     source: function (request, response) {
+        let input = $("#find-mosque");
         $.ajax({
-            url: $("#find-mosque").data("remote"),
-            dataType: "json",
+            url: input.data("remote"),
+            headers: {'Api-Access-Token': input.data("apiAccessToken")},
             data: {
-                term: request.term
+                word: request.term
             },
             success: function (data) {
                 response(data);
@@ -23,7 +24,7 @@ $("#find-mosque").autocomplete({
     },
     minLength: 2,
     select: function (event, ui) {
-        window.open('https://mawaqit.net/fr/' + ui.item.slug, '_blank');
+        window.open('https://mawaqit.net/' + lang + '/' + ui.item.slug, '_blank');
     }
 });
 

@@ -29,6 +29,9 @@ AppBundle\Entity\User:
         mosqueQuota:
           type : integer
           nullable: true
+        unsubscribeEmails:
+          type : boolean
+          nullable: true
         created:
             type: datetime
             nullable: true

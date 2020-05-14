@@ -3,10 +3,10 @@
 namespace AppBundle\Controller\Backoffice;
 
 use AppBundle\Entity\Mosque;
-use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Process\Process;
 
 /**
  * @Route("/backoffice/admin/test", options={"i18n"="false"})
@@ -15,9 +15,9 @@ class TestController extends Controller
 {
 
     /**
-     * @Route("/{id}")
+     * @Route("")
      */
-    public function testAction(EntityManagerInterface $em, Mosque $mosque)
+    public function testAction()
     {
         return $this->render(":tools:test.html.twig", []);
     }

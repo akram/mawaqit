@@ -68,7 +68,9 @@ class UserService
         $query = $this->em->createQueryBuilder()
             ->from(User::class, "u")
             ->distinct(true)
-            ->select("u.email");
+            ->select("u.email")
+            ->where("u.unsubscribeEmails IS NULL OR u.unsubscribeEmails = false")
+        ;
 
         if ($data["isApiUser"] === true) {
             $query->andWhere('u.apiAccessToken is not null');

@@ -25,3 +25,6 @@ monolog:
 
 hautelook_alice:
   fixtures_path: 'Resources/fixtures/orm'
+
+maker:
+  root_namespace: 'AppBundle'

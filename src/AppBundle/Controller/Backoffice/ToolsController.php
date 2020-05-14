@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @Route("/backoffice/tools")
+ * @Route("/backoffice/superadmin")
  */
 class ToolsController extends Controller
 {
@@ -22,8 +22,10 @@ class ToolsController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $parameter = $em->getRepository("AppBundle:Parameters")->findOneBy(['key' => 'hijri_adjustment']);
-        $formHijriDate = $this->createForm(HijriAdjustmentType::class, null, ['action' => $this->generateUrl('update_hijri_date')]);
-        $formDstDates = $this->createForm(DstDatesType::class, null, ['action' => $this->generateUrl('update_dst_date')]);
+        $formHijriDate = $this->createForm(HijriAdjustmentType::class, null,
+            ['action' => $this->generateUrl('update_hijri_date')]);
+        $formDstDates = $this->createForm(DstDatesType::class, null,
+            ['action' => $this->generateUrl('update_dst_date')]);
         $formHijriDate->get('hijriAdjustment')->setData($parameter->getValue());
         return $this->render('tools/index.html.twig', [
             'hijriForm' => $formHijriDate->createView(),
@@ -75,7 +77,6 @@ class ToolsController extends Controller
 
     /**
      * Update dst date for mosques of a country
-     *
      * @Route("/update-dst-date", name="update_dst_date")
      */
     public function updateDstDateAction(Request $request)
@@ -89,6 +90,14 @@ class ToolsController extends Controller
             $this->addFlash('success', "Mise à jour effectuée avec succès");
             return $this->redirectToRoute('admin_index');
         }
+    }
+
+    /**
+     * @Route("/opcache", name="opcache")
+     */
+    public function opcache()
+    {
+        return $this->render("tools/opcache.html.php");
     }
 
 }

@@ -6,27 +6,21 @@ use AppBundle\Entity\Configuration;
 use AppBundle\Entity\FlashMessage;
 use AppBundle\Entity\Message;
 use AppBundle\Entity\Mosque;
-use Meezaan\PrayerTimes\Method;
+use IslamicNetwork\PrayerTimes\Method;
+use IslamicNetwork\PrayerTimes\PrayerTimes;
 use Psr\Log\LoggerInterface;
-use Meezaan\PrayerTimes\PrayerTimes;
-use function Couchbase\defaultDecoder;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 class PrayerTime
 {
-
-    private static $calendar = null;
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    private $cacheDir;
 
     const METHOD_ALGERIA = 'ALGERIA';
     const METHOD_MOROCCO = 'MOROCCO';
 
     const DEFAULT_ADJUSTMENT = [
-        PrayerTimes::METHOD_FRANCE => [-4, 5, 0, 3, 5],
+        Method::METHOD_FRANCE => [-4, 5, 0, 3, 5],
         self::METHOD_ALGERIA => [1, 1, 2, 4, 2],
         self::METHOD_MOROCCO => [-8, 5, 0, 4, 0],
     ];
@@ -50,26 +44,57 @@ class PrayerTime
     const METHOD_CHOICES = [
         self::METHOD_ALGERIA,
         self::METHOD_MOROCCO,
-        PrayerTimes::METHOD_FRANCE,
-        PrayerTimes::METHOD_MWL,
-        PrayerTimes::METHOD_ISNA,
-        PrayerTimes::METHOD_MAKKAH,
-        PrayerTimes::METHOD_EGYPT,
-        PrayerTimes::METHOD_KARACHI,
-        PrayerTimes::METHOD_RUSSIA,
-        PrayerTimes::METHOD_CUSTOM
+        Method::METHOD_FRANCE,
+        Method::METHOD_MWL,
+        Method::METHOD_ISNA,
+        Method::METHOD_MAKKAH,
+        Method::METHOD_EGYPT,
+        Method::METHOD_KARACHI,
+        Method::METHOD_RUSSIA,
+        Method::METHOD_CUSTOM
     ];
 
-    public function __construct(LoggerInterface $logger, $cacheDir)
-    {
+    private static $calendar = null;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
+     * @var UploaderHelper
+     */
+    private $vichHelper;
+
+    private $cacheDir;
+
+    private $site;
+
+    public function __construct(
+        LoggerInterface $logger,
+        RouterInterface $router,
+        UploaderHelper $vichHelper,
+        $cacheDir,
+        $site
+    ) {
         $this->logger = $logger;
+        $this->router = $router;
+        $this->vichHelper = $vichHelper;
         $this->cacheDir = $cacheDir;
+        $this->site = $site;
     }
 
     /**
      * true if mosque or configuration has been updated
+     *
      * @param Mosque $mosque
      * @param string $lastUpdatedDate
+     *
      * @return string
      */
     function mosqueHasBeenUpdated(Mosque $mosque, $lastUpdatedDate)
@@ -79,19 +104,21 @@ class PrayerTime
 
     function getCalendar(Mosque $mosque)
     {
-
-        if(self::$calendar !== null){
+        if (self::$calendar !== null) {
             return self::$calendar;
         }
 
         $conf = $mosque->getConfiguration();
 
         if ($conf->isCalendar()) {
-            $calendar = $conf->getCalendar();
+            $calendar = $conf->getDecodedCalendar();
             foreach ($calendar as $month => $days) {
                 foreach ($days as $day => $prayers) {
                     $prayers = array_values($prayers);
-                    $date = new \DateTime(date('Y') . '-' . ($month + 1) . '-' . $day . " 12:00:00", new \DateTimezone($conf->getTimezoneName()));
+                    $date = new \DateTime(
+                        date('Y') . '-' . ($month + 1) . '-' . $day . " 12:00:00",
+                        new \DateTimezone($conf->getTimezoneName())
+                    );
                     $this->applyDst($prayers, $mosque, $date);
                     $this->fixationProcess($prayers, $conf);
                     $calendar[$month][$day] = $prayers;
@@ -103,7 +130,7 @@ class PrayerTime
             $calendar = [];
 
             $pt = new PrayerTimes();
-            if ($conf->getPrayerMethod() !== PrayerTimes::METHOD_CUSTOM) {
+            if ($conf->getPrayerMethod() !== Method::METHOD_CUSTOM) {
                 $pt = new PrayerTimes($conf->getPrayerMethod());
             }
 
@@ -112,15 +139,15 @@ class PrayerTime
                 $angle = self::NEW_METHODS[$conf->getPrayerMethod()];
                 $method->setFajrAngle($angle[0]);
                 $method->setIshaAngleOrMins($angle[1]);
-                $pt = new PrayerTimes(PrayerTimes::METHOD_CUSTOM);
+                $pt = new PrayerTimes(Method::METHOD_CUSTOM);
                 $pt->setCustomMethod($method);
             }
 
-            if ($conf->getPrayerMethod() === PrayerTimes::METHOD_CUSTOM) {
+            if ($conf->getPrayerMethod() === Method::METHOD_CUSTOM) {
                 $method = new Method();
                 $method->setFajrAngle($conf->getFajrDegree());
                 $method->setIshaAngleOrMins($conf->getIshaDegree());
-                $pt = new PrayerTimes(PrayerTimes::METHOD_CUSTOM);
+                $pt = new PrayerTimes(Method::METHOD_CUSTOM);
                 $pt->setCustomMethod($method);
             }
 
@@ -129,7 +156,10 @@ class PrayerTime
 
             foreach (Calendar::MONTHS as $month => $days) {
                 for ($day = 1; $day <= $days; $day++) {
-                    $date = new \DateTime(date('Y') . '-' . ($month + 1) . '-' . $day . " 12:00:00", new \DateTimezone($conf->getTimezoneName()));
+                    $date = new \DateTime(
+                        date('Y') . '-' . ($month + 1) . '-' . $day . " 12:00:00",
+                        new \DateTimezone($conf->getTimezoneName())
+                    );
                     $this->applyAdjustment($pt, $mosque);
                     $prayers = $pt->getTimes($date, $mosque->getLatitude(), $mosque->getLongitude());
                     unset($prayers["Sunset"], $prayers["Imsak"], $prayers["Midnight"]);
@@ -141,6 +171,143 @@ class PrayerTime
         }
 
         return $calendar;
+    }
+
+    /**
+     * transforme json calendar in csv files and compress theme in a zip file
+     *
+     * @param Mosque $mosque
+     *
+     * @return string the path of the zip file
+     */
+    function getFilesFromCalendar(Mosque $mosque)
+    {
+        $calendar = $this->getCalendar($mosque);
+
+        if (is_array($calendar)) {
+            $path = $this->cacheDir . "/" . $mosque->getId();
+            if (!is_dir($path)) {
+                mkdir($path);
+            }
+            foreach ($calendar as $key => $monthIndex) {
+                $str = "Day,Fajr,Shuruk,Duhr,Asr,Maghrib,Isha\n";
+                foreach ($monthIndex as $day => $prayers) {
+                    $str .= "$day," . implode(",", $prayers) . "\n";
+                }
+                $fileName = str_pad($key + 1, 2, "0", STR_PAD_LEFT) . ".csv";
+                file_put_contents("$path/$fileName", $str);
+            }
+
+            return $this->getZipFile($mosque, $path);
+        }
+
+        return null;
+    }
+
+    /**
+     *  Get pray times and other info of the mosque
+     *
+     * @param Mosque $mosque
+     * @param bool   $returnFullCalendar
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function prayTimes(Mosque $mosque, $returnFullCalendar = false)
+    {
+        $conf = $mosque->getConfiguration();
+        $flashMessage = $mosque->getFlashMessage();
+
+        $result = [
+            'id' => $mosque->getId(),
+            'uuid' => $mosque->getUuid(),
+            'name' => $mosque->getTitle(),
+            'streamUrl' => $mosque->getStreamUrl(),
+            'localisation' => $mosque->getLocalisation(),
+            'countryCode' => $mosque->getCountry(),
+            'phone' => $mosque->getPhone(),
+            'email' => $mosque->getEmail(),
+            'site' => $mosque->getSite(),
+            'association' => $mosque->getAssociationName(),
+            'image' => $mosque->getImage1() ? $this->site . $this->vichHelper->asset($mosque, 'file1') : null,
+            'url' => $this->router->generate(
+                'mosque',
+                ['slug' => $mosque->getSlug()],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            ),
+            'latitude' => $mosque->getLatitude(),
+            'longitude' => $mosque->getLongitude(),
+            'hijriAdjustment' => $conf->getHijriAdjustment(),
+            'aidPrayerTime' => $conf->getAidTime(),
+            'jumua' => $conf->hasJumua() ? $this->getJumua($mosque) : null,
+            'jumua2' => $conf->hasJumua() ? $conf->getJumuaTime2() : null,
+            'jumuaAsDuhr' => $conf->isJumuaAsDuhr(),
+            'imsakNbMinBeforeFajr' => $conf->getImsakNbMinBeforeFajr(),
+            'maximumIshaTimeForNoWaiting' => $conf->getMaximumIshaTimeForNoWaiting(),
+            'shuruq' => null,
+            'times' => null,
+            'iqama' => $conf->getWaitingTimes(),
+            'womenSpace' => $mosque->getWomenSpace(),
+            'janazaPrayer' => $mosque->getJanazaPrayer(),
+            'aidPrayer' => $mosque->getAidPrayer(),
+            'childrenCourses' => $mosque->getChildrenCourses(),
+            'adultCourses' => $mosque->getAdultCourses(),
+            'ramadanMeal' => $mosque->getRamadanMeal(),
+            'handicapAccessibility' => $mosque->getHandicapAccessibility(),
+            'ablutions' => $mosque->getAblutions(),
+            'parking' => $mosque->getParking(),
+            'otherInfo' => $mosque->getOtherInfo(),
+            'announcements' => $this->getMessages($mosque),
+            'updatedAt' => $mosque->getUpdated()->getTimestamp(),
+        ];
+
+        // add flash message
+        if ($flashMessage instanceof FlashMessage && $flashMessage->isAvailable()) {
+            $result['flash'] = [
+                'content' => $flashMessage->getContent(),
+                'expire' => $flashMessage->getExpire() instanceof \DateTime ? $flashMessage->getExpire()->getTimestamp(
+                ) : null,
+                'orientation' => $flashMessage->getOrientation(),
+            ];
+        }
+
+        $calendar = $this->getCalendar($mosque);
+
+        if ($returnFullCalendar) {
+            $result['calendar'] = $calendar;
+            $result['iqamaCalendar'] = $this->getIqamaCalendar($mosque);
+        }
+
+        $times = $this->getPrayTimes($calendar);
+        $result['shuruq'] = $times[1];
+        unset($times[1]);
+
+        $result['times'] = array_values($times);
+
+        $result['fixedIqama'] = $this->getFixedIqama($mosque, $result['times']);
+
+        return $result;
+    }
+
+    public function getJumua(Mosque $mosque)
+    {
+        $conf = $mosque->getConf();
+
+        if (!$conf->hasJumua()) {
+            return null;
+        }
+
+        if ($conf->isJumuaAsDuhr()) {
+            $date = new \DateTime();
+            if ($date->format("N") !== "5") {
+                $date->modify('next friday');
+            }
+            $calendar = $this->getCalendar($mosque);
+            $times = $this->getPrayTimes($calendar, $date);
+            return $times[2];
+        }
+
+        return $conf->getJumuaTime();
     }
 
     private function applyAdjustment(PrayerTimes &$pt, Mosque $mosque)
@@ -185,7 +352,7 @@ class PrayerTime
         }
 
         foreach ($times as $k => $prayer) {
-            if(empty($prayer)){
+            if (empty($prayer)) {
                 continue;
             }
 
@@ -207,7 +374,9 @@ class PrayerTime
             // adjust isha to x min after maghrib if option enabled
             if ($k === 5 && is_numeric($conf->getIshaFixation())) {
                 try {
-                    $prayers[5] = (new \DateTime($prayers[4]))->modify($conf->getIshaFixation() . "minutes")->format("H:i");;
+                    $prayers[5] = (new \DateTime($prayers[4]))->modify($conf->getIshaFixation() . "minutes")->format(
+                        "H:i"
+                    );;
                 } catch (\Exception $e) {
                     $prayers[$k] = "ERROR";
                     $this->logger->error("Erreur de parsing heure de prière", [$e]);
@@ -219,35 +388,6 @@ class PrayerTime
             }
         }
         return $prayers;
-    }
-
-    /**
-     * transforme json calendar in csv files and compress theme in a zip file
-     * @param Mosque $mosque
-     * @return string the path of the zip file
-     */
-    function getFilesFromCalendar(Mosque $mosque)
-    {
-        $calendar = $this->getCalendar($mosque);
-
-        if (is_array($calendar)) {
-            $path = $this->cacheDir . "/" . $mosque->getId();
-            if (!is_dir($path)) {
-                mkdir($path);
-            }
-            foreach ($calendar as $key => $monthIndex) {
-                $str = "Day,Fajr,Shuruk,Duhr,Asr,Maghrib,Isha\n";
-                foreach ($monthIndex as $day => $prayers) {
-                    $str .= "$day," . implode(",", $prayers) . "\n";
-                }
-                $fileName = str_pad($key + 1, 2, "0", STR_PAD_LEFT) . ".csv";
-                file_put_contents("$path/$fileName", $str);
-            }
-
-            return $this->getZipFile($mosque, $path);
-        }
-
-        return null;
     }
 
     private function getZipFile(Mosque $mosque, $path)
@@ -270,95 +410,25 @@ class PrayerTime
     }
 
     /**
-     *  Get pray times and other info of the mosque
-     * @param Mosque $mosque
-     * @param bool $returnFullCalendar
-     * @return array
-     */
-    public function prayTimes(Mosque $mosque, $returnFullCalendar = false)
-    {
-        $conf = $mosque->getConfiguration();
-        $flashMessage = $mosque->getFlashMessage();
-
-        $result = [
-            'id' => $mosque->getId(),
-            'name' => $mosque->getTitle(),
-            'streamUrl' => $mosque->getStreamUrl(),
-            'localisation' => $mosque->getLocalisation(),
-            'countryCode' => $mosque->getCountry(),
-            'phone' => $mosque->getPhone(),
-            'email' => $mosque->getEmail(),
-            'site' => $mosque->getSite(),
-            'association' => $mosque->getAssociationName(),
-            'image' => $mosque->getImage1() ? 'https://mawaqit.net/upload/' . $mosque->getImage1() : null,
-            'url' => 'https://mawaqit.net/fr/' . $mosque->getSlug(),
-            'latitude' => $mosque->getLatitude(),
-            'longitude' => $mosque->getLongitude(),
-            'hijriAdjustment' => $conf->getHijriAdjustment(),
-            'aidPrayerTime' => $conf->getAidTime(),
-            'jumua' => $conf->hasJumua() ? $this->getJumua($mosque) : null,
-            'jumua2' => $conf->hasJumua() ? $conf->getJumuaTime2() : null,
-            'jumuaAsDuhr' => $conf->isJumuaAsDuhr(),
-            'imsakNbMinBeforeFajr' => $conf->getImsakNbMinBeforeFajr(),
-            'maximumIshaTimeForNoWaiting' => $conf->getMaximumIshaTimeForNoWaiting(),
-            'shuruq' => null,
-            'times' => null,
-            'iqama' => $conf->getWaitingTimes(),
-            'womenSpace' => $mosque->getWomenSpace(),
-            'janazaPrayer' => $mosque->getJanazaPrayer(),
-            'aidPrayer' => $mosque->getAidPrayer(),
-            'childrenCourses' => $mosque->getChildrenCourses(),
-            'adultCourses' => $mosque->getAdultCourses(),
-            'ramadanMeal' => $mosque->getRamadanMeal(),
-            'handicapAccessibility' => $mosque->getHandicapAccessibility(),
-            'ablutions' => $mosque->getAblutions(),
-            'parking' => $mosque->getParking(),
-            'otherInfo' => $mosque->getOtherInfo(),
-            'flashMessage' => $flashMessage instanceof FlashMessage && $flashMessage->isAvailable() ? $flashMessage->getContent() : null,
-            'announcements' => $this->getMessages($mosque),
-            'updatedAt' => $mosque->getUpdated()->getTimestamp(),
-        ];
-
-        // add flash message
-        if ($flashMessage instanceof FlashMessage && $flashMessage->isAvailable()) {
-            $result['flash'] = [
-                'content' => $flashMessage->getContent(),
-                'expire' => $flashMessage->getExpire() instanceof \DateTime ? $flashMessage->getExpire()->getTimestamp() : null,
-            ];
-        }
-
-        $calendar = $this->getCalendar($mosque);
-
-        if ($returnFullCalendar) {
-            $result['calendar'] = $calendar;
-            $result['iqamaCalendar'] = $this->getIqamaCalendar($mosque);
-        }
-
-        $times = $this->getPrayTimes($calendar);
-        $result['shuruq'] = $times[1];
-        unset($times[1]);
-
-        $result['times'] = array_values($times);
-
-        $result['fixedIqama'] = $this->getFixedIqama($mosque, $result['times']);
-
-        return $result;
-    }
-
-    /**
      * apply some changes on iqama calendar like (DST)
+     *
      * @param Mosque $mosque
-     * @return array|null
+     *
+     * @return array
+     * @throws \Exception
      */
     private function getIqamaCalendar(Mosque $mosque)
     {
         $conf = $mosque->getConf();
-        $iqamaCalendar = $conf->getIqamaCalendar();
+        $iqamaCalendar = json_decode($conf->getIqamaCalendar(), true);
         if (null !== $iqamaCalendar) {
             foreach ($iqamaCalendar as $month => $days) {
                 foreach ($days as $day => $times) {
                     $times = array_values($times);
-                    $date = new \DateTime(date('Y') . '-' . ($month + 1) . '-' . $day . " 12:00:00", new \DateTimezone($conf->getTimezoneName()));
+                    $date = new \DateTime(
+                        date('Y') . '-' . ($month + 1) . '-' . $day . " 12:00:00",
+                        new \DateTimezone($conf->getTimezoneName())
+                    );
                     $this->applyDst($times, $mosque, $date);
                     $iqamaCalendar[$month][$day] = $times;
                 }
@@ -370,7 +440,7 @@ class PrayerTime
 
     private function getPrayTimes($calendar, $date = null)
     {
-        if($date === null){
+        if ($date === null) {
             $date = new \DateTime();
         }
 
@@ -390,7 +460,7 @@ class PrayerTime
             $month = $date->format('m') - 1;
             $day = (int)$date->format('d');
 
-             if (isset($iqamaCalendar[$month][$day])){
+            if (isset($iqamaCalendar[$month][$day])) {
                 $iqamaFromCalendar = array_values($iqamaCalendar[$month][$day]);
 
                 foreach ($iqamaFromCalendar as $k => $v) {
@@ -398,7 +468,7 @@ class PrayerTime
                         $fixedIqama[$k] = $v;
                     }
                 }
-             }
+            }
         }
 
         foreach ($conf->getFixedIqama() as $k => $v) {
@@ -417,37 +487,18 @@ class PrayerTime
          * @var Message $message
          */
         foreach ($mosque->getMessages() as $message) {
-            if ($message->isEnabled() && $message->isMobile()) {
+            if ($message->isEnabled() && $message->isMobile() && !$message->getVideo()) {
                 $messages[] = [
                     'id' => $message->getId(),
                     'title' => $message->getTitle(),
                     'content' => $message->getContent(),
+                    'image' => $message->getImage() ? $this->site . $this->vichHelper->asset($message, 'file') : null,
+                    'video' => $message->getEmbedVideo(),
                     'isMobile' => $message->isMobile(),
                     'isDesktop' => $message->isDesktop(),
-                    'image' => $message->getImage() ? 'https://mawaqit.net/upload/' . $message->getImage() : null,
                 ];
             }
         }
         return $messages;
-    }
-
-    public function getJumua(Mosque $mosque){
-        $conf = $mosque->getConf();
-
-        if(!$conf->hasJumua()){
-            return null;
-        }
-
-        if ($conf->isJumuaAsDuhr()) {
-            $date = new \DateTime();
-            if($date->format("N") !== "5"){
-                $date->modify('next friday');
-            }
-            $calendar = $this->getCalendar($mosque);
-            $times = $this->getPrayTimes($calendar, $date);
-            return $times[2];
-        }
-
-        return $conf->getJumuaTime();
     }
 }

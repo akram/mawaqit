@@ -141,9 +141,9 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="row" id="info_dst_change">
                                 <div class="col-md-6">
-                                    <div class="alert alert-warning">
+                                    <div class="alert alert-danger">
                                         <i class="fa fa-warning"></i> {{ 'info_dst_change'|trans|raw }}
                                     </div>
                                 </div>
@@ -201,7 +201,7 @@
                                                                 <div>
                                                                     <input
                                                                             name="configuration[calendar][{{ month }}][{{ day }}][{{ prayer }}]"
-                                                                            value="{{ form.vars.value.calendar[month] is defined ? form.vars.value.calendar[month][day][prayer] : '' }}"
+                                                                            value="{{ form.children.calendar.vars.value[month] is defined ? form.children.calendar.vars.value[month][day][prayer] : '' }}"
                                                                             type="text"
                                                                             placeholder="hh:mm"
                                                                             class="form-control text-center calendar-prayer-time"
@@ -399,7 +399,7 @@
                                                                         <div>
                                                                             <input
                                                                                     name="configuration[iqamaCalendar][{{ month }}][{{ day }}][{{ prayer }}]"
-                                                                                    value="{{ form.vars.value.iqamaCalendar[month] is defined ? form.vars.value.iqamaCalendar[month][day][prayer] : '' }}"
+                                                                                    value="{{ form.children.iqamaCalendar.vars.value[month] is defined ? form.children.iqamaCalendar.vars.value[month][day][prayer] : '' }}"
                                                                                     type="text"
                                                                                     placeholder="hh:mm"
                                                                                     class="form-control text-center calendar-prayer-time"
@@ -561,15 +561,16 @@
                                 <div class="col-md-3">
                                     <label>
                                         <input type="radio" name="configuration[backgroundMotif]" value="0" {{ form.vars.value.backgroundMotif == "0" ? 'checked' : '' }} />
-                                        <img src="{{ vich_uploader_asset(mosque, 'file1') }}" alt="{{ mosque.file1 }}" class="background-choice"/>
+                                        <img src="{{ vich_uploader_asset(mosque, 'file1') | imagine_filter('small_370x210') }}" alt="{{ mosque.file1 }}" class="background-choice"/>
                                     </label>
                                 </div>
                             {% endif %}
+
                             {% if mosque.image2 %}
                                 <div class="col-md-3">
                                     <label>
                                         <input type="radio" name="configuration[backgroundMotif]" value="-1" {{ form.vars.value.backgroundMotif == "-1" ? 'checked' : '' }} />
-                                        <img src="{{ vich_uploader_asset(mosque, 'file2') }}" alt="{{ mosque.file2 }}" class="background-choice"/>
+                                        <img src="{{ vich_uploader_asset(mosque, 'file2') | imagine_filter('small_370x210') }}" alt="{{ mosque.file2 }}" class="background-choice"/>
                                     </label>
                                 </div>
                             {% endif %}
@@ -578,8 +579,7 @@
                                 <div class="col-md-3">
                                     <label>
                                         <input type="radio" name="configuration[backgroundMotif]" value="{{ i }}" {{ form.vars.value.backgroundMotif == i ? 'checked' : '' }} />
-                                        <img src="{{ asset('bundles/app/prayer-times/img/background-'~ i ~'.jpg') }}"
-                                             class="background-choice">
+                                        <img src="{{ asset('bundles/app/prayer-times/img/background-'~ i ~'.jpg') | imagine_filter('small_370x210') }}" class="background-choice">
                                     </label>
                                 </div>
                             {% endfor %}
@@ -588,8 +588,7 @@
                         <div class="row mt-2 color">
                             <div class="col-md-2">
                                 {{ form_label(form.backgroundColor) }}
-                                <input class="form-control jscolor {hash:true, mode:'HVS'}" readonly name="configuration[backgroundColor]"
-                                       value="{{ mosque.configuration.backgroundColor }}">
+                                <input class="form-control jscolor {hash:true, mode:'HVS'}" readonly name="configuration[backgroundColor]" value="{{ mosque.configuration.backgroundColor }}">
                             </div>
                         </div>
                     </div>

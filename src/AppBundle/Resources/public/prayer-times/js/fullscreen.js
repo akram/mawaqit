@@ -1,4 +1,4 @@
-$('#full-screen i').click(function () {
+$('#top-buttons .glyphicon-resize-full').click(function () {
     var self = $(this);
     if (self.hasClass('glyphicon-resize-full')) {
         fullscreen();
@@ -9,7 +9,7 @@ $('#full-screen i').click(function () {
 });
 
 function fullScreenHandler() {
-    var $fullScreenButton = $('#full-screen i');
+    var $fullScreenButton = $('#top-buttons .glyphicon-resize-full');
     $fullScreenButton.removeClass('glyphicon-resize-full');
     $fullScreenButton.removeClass('glyphicon-resize-small');
     if (screen.height === window.innerHeight) {

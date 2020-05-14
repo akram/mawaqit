@@ -41,7 +41,7 @@ body {
 }
 
 .top-content {
-    height: 55%;
+    height: 56%;
     position: relative;
     overflow: hidden;
 }
@@ -55,10 +55,48 @@ body {
     font-size: 11vh;
 }
 
+.bottom-block {
+    padding: 5px 15px;
+    border-radius: 2vw 2vw 0 0;
+    background-color: rgba(74, 12, 87, 0.7);
+    min-width: 30%;
+}
+
+.next-prayer-bloc {
+    padding: 10px;
+    font-size: 3vw;
+    border-radius: 2.5vw;
+    background-color: rgba(74, 12, 87, 0.7);
+}
+
+.next-prayer-bloc-hadith {
+    display: flex;
+    font-size: 3vw;
+    justify-content: space-between;
+    padding: 0 10px;
+    position: absolute;
+    width: 100%;
+    bottom: 5px;
+}
+
+.next-prayer .countdown {
+    display: inline;
+}
+
+.dates-bloc {
+    font-size: 2.5vw;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    position: absolute;
+    bottom: 5px;
+    width: 100%;
+}
+
 .prayers {
-    -webkit-box-shadow: 0px 0px 31px 4px rgba(255, 255, 255, 0.6);
-    -moz-box-shadow: 0px 0px 31px 4px rgba(255, 255, 255, 0.6);
-    box-shadow: 0px 0px 31px 4px rgba(255, 255, 255, 0.7);
+    -webkit-box-shadow: 0px 10px 20px 0px rgba(255,255,255,0.7);
+    -moz-box-shadow: 0px 10px 20px 0px rgba(255,255,255,0.7);
+    box-shadow: 0px 10px 20px 0px rgba(255,255,255,0.7);
     background-color: rgba(0, 0, 0, 0.5);
     margin: auto;
     width: 99%;
@@ -68,12 +106,13 @@ body {
     display: -webkit-flex;
     display: flex;
     justify-content: space-between;
+    border-radius: 0 0 2vw 2vw;
 }
 
 .prayer-hilighted {
     background-color: #0b5c00;
-    border-radius: 40px;
-    padding: 0 10px;
+    border-radius: 2vw;
+    padding: 0 1vw;
 }
 
 .prayer-hilighted div {
@@ -81,47 +120,43 @@ body {
 }
 
 .prayers .name {
-    font-size: 6vh;
+    font-size: 3vw;
 }
 
 .prayers .wait {
-    font-size: 5vh;
+    font-size: 2.5vw;
 }
 
 .time {
     color: yellowgreen;
     font-weight: bold;
-    font-size: 9vh;
-    line-height: 10vh;
+    font-size: 4.5vw;
     padding: 0 10px;
 }
 
 small {
-    font-size: 4vh;
+    font-size: 2vw;
     margin-left: 5px;
 }
 
 .joumouaa, .custom-time {
     margin: 50px auto;
-    font-size: 6vh;
-    width: 80%;
+    font-size: 3vw;
 }
 
 .joumouaa .prayer {
-    width: 80%;
     margin: auto;
 }
 
 .joumouaa2-id {
     margin-top: -5px;
-    font-size: 6vh;
+    font-size: 2.5vw;
 }
 
 .header {
-    font-size: 7vh;
+    font-size: 4vw;
     color: yellowgreen;
     padding-top: 10px;
-    padding-bottom: 15px;
     width: 75%;
     overflow: hidden;
     white-space: nowrap;
@@ -132,17 +167,16 @@ small {
     color: #B0413E;
 }
 
-.aid-id {
-    color: #B0413E;
-}
-
 .content .currentTime {
     text-shadow: 6px 6px 10px #632e2e;
-    font-size: 15vh;
+    font-size: 9vw;
+    line-height: 11vw;
 }
 
-.gregorianDate, .hijriDate {
-    font-size: 5vh;
+.content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
 .flash, .visibilty-hidden {
@@ -196,16 +230,16 @@ small {
 }
 
 .site {
-    font-size: 3vh;
+    font-size: 1vw;
 }
 
 .assosciation {
-    font-size: 2.5vh;
+    font-size: 1.3vw;
 }
 
 .support {
     color: gray;
-    font-size: 2.5vh;
+    font-size: 1.3vw;
 }
 
 .support a {
@@ -213,7 +247,7 @@ small {
 }
 
 .version {
-    font-size: 20px;
+    font-size: 1vw;
     color: #adadad;
     position: fixed;
     bottom: 5px;
@@ -221,7 +255,7 @@ small {
 }
 
 #mosque-id {
-    font-size: 20px;
+    font-size: 1vw;
     color: #adadad;
 }
 
@@ -296,30 +330,10 @@ footer .info {
     margin: auto;
 }
 
-.next-prayer-bloc {
-    display: flex;
-    padding: 0 10px;
-    justify-content: space-between;
-}
-
-.next-prayer-bloc {
-    color: #ec7047;
-    font-size: 6vh;
-}
-
-.next-prayer .countdown {
-    display: inline;
-}
-
-.top-content .next-prayer-bloc {
-    position: absolute;
-    bottom: 0;
-}
-
 #weather {
     top: 30px;
     right: 10px;
-    font-size: 5vh;
+    font-size: 3vw;
     position: fixed;
 }
 

@@ -2,7 +2,7 @@ AppBundle\Entity\User:
     properties:
         plainPassword:
             - Regex: 
-                pattern: '/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}/'
+                pattern: '/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{12,}$/'
                 message: "form.registration.wrong_password_message"              
                 groups: [appChangePassword]
 

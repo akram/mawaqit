@@ -15,9 +15,14 @@ mosqueScreen:
   loginHelp: بريدك الإلكتروني على mawaqit.net
   password: كلمه السر
   passwordHelp:  كلمة السر الخاصة بك على mawaqit.net
-  Language:
+  language:
     label: اللغة
     placeholder: إختر اللغة
+  screen:
+    label: نوع الشاشة
+    choices:
+      1: أوقات الصلاة
+      2: الرسائل و الإعلانات
 
 home:
   menu:
@@ -46,6 +51,9 @@ home:
     feature7: الخيارات
     feature8: التحكم عن بعد
     feature9: تطبيق الجوال
+    available: مواقيت متوفرة أيضا على
+    itUsesMawaqit: يستعملون API مواقيت
+    soon: قريبا...
 
     numbers: بعض الأرقام
     mosques: المساجد
@@ -60,11 +68,11 @@ home:
 
   text:
     numbers:
-      1: مسجد و منزل
+      1: مسجد و غير ذلك
       2: بلد
       3: مستخدم ناشط على الأيفون و الأندرويد
-      4: زائر وحيد للموقع في اليوم
-      5: طلب صفحات الموقع في اليوم
+      4: زائر وحيد للموقع في الشهر
+      5: طلب صفحة في الشهر
       6: نقطة على الستور و الفايسبوك
     contactUsText0: |
       كلنا متطوعون ونعمل في سبيل الله دون أي أجرة ، إصبر بارك الله فيك
@@ -210,6 +218,9 @@ home:
       لمزيد من المعلومات زر قناتنا على <a target="_blank" href="https://www.youtube.com/channel/UCK0bHMvAlVL8NvyofiMulUw/">اليوتيوب</a>
     install9: إذا واجهتك أي صعوبات أرسل لنا رسالة من  <a href="#contact">هنا</a>
 
+cookies_accept:
+  text: نحن نستخدم ملفات تعريف ارتباط الجلسة (cookies) فقط لتشغيل الخدمة . لا يوجد استخدام تجاري
+  button: فهمت
 
 form:
   mandatory_field:  حقل إجباري
@@ -219,12 +230,14 @@ form:
     success:  تمت التعديل بنجاح
     action: تعديل
   sync:
-    action: تزامن (synchronize)
+    action: (synchronize) تزامن
   delete:
     success:  تم الحذف بنجاح
     action: إحذف
   clone:
     action: استنساخ
+  contact:
+    action: اتصل بالدعم
   configure:
     action: ضبط
     geocode_error: |
@@ -241,8 +254,23 @@ registration:
     tou:
       label: أوافق وأرضى <a href="#" id="terms-of-use">بشروط الاستخدام</a>
   registration: التسجيل
-  password_rule: أقلها 8 أحرف منها حرف صغير ، حرف كبير ورقم
+  password_rule_1: يجب أن تتكون كلمة المرور من 12 حرفًا على الأقل.
+  password_rule_2: يجب أن تحتوي كلمة المرور على حرف كبير.
+  password_rule_3: يجب أن تحتوي كلمة المرور على حرف صغير.
+  password_rule_4: يجب أن تحتوي كلمة المرور على رقم.
+  password_rule_5: يجب أن تحتوي كلمة المرور على حرف خاص.
   please_enter_right_email: يرجى إدخال عنوان بريد إلكتروني تزوره بانتظام
+  check_spams:  يرجى أيضًا التحقق من صندوق البريد العشوائي (spam).
+
+password_change:
+  alert: لأسباب أمنية نطلب منك تغيير كلمة المرور الخاصة بك
+
+user:
+  label: المستخدم
+  form:
+    unsubscribeEmail:
+      label: إلغاء الاشتراك من رسائل البريد الإلكتروني
+      help: انتباه تفقد كل اتصالاتنا الهامة
 
 mosque:
   title:
@@ -399,6 +427,9 @@ message:
     image:
       label: الصورة
       title:  ستظهر على الشاشة بدلا عن النص
+    video:
+      label: رابط يوتيوب
+      title: فيديو يوتيوب فقط ، سيكون مرئيًا على رابط مواقيت للجوال
     desktop:
       label: عرض على الشاشة الرئيسية
       title: سيتم عرض رسالتك على شاشة مواقيت الرئيسية في المسجد
@@ -507,7 +538,6 @@ configuration:
       label: تعديل التاريخ الهجري
     timezoneName:
       label: المنطقة الزمنية
-      title: إذا تم ملاحظة خطأ من جهةالوقت فيرجى إصلاحه هنا
     dst:
       label: التوقيت الصيفي
       title: |
@@ -647,6 +677,8 @@ mosqueList:
     title: "صورة الشاشة مفقودة :("
     content: ما زلنا ننتظر صورة شاشة المسجد "%mosque%"
     button: فهمت
+  iframeCopyText: لعرض الويجات أدناه على موقعكم ، فقط قم بنسخ/لصق هذا الكود html
+  iframeAddTitle: عرض الويجات على موقعكم
   widgetForYourSite: ويجات على موقعكم
   alertRemoveMosque: |
     أمامك <b>%days%</b> يومًا لتقديم صورة شاشة مواقيت ملتقطة في المسجد ، بعد هذا الوقت سيتم تعطيل المسجد تلقائيًا.
@@ -709,9 +741,7 @@ iqama: الإقامة
 azan: الأذان
 
 power-off-phones: أطفئوا الهاتف من فضلكم
-hi: %name% مرحبا
-salam: %name%' السلام عليكم
-user: المستخدم
+salam: السلام عليكم
 active: مفعل؟
 delete_element_question: هل تريد فعلا القيام بعملية الحذف؟
 add: إضافة
@@ -770,9 +800,16 @@ prayer_mobile_site: مواقيت على الجوال <a href='%site%'>%site%</a>
 mawaqitOnMobile: أوقات الصلاة على الجوال
 association_info: "%name% - الهاتف %phone%"
 info_dst_change: |
-  تحذير! يجب إدخال التقويم دون الأخذ في الاعتبار تغيير التوقيت الصيفي ، لذلك يجب عليك إدخال
-       ساعاتك في فصل الشتاء على مدار السنة. سيعتني البرنامج بالتوقيت الصيفي وفقًا لاختيارك في الإعدادات الإقليمية.<br>
-  يجب أن تكون الساعات في تنسيق 24 ساعة على سبيل المثال 22:00 وليس 10:00 ً
+  تحذير!
+    <ul>
+      <li>
+      يجب إدخال التقويم دون الأخذ في الاعتبار تغيير التوقيت الصيفي ، لذلك يجب عليك إدخال
+      الأوقات في فصل الشتاء على مدار السنة. سيعتني البرنامج بالتوقيت الصيفي.
+      </li>
+      <li>
+      يجب أن تكون الساعات في تنسيق 24 ساعة على سبيل المثال 22:00 وليس 10:00.
+      </li>
+    </ul>
 
 other_settings: إعدادات أخرى
 home_settings: الإستعمال المنزلي
@@ -802,9 +839,9 @@ expired: انتهت صلاحيته في
 expire: تنتهي صلاحيته في
 searchOtherMosque: إبحث عن مسجد آخر
 
-prayerTimeIn10MinTitle: "الأذان بعد عشر دقائق"
-prayerTimeIn10MinBody: "لا يزال لديك 10 دقائق للذهاب إلى المسجد و تصلي مع الجماعة إن شاء الله"
-
 help_the_mosque: ساعد المسجد
 by_bank_transfer: عبر التحويل البنكي
 by_credit_card: عبر بطاقة الائتمان
+
+horizontal: عرضي
+vertical: عمودي

@@ -11,7 +11,7 @@ services:
     working_dir: /application
     volumes:
       - .:/application
-      - ./docker/php-fpm/php-ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini
+      - ./docker/php-fpm/php.dev.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini
       - ~/.ssh:/root/.ssh
       - /etc/localtime:/etc/localtime:ro
 

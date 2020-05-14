@@ -7,10 +7,31 @@ setInterval(function () {
 
 const widget = $('.widget');
 
+function getTimesFromCalendar(mosque) {
+    let date = new Date();
+    let time = addZero(date.getHours()) + ":" + addZero(date.getMinutes());
+    let month = dateTime.getCurrentMonth();
+    let day = dateTime.getCurrentDay();
+    let times = mosque.calendar[month][day];
+    let ishaTime = times[5];
+
+    if (time > ishaTime) {
+         month = dateTime.getTomorrowMonth();
+         day = dateTime.getTomorrowDay();
+         times = mosque.calendar[month][day];
+    }
+
+    // remove shuruq
+    times.splice(1,1)
+
+    return times;
+}
+
 $.ajax({
-    url: widget.data("remote"),
+    url: widget.data("remote") + "?calendar",
     headers: {'Api-Access-Token': widget.data("apiAccessToken")},
     success: function (mosque) {
+
         // hijri date
         $(".hijriDate").text(writeIslamicDate(mosque.hijriAdjustment, lang));
 
@@ -18,17 +39,30 @@ $.ajax({
         $('.shuruq .time').html(dateTime.formatTime(mosque.shuruq, format));
 
         // jumua
-        if(mosque.jumua) {
+        if (mosque.jumua) {
             $('.jumua .time').html(dateTime.formatTime(mosque.jumua, format));
         }
 
-        if(!mosque.jumua){
+        if (!mosque.jumua) {
             $('.jumua').css("visibility", "hidden");
         }
 
         // times
-        $.each(mosque.times, function (i, time) {
+        let times = getTimesFromCalendar(mosque);
+        $.each(times, function (i, time) {
             $('.prayers .time').eq(i).html(dateTime.formatTime(time, format));
+        });
+
+        let date = new Date();
+        let now = addZero(date.getHours()) + ":" + addZero(date.getMinutes());
+        let timesElm = $(".prayers > div");
+        timesElm.eq(0).addClass("prayer-hilighted");
+        $.each(times, function (i, time) {
+            if(now <= time){
+                timesElm.removeClass("prayer-hilighted");
+                timesElm.eq(i).addClass("prayer-hilighted");
+                return false;
+            }
         });
 
         //iqama
@@ -38,7 +72,7 @@ $.ajax({
                 iqama = mosque.fixedIqama[i];
             }
 
-            $('.prayers .iqama').eq(i).text(iqama);
+            $('.prayers .iqama').eq(i).html(dateTime.formatTime(iqama, format));
         });
     }
 });

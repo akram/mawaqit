@@ -2,25 +2,68 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Entity\User;
 use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RegistrationType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @var string
+     */
+    private $passwordPattern;
+
+    public function __construct($passwordPattern)
     {
-        $builder
-            ->add('tou', CheckboxType::class, [
-                'required' => true,
-            ])
-            ->add('recaptcha', EWZRecaptchaType::class, [
-                'label' => false
-            ]);
+        $this->passwordPattern = $passwordPattern;
     }
 
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->remove("username");
+
+        $builder
+            ->add(
+                'tou',
+                CheckboxType::class,
+                [
+                    'required' => true,
+                ]
+            )
+            ->add(
+                'recaptcha',
+                EWZRecaptchaType::class,
+                [
+                    'label' => false
+                ]
+            )
+            ->add(
+                'plainPassword',
+                PasswordType::class,
+                [
+                    'translation_domain' => 'FOSUserBundle',
+                    'label' => 'form.password',
+                    'attr' => [
+                        'autocomplete' => 'new-password',
+                        'pattern' => $this->passwordPattern,
+                    ],
+                ]
+            )
+            ->addEventListener(FormEvents::SUBMIT, array($this, 'onSubmit'));
+    }
+
+    public function onSubmit(FormEvent $event)
+    {
+        /** @var User $user */
+        $user = $event->getData();
+        $user->setUsername($user->getEmail());
+    }
 
     public function getParent()
     {
@@ -35,9 +78,11 @@ class RegistrationType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'label_format' => 'registration.form.%name%.label',
-        ));
+        $resolver->setDefaults(
+            array(
+                'label_format' => 'registration.form.%name%.label',
+            )
+        );
     }
 
 }

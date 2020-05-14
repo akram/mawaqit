@@ -20,6 +20,10 @@ AppBundle\Entity\Message:
             type: string
             length: 255
             nullable: true
+        video:
+            type: string
+            length: 255
+            nullable: true
         enabled:
             type: boolean
         mobile:

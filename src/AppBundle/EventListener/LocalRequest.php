@@ -32,7 +32,7 @@ class LocalRequest
             return;
         }
 
-        $user = $this->em->getRepository('AppBundle:User')->findOneBy(['email' => 'local@local.com']);
+        $user = $this->em->getRepository('AppBundle:User')->find(1);
         $providerKey = 'main';
         $token = new UsernamePasswordToken($user, null, $providerKey, $user->getRoles());
         $this->tokenStorage->setToken($token);

@@ -3,10 +3,13 @@
 namespace AppBundle\Form;
 
 use AppBundle\Entity\Configuration;
+use AppBundle\Entity\Mosque;
 use AppBundle\Form\DataTransformer\PrayerTransformer;
 use AppBundle\Service\PrayerTime;
-use Meezaan\PrayerTimes\PrayerTimes;
+use AppBundle\Service\ToolsService;
+use IslamicNetwork\PrayerTimes\PrayerTimes;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -16,7 +19,10 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\Choice;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
@@ -28,28 +34,25 @@ class ConfigurationType extends AbstractType
 {
 
     /**
-     * @var Translator
-     */
-    private $translator;
-
-    /**
-     * @var Array
+     * @var array
      */
     private static $DST = [
         "dst-auto" => 2,
         "dst-disabled" => 0,
         "dst-enabled" => 1
     ];
-
     /**
-     * @var Array
+     * @var array
      */
     private static $THEMES = [
-        "mawaqit", "spring", "summer", "autumn", "winter"
+        "mawaqit",
+        "spring",
+        "summer",
+        "autumn",
+        "winter"
     ];
-
     /**
-     * @var Array
+     * @var array
      */
     private static $RANDOM_HADITH_INTERVAL_DISABLING = [
         "" => "",
@@ -58,10 +61,19 @@ class ConfigurationType extends AbstractType
         "asr-maghrib" => "2-3",
         "maghrib-isha" => "3-4"
     ];
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+    /**
+     * @var AuthorizationChecker
+     */
+    private $securityChecker;
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator, AuthorizationChecker $securityChecker)
     {
         $this->translator = $translator;
+        $this->securityChecker = $securityChecker;
     }
 
     /**
@@ -69,371 +81,597 @@ class ConfigurationType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
+        $isAdmin = $this->securityChecker->isGranted('ROLE_ADMIN');
         $adjustedTimesValues = range(-30, 30);
         $timePattern = '/^\d{2}:\d{2}$/';
 
         $builder
-            ->add('jumuaTime', null, [
-                'constraints' => new Regex(['pattern' => $timePattern]),
-                'attr' => [
-                    'placeholder' => 'hh:mm'
-                ]
-            ])
-            ->add('jumuaTime2', null, [
-                'constraints' => new Regex(['pattern' => $timePattern]),
-                'attr' => [
-                    'help' => $this->translator->trans('configuration.form.jumuaTime2.title'),
-                    'placeholder' => 'hh:mm'
-                ]
-            ])
-            ->add('jumuaAsDuhr', CheckboxType::class, [
-                'required' => false,
-            ])
-            ->add('jumua', CheckboxType::class, [
-                'required' => false,
-            ])
-            ->add('jumuaDhikrReminderEnabled', CheckboxType::class, [
-                'required' => false,
-                'attr' => [
-                    'help' => 'configuration.form.jumuaDhikrReminderEnabled.title',
-                ]
-            ])
-            ->add('jumuaBlackScreenEnabled', CheckboxType::class, [
-                'required' => false,
-            ])
-            ->add('jumuaTimeout', IntegerType::class, [
-                'constraints' => new GreaterThanOrEqual(['value' => 20]),
-                'attr' => [
-                    'min' => 20
-                ]
-            ])
-            ->add('aidTime', null, [
-                'constraints' => new Regex(['pattern' => $timePattern]),
-                'attr' => [
-                    'help' => $this->translator->trans('configuration.form.aidTime.title'),
-                    'placeholder' => 'hh:mm'
-                ]
-            ])
-            ->add('imsakNbMinBeforeFajr', IntegerType::class, [
-                'constraints' => new GreaterThanOrEqual(['value' => 0]),
-                'attr' => [
-                    'help' => $this->translator->trans('configuration.form.imsakNbMinBeforeFajr.title'),
-                    'min' => 0
-                ]
-            ])
-            ->add('maximumIshaTimeForNoWaiting', null, [
-                'constraints' => new Regex(['pattern' => $timePattern]),
-                'attr' => [
-                    'help' => $this->translator->trans('configuration.form.maximumIshaTimeForNoWaiting.title'),
-                    'placeholder' => 'hh:mm',
-                ]
-            ])
-            ->add('waitingTimes', PrayerType::class, [
-                'sub_options' => [
-                    'type' => IntegerType::class,
-                    'constraints' => [new GreaterThanOrEqual(['value' => 0]), new NotBlank()],
+            ->add(
+                'jumuaTime',
+                null,
+                [
+                    'constraints' => new Regex(['pattern' => $timePattern]),
                     'attr' => [
+                        'placeholder' => 'hh:mm'
+                    ]
+                ]
+            )
+            ->add(
+                'jumuaTime2',
+                null,
+                [
+                    'constraints' => new Regex(['pattern' => $timePattern]),
+                    'attr' => [
+                        'help' => $this->translator->trans('configuration.form.jumuaTime2.title'),
+                        'placeholder' => 'hh:mm'
+                    ]
+                ]
+            )
+            ->add(
+                'jumuaAsDuhr',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'jumua',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'jumuaDhikrReminderEnabled',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                    'attr' => [
+                        'help' => 'configuration.form.jumuaDhikrReminderEnabled.title',
+                    ]
+                ]
+            )
+            ->add(
+                'jumuaBlackScreenEnabled',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'jumuaTimeout',
+                IntegerType::class,
+                [
+                    'constraints' => new GreaterThanOrEqual(['value' => 20]),
+                    'attr' => [
+                        'min' => 20
+                    ]
+                ]
+            )
+            ->add(
+                'aidTime',
+                null,
+                [
+                    'constraints' => new Regex(['pattern' => $timePattern]),
+                    'attr' => [
+                        'help' => $this->translator->trans('configuration.form.aidTime.title'),
+                        'placeholder' => 'hh:mm'
+                    ]
+                ]
+            )
+            ->add(
+                'imsakNbMinBeforeFajr',
+                IntegerType::class,
+                [
+                    'constraints' => new GreaterThanOrEqual(['value' => 0]),
+                    'attr' => [
+                        'help' => $this->translator->trans('configuration.form.imsakNbMinBeforeFajr.title'),
                         'min' => 0
                     ]
                 ]
-            ])
-            ->add('adjustedTimes', PrayerType::class, [
-                'constraints' => new NotBlank(['message' => "form.configuration.mandatory"]),
-                'sub_options' => [
-                    'type' => ChoiceType::class,
-                    'choices' => array_combine($adjustedTimesValues, $adjustedTimesValues)
+            )
+            ->add(
+                'maximumIshaTimeForNoWaiting',
+                null,
+                [
+                    'constraints' => new Regex(['pattern' => $timePattern]),
+                    'attr' => [
+                        'help' => $this->translator->trans('configuration.form.maximumIshaTimeForNoWaiting.title'),
+                        'placeholder' => 'hh:mm',
+                    ]
+                ]
+            )
+            ->add(
+                'waitingTimes',
+                PrayerType::class,
+                [
+                    'sub_options' => [
+                        'type' => IntegerType::class,
+                        'constraints' => [new GreaterThanOrEqual(['value' => 0]), new NotBlank()],
+                        'attr' => [
+                            'min' => 0
+                        ]
+                    ]
+                ]
+            )
+            ->add(
+                'adjustedTimes',
+                PrayerType::class,
+                [
+                    'constraints' => new NotBlank(['message' => "form.configuration.mandatory"]),
+                    'sub_options' => [
+                        'type' => ChoiceType::class,
+                        'choices' => array_combine($adjustedTimesValues, $adjustedTimesValues)
 
-                ]
-            ])
-            ->add('fixedTimes', PrayerType::class, [
-                'required' => false,
-                'attr' => [
-                    'help' => $this->translator->trans('configuration.form.fixedTimes.title')
-                ],
-                'sub_options' => [
-                    'type' => TextType::class,
-                    'constraints' => new Regex(['pattern' => $timePattern]),
-                    'attr' => [
-                        'placeholder' => "hh:mm"
                     ]
                 ]
-            ])
-            ->add('fixedIqama', PrayerType::class, [
-                'required' => false,
-                'attr' => [
-                    'help' => $this->translator->trans('configuration.form.fixedIqama.title')
-                ],
-                'sub_options' => [
-                    'type' => TextType::class,
-                    'constraints' => new Regex(['pattern' => $timePattern]),
+            )
+            ->add(
+                'fixedTimes',
+                PrayerType::class,
+                [
+                    'required' => false,
                     'attr' => [
-                        'placeholder' => "hh:mm"
+                        'help' => $this->translator->trans('configuration.form.fixedTimes.title')
+                    ],
+                    'sub_options' => [
+                        'type' => TextType::class,
+                        'constraints' => new Regex(['pattern' => $timePattern]),
+                        'attr' => [
+                            'placeholder' => "hh:mm"
+                        ]
                     ]
                 ]
-            ])
-            ->add('duaAfterPrayerShowTimes', PrayerType::class, [
-                'sub_options' => [
-                    'type' => IntegerType::class,
-                    'constraints' => [new GreaterThanOrEqual(['value' => 5]), new NotBlank()],
+            )
+            ->add(
+                'fixedIqama',
+                PrayerType::class,
+                [
+                    'required' => false,
+                    'attr' => [
+                        'help' => $this->translator->trans('configuration.form.fixedIqama.title')
+                    ],
+                    'sub_options' => [
+                        'type' => TextType::class,
+                        'constraints' => new Regex(['pattern' => $timePattern]),
+                        'attr' => [
+                            'placeholder' => "hh:mm"
+                        ]
+                    ]
+                ]
+            )
+            ->add(
+                'duaAfterPrayerShowTimes',
+                PrayerType::class,
+                [
+                    'sub_options' => [
+                        'type' => IntegerType::class,
+                        'constraints' => [new GreaterThanOrEqual(['value' => 5]), new NotBlank()],
+                        'attr' => [
+                            'min' => 5
+                        ]
+                    ],
+                    'attr' => [
+                        'help' => $this->translator->trans('configuration.form.duaAfterPrayerShowTimes.title'),
+                    ],
+                ]
+            )
+            ->add(
+                'hijriAdjustment',
+                ChoiceType::class,
+                [
+                    'choices' => [-2 => -2, -1 => -1, 0 => 0, 1 => 1, 2 => 2],
+                ]
+            )
+            ->add(
+                'timezoneName',
+                TimezoneType::class,
+                [
+                    'disabled' => !$isAdmin,
+                ]
+            )
+            ->add(
+                'dst',
+                ChoiceType::class,
+                [
+                    'choices' => self::$DST,
+                ]
+            )
+            ->add(
+                'dstSummerDate',
+                DateType::class,
+                [
+                    'required' => false,
+                    'widget' => 'choice',
+                    'attr' => [
+                        'help' => 'configuration.form.dstSummerDate.title',
+                    ],
+                ]
+            )
+            ->add(
+                'dstWinterDate',
+                DateType::class,
+                [
+                    'required' => false,
+                    'widget' => 'choice',
+                    'attr' => [
+                        'help' => 'configuration.form.dstWinterDate.title',
+                    ],
+                ]
+            )
+            ->add(
+                'hadithLang',
+                ChoiceType::class,
+                [
+                    'choices' => array_combine(Configuration::HADITH_LANG, Configuration::HADITH_LANG),
+                ]
+            )
+            ->add(
+                'asrMethod',
+                ChoiceType::class,
+                [
+                    'choices' => [
+                        "configuration.form.asrMethod.Standard" => PrayerTimes::MIDNIGHT_MODE_STANDARD,
+                        "configuration.form.asrMethod.Hanafi" => PrayerTimes::SCHOOL_HANAFI,
+                    ]
+                ]
+            )
+            ->add(
+                'highLatsMethod',
+                ChoiceType::class,
+                [
+                    'required' => false,
+                    'choices' => [
+                        "configuration.form.highLatsMethod.AngleBased" => PrayerTimes::LATITUDE_ADJUSTMENT_METHOD_ANGLE,
+                        "configuration.form.highLatsMethod.NightMiddle" => PrayerTimes::LATITUDE_ADJUSTMENT_METHOD_MOTN,
+                        "configuration.form.highLatsMethod.OneSeventh" => PrayerTimes::LATITUDE_ADJUSTMENT_METHOD_ONESEVENTH
+                    ]
+                ]
+            )
+            ->add(
+                'hijriDateEnabled',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'duaAfterAzanEnabled',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'duaAfterPrayerEnabled',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'azanBip',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                    'label' => 'configuration.form.azanBip.label',
+                ]
+            )
+            ->add(
+                'azanVoiceEnabled',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                    'attr' => [
+                        'help' => 'configuration.form.azanVoiceEnabled.title',
+                    ],
+                ]
+            )
+            ->add(
+                'wakeAzanVoice',
+                ChoiceType::class,
+                [
+                    'choices' => [
+                        "configuration.form.wakeAzanVoice.haram" => "adhan-maquah",
+                        "configuration.form.wakeAzanVoice.algeria" => "adhan-algeria",
+                        "configuration.form.wakeAzanVoice.quds" => "adhan-quds",
+                        "configuration.form.wakeAzanVoice.egypt" => "adhan-egypt",
+                    ]
+                ]
+            )
+            ->add(
+                'iqamaBip',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'iqamaFullScreenCountdown',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'blackScreenWhenPraying',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                    'attr' => [
+                        'help' => 'configuration.form.blackScreenWhenPraying.title',
+                    ],
+                ]
+            )
+            ->add(
+                'sourceCalcul',
+                ChoiceType::class,
+                [
+                    'choices' => array_combine(Configuration::SOURCE_CHOICES, Configuration::SOURCE_CHOICES)
+                ]
+            )
+            ->add(
+                'prayerMethod',
+                ChoiceType::class,
+                [
+                    'choices' => array_combine(PrayerTime::METHOD_CHOICES, PrayerTime::METHOD_CHOICES)
+                ]
+            )
+            ->add(
+                'fajrDegree',
+                NumberType::class,
+                [
+                    'scale' => 2,
+                    'required' => false,
+                    'attr' => [
+                        'placeholder' => 'configuration.form.fajrDegree.placeholder',
+                    ]
+                ]
+            )
+            ->add(
+                'ishaDegree',
+                NumberType::class,
+                [
+                    'scale' => 2,
+                    'required' => false,
+                    'attr' => [
+                        'placeholder' => 'configuration.form.ishaDegree.placeholder',
+                    ]
+                ]
+            )
+            ->add(
+                'iqamaDisplayTime',
+                IntegerType::class,
+                [
+                    'constraints' => new GreaterThanOrEqual(['value' => 5]),
+                    'label' => 'configuration.form.iqamaDisplayTime.label',
                     'attr' => [
                         'min' => 5
                     ]
-                ],
-                'attr' => [
-                    'help' => $this->translator->trans('configuration.form.duaAfterPrayerShowTimes.title'),
-                ],
-            ])
-            ->add('hijriAdjustment', ChoiceType::class, [
-                'choices' => [-2 => -2, -1 => -1, 0 => 0, 1 => 1, 2 => 2],
-            ])
-            ->add('timezoneName', TimezoneType::class, [
-                'attr' => [
-                    'help' => 'configuration.form.timezoneName.title',
-                ],
-            ])
-            ->add('dst', ChoiceType::class, [
-                'choices' => self::$DST,
-            ])
-            ->add('dstSummerDate', DateType::class, [
-                'required' => false,
-                'widget' => 'choice',
-                'attr' => [
-                    'help' => 'configuration.form.dstSummerDate.title',
-                ],
-            ])
-            ->add('dstWinterDate', DateType::class, [
-                'required' => false,
-                'widget' => 'choice',
-                'attr' => [
-                    'help' => 'configuration.form.dstWinterDate.title',
-                ],
-            ])
-            ->add('hadithLang', ChoiceType::class, [
-                'choices' => array_combine(Configuration::HADITH_LANG, Configuration::HADITH_LANG),
-            ])
-            ->add('asrMethod', ChoiceType::class, [
-                'choices' => [
-                    "configuration.form.asrMethod.Standard" => PrayerTimes::MIDNIGHT_MODE_STANDARD,
-                    "configuration.form.asrMethod.Hanafi" => PrayerTimes::SCHOOL_HANAFI,
                 ]
-            ])
-            ->add('highLatsMethod', ChoiceType::class, [
-                'required' => false,
-                'choices' => [
-                    "configuration.form.highLatsMethod.AngleBased" => PrayerTimes::LATITUDE_ADJUSTMENT_METHOD_ANGLE,
-                    "configuration.form.highLatsMethod.NightMiddle" => PrayerTimes::LATITUDE_ADJUSTMENT_METHOD_MOTN,
-                    "configuration.form.highLatsMethod.OneSeventh" => PrayerTimes::LATITUDE_ADJUSTMENT_METHOD_ONESEVENTH
+            )
+            ->add(
+                'wakeForFajrTime',
+                IntegerType::class,
+                [
+                    'required' => false,
+                    'constraints' => new GreaterThanOrEqual(['value' => 0]),
+                    'attr' => [
+                        'min' => 0,
+                        'help' => 'configuration.form.wakeForFajrTime.title',
+                    ]
                 ]
-            ])
-            ->add('hijriDateEnabled', CheckboxType::class, [
-                'required' => false,
-            ])
-            ->add('duaAfterAzanEnabled', CheckboxType::class, [
-                'required' => false,
-            ])
-            ->add('duaAfterPrayerEnabled', CheckboxType::class, [
-                'required' => false,
-            ])
-            ->add('azanBip', CheckboxType::class, [
-                'required' => false,
-                'label' => 'configuration.form.azanBip.label',
-            ])
-            ->add('azanVoiceEnabled', CheckboxType::class, [
-                'required' => false,
-                'attr' => [
-                    'help' => 'configuration.form.azanVoiceEnabled.title',
-                ],
-            ])
-            ->add('wakeAzanVoice', ChoiceType::class, [
-                'choices' => [
-                    "configuration.form.wakeAzanVoice.haram" => "adhan-maquah",
-                    "configuration.form.wakeAzanVoice.algeria" => "adhan-algeria",
-                    "configuration.form.wakeAzanVoice.quds" => "adhan-quds",
-                    "configuration.form.wakeAzanVoice.egypt" => "adhan-egypt",
+            )
+            ->add(
+                'ishaFixation',
+                ChoiceType::class,
+                [
+                    'required' => false,
+                    'placeholder' => 'select_a_value',
+                    'choices' => [
+                        '1h05' => 65,
+                        '1h10' => 70,
+                        '1h15' => 75,
+                        '1h20' => 80,
+                        '1h30' => 90,
+                        '1h45' => 105,
+                        '2h00' => 120,
+                    ],
+                    'attr' => [
+                        'help' => 'configuration.form.ishaFixation.title',
+                    ]
                 ]
-            ])
-            ->add('iqamaBip', CheckboxType::class, [
-                'required' => false,
-            ])
-            ->add('iqamaFullScreenCountdown', CheckboxType::class, [
-                'required' => false,
-            ])
-            ->add('blackScreenWhenPraying', CheckboxType::class, [
-                'required' => false,
-                'attr' => [
-                    'help' => 'configuration.form.blackScreenWhenPraying.title',
-                ],
-            ])
-            ->add('sourceCalcul', ChoiceType::class, [
-                'choices' => array_combine(Configuration::SOURCE_CHOICES, Configuration::SOURCE_CHOICES)
-            ])
-            ->add('prayerMethod', ChoiceType::class, [
-                'choices' => array_combine(PrayerTime::METHOD_CHOICES, PrayerTime::METHOD_CHOICES)
-            ])
-            ->add('fajrDegree', NumberType::class, [
-                'scale' => 2,
-                'required' => false,
-                'attr' => [
-                    'placeholder' => 'configuration.form.fajrDegree.placeholder',
+            )
+            ->add(
+                'randomHadithEnabled',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                    'label' => 'configuration.form.randomHadithEnabled.label',
+                    'attr' => [
+                        'help' => 'configuration.form.randomHadithEnabled.title',
+                    ]
                 ]
-            ])
-            ->add('ishaDegree', NumberType::class, [
-                'scale' => 2,
-                'required' => false,
-                'attr' => [
-                    'placeholder' => 'configuration.form.ishaDegree.placeholder',
+            )
+            ->add(
+                'randomHadithIntervalDisabling',
+                ChoiceType::class,
+                [
+                    'required' => false,
+                    'choices' => self::$RANDOM_HADITH_INTERVAL_DISABLING,
+                    'attr' => [
+                        'help' => 'configuration.form.randomHadithIntervalDisabling.title',
+                    ]
                 ]
-            ])
-            ->add('iqamaDisplayTime', IntegerType::class, [
-                'constraints' => new GreaterThanOrEqual(['value' => 5]),
-                'label' => 'configuration.form.iqamaDisplayTime.label',
-                'attr' => [
-                    'min' => 5
+            )
+            ->add(
+                'iqamaEnabled',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                    'label' => 'configuration.form.iqamaEnabled.label',
+                    'attr' => [
+                        'help' => 'configuration.form.iqamaEnabled.title',
+                    ]
                 ]
-            ])
-            ->add('wakeForFajrTime', IntegerType::class, [
-                'required' => false,
-                'constraints' => new GreaterThanOrEqual(['value' => 0]),
-                'attr' => [
-                    'min' => 0,
-                    'help' => 'configuration.form.wakeForFajrTime.title',
+            )
+            ->add(
+                'temperatureEnabled',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                    'attr' => [
+                        'help' => 'configuration.form.temperatureEnabled.title',
+                    ]
                 ]
-            ])
-            ->add('ishaFixation', ChoiceType::class, [
-                'required' => false,
-                'placeholder' => 'select_a_value',
-                'choices' => [
-                    '1h05' => 65,
-                    '1h10' => 70,
-                    '1h15' => 75,
-                    '1h20' => 80,
-                    '1h30' => 90,
-                    '1h45' => 105,
-                    '2h00' => 120,
-                ],
-                'attr' => [
-                    'help' => 'configuration.form.ishaFixation.title',
+            )
+            ->add(
+                'temperatureUnit',
+                ChoiceType::class,
+                [
+                    'choices' => ["°C" => "C", "°F" => "F"],
+                    'constraints' => [
+                        new Choice(['choices' => ["C", "F"]]),
+                        new NotBlank(),
+                    ],
+                    'expanded' => true,
+                    'label_attr' => array(
+                        'class' => 'radio-inline'
+                    )
                 ]
-            ])
-            ->add('randomHadithEnabled', CheckboxType::class, [
-                'required' => false,
-                'label' => 'configuration.form.randomHadithEnabled.label',
-                'attr' => [
-                    'help' => 'configuration.form.randomHadithEnabled.title',
+            )
+            ->add(
+                'footer',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                    'label' => 'configuration.form.footer.label'
                 ]
-            ])
-            ->add('randomHadithIntervalDisabling', ChoiceType::class, [
-                'required' => false,
-                'choices' => self::$RANDOM_HADITH_INTERVAL_DISABLING,
-                'attr' => [
-                    'help' => 'configuration.form.randomHadithIntervalDisabling.title',
+            )
+            ->add(
+                'timeDisplayFormat',
+                ChoiceType::class,
+                [
+                    'choices' => ["24h" => "24", "12h" => "12"],
+                    'constraints' => [
+                        new Choice(['choices' => ["24", "12"]]),
+                        new NotBlank(),
+                    ],
+                    'expanded' => true,
+                    'label_attr' => array(
+                        'class' => 'radio-inline'
+                    )
                 ]
-            ])
-            ->add('iqamaEnabled', CheckboxType::class, [
-                'required' => false,
-                'label' => 'configuration.form.iqamaEnabled.label',
-                'attr' => [
-                    'help' => 'configuration.form.iqamaEnabled.title',
+            )
+            ->add(
+                'theme',
+                ChoiceType::class,
+                [
+                    'choices' => array_combine(self::$THEMES, self::$THEMES),
+                    'constraints' => [
+                        new Choice(['choices' => self::$THEMES]),
+                        new NotBlank(),
+                    ]
                 ]
-            ])
-            ->add('temperatureEnabled', CheckboxType::class, [
-                'required' => false,
-                'attr' => [
-                    'help' => 'configuration.form.temperatureEnabled.title',
+            )
+            ->add(
+                'backgroundType',
+                ChoiceType::class,
+                [
+                    'choices' => ["color" => "color", "motif" => "motif"],
+                    'constraints' => [
+                        new Choice(['choices' => ["color", "motif"]]),
+                        new NotBlank(),
+                    ]
                 ]
-            ])
-            ->add('temperatureUnit', ChoiceType::class, [
-                'choices' => ["°C" => "C", "°F" => "F"],
-                'constraints' => [
-                    new Choice(['choices' => ["C", "F"]]),
-                    new NotBlank(),
-                ],
-                'expanded' => true,
-                'label_attr' => array(
-                    'class' => 'radio-inline'
-                )
-            ])
-            ->add('footer', CheckboxType::class, [
-                'required' => false,
-                'label' => 'configuration.form.footer.label'
-            ])
-            ->add('timeDisplayFormat', ChoiceType::class, [
-                'choices' => ["24h" => "24", "12h" => "12"],
-                'constraints' => [
-                    new Choice(['choices' => ["24", "12"]]),
-                    new NotBlank(),
-                ],
-                'expanded' => true,
-                'label_attr' => array(
-                    'class' => 'radio-inline'
-                )
-            ])
-            ->add('theme', ChoiceType::class, [
-                'choices' => array_combine(self::$THEMES, self::$THEMES),
-                'constraints' => [
-                    new Choice(['choices' => self::$THEMES]),
-                    new NotBlank(),
+            )
+            ->add(
+                'backgroundMotif',
+                ChoiceType::class,
+                [
+                    'choices' => range(-1, 20),
+                    'constraints' => [
+                        new NotBlank(),
+                    ]
                 ]
-            ])
-            ->add('backgroundType', ChoiceType::class, [
-                'choices' => ["color" => "color", "motif" => "motif"],
-                'constraints' => [
-                    new Choice(['choices' => ["color", "motif"]]),
-                    new NotBlank(),
-                ]
-            ])
-            ->add('backgroundMotif', ChoiceType::class, [
-                'choices' => range(-1, 20),
-                'constraints' => [
-                    new NotBlank(),
-                ]
-            ])
+            )
             ->add('backgroundColor')
             ->add('calendar')
             ->add('iqamaCalendar')
-            ->add('timeToDisplayMessage', IntegerType::class, [
-                'required' => false,
-                'constraints' => new Range(['min' => 5, 'max' => 60]),
-                'attr' => [
-                    'min' => 5,
-                    'max' => 60
+            ->add(
+                'timeToDisplayMessage',
+                IntegerType::class,
+                [
+                    'required' => false,
+                    'constraints' => new Range(['min' => 5, 'max' => 60]),
+                    'attr' => [
+                        'min' => 5,
+                        'max' => 60
+                    ]
                 ]
-            ])
-            ->add('showNextAdhanCountdown', CheckboxType::class, [
-                'required' => false,
-            ])
-            ->add('save', SubmitType::class, [
-                'label' => 'save',
-                'attr' => [
-                    'class' => 'btn btn-primary',
+            )
+            ->add(
+                'showNextAdhanCountdown',
+                CheckboxType::class,
+                [
+                    'required' => false,
                 ]
-            ])
-
-            /*->addEventListener(FormEvents::SUBMIT, array($this, 'onPostSetData'))*/
-        ;
-
-        /*$builder->get('calendar')->addModelTransformer(new JsonTransformer());
-        $builder->get('iqamaCalendar')->addModelTransformer(new JsonTransformer());*/
+            )
+            ->add(
+                'save',
+                SubmitType::class,
+                [
+                    'label' => 'save',
+                    'attr' => [
+                        'class' => 'btn btn-primary',
+                    ]
+                ]
+            );
 
         $builder->get('waitingTimes')->addModelTransformer(new PrayerTransformer());
         $builder->get('adjustedTimes')->addModelTransformer(new PrayerTransformer());
         $builder->get('fixedTimes')->addModelTransformer(new PrayerTransformer());
         $builder->get('fixedIqama')->addModelTransformer(new PrayerTransformer());
         $builder->get('duaAfterPrayerShowTimes')->addModelTransformer(new PrayerTransformer());
+
+        $builder->get('calendar')
+            ->addViewTransformer(
+                new CallbackTransformer(
+                    function ($value) {
+                        return json_decode($value, true);
+                    },
+                    function ($value) {
+                        return $value;
+                    }
+                )
+            );
+
+        $builder->get('iqamaCalendar')
+            ->addViewTransformer(
+                new CallbackTransformer(
+                    function ($value) {
+                        return json_decode($value, true);
+                    },
+                    function ($value) {
+                        return $value;
+                    }
+                )
+            );
     }
+
 
     /**
      * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => Configuration::class,
-            'allow_extra_fields' => true,
-            'choice_translation_domain' => true,
-            'label_format' => 'configuration.form.%name%.label'
-        ));
+        $resolver->setDefaults(
+            array(
+                'data_class' => Configuration::class,
+                'choice_translation_domain' => true,
+                'label_format' => 'configuration.form.%name%.label'
+            )
+        );
     }
 
     /**

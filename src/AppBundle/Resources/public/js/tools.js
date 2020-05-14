@@ -102,7 +102,8 @@ function exitFullscreen() {
  * @param elem
  * @param marge
  */
-function fixFontSize(elem, marge = 30) {
+function fixFontSize(elem, marge) {
+    marge = marge || 30;
     let $elem = $(elem);
     let $parent = $elem.parent();
     $elem.css('font-size', "90px");

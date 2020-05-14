@@ -15,6 +15,7 @@
         "bundles/app/prayer-times/css/desktop.css"
         "bundles/app/prayer-times/css/slider.css"
         "bundles/app/weather/weather-icons.min.css"
+        "bundles/app/font-awesome/css/all.min.css"
         filter="cssrewrite" %}
         <link rel="stylesheet" href="{{ asset_url }}" type="text/css">
         <link href="{{ asset('bundles/app/prayer-times/css/themes/' ~ mosque.conf.theme ~ '.css') }}" type="text/css"
@@ -60,7 +61,7 @@
     <div class="currentTimeShort"></div>
     <div class="messageContent">
         <ul>
-            {% for message in mosque.enabledMessages(true) %}
+            {% for message in mosque.enabledMessages(true) if message.video is empty %}
                 <li data-position="{{ message.position }}">
                     {% if message.image %}
                         <img src="{{ vich_uploader_asset(message, 'file') }}"/>
@@ -99,12 +100,12 @@
             <div class="text ltr">
                 <div></div>
             </div>
-            <div class="next-prayer-bloc">
-                <div class="next-prayer">
-                    {{ 'next_prayer'|trans }}
+            <div class="next-prayer-bloc-hadith">
+                <div class="next-prayer bottom-block">
+                    <i class="fas fa-history"></i>&nbsp;{{ 'next_prayer'|trans }}
                     <div class="countdown"></div>
                 </div>
-                <div class="currentTimeShort"></div>
+                <div class="currentTimeShort bottom-block"></div>
             </div>
         </div>
 
@@ -117,9 +118,8 @@
 
                 {% if isLocal() %}
                     {% if mosque.synchronized %}
-                        <div class="settings" title="{{ 'form.configure.action'|trans }}">
-                            <a href="{{ path('mosque_index', {id: mosque.id}) }}"> <i
-                                        class="glyphicon glyphicon-cog"></i></a>
+                        <div class="settings" title="{{ 'form.sync.action'|trans }}">
+                            <a href="{{ path('mosque_reset_sync', {id: mosque.id}) }}"> <i class="glyphicon glyphicon-refresh"></i></a>
                         </div>
                     {% endif %}
 
@@ -184,7 +184,7 @@
             </div>
 
             <div class="content">
-                <div class="col-sm-3">
+                <div>
                     <div class="aid custom-time">
                         <div>{{ 'aid'|trans }}</div>
                         <div class="time aid-id"></div>
@@ -198,18 +198,18 @@
                         <div class="time imsak-id"></div>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div style="padding: 5px">
                     <div class="currentTime"></div>
-                    <div class="date">
-                        {% if mosque.configuration.hijriDateEnabled %}
-                            <div class="hijriDate"><span></span> <img class="full-moon"
-                                                                      src="{{ asset('bundles/app/prayer-times/img/full-moon.png') }}"
-                                                                      alt=""></div>
-                        {% endif %}
-                        <div class="gregorianDate"></div>
-                    </div>
+                    {% if mosque.configuration.showNextAdhanCountdown %}
+                        <div class="next-prayer-bloc">
+                            <div class="next-prayer">
+                                <i class="fas fa-history"></i>&nbsp;&nbsp;{{ 'next_prayer'|trans }}
+                                <div class="countdown"></div>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
-                <div class="col-sm-3">
+                <div>
                     {% if mosque.configuration.jumua %}
                         <div class="joumouaa">
                             <div class="ar">{{ 'jumua'|trans }}</div>
@@ -224,15 +224,15 @@
                         <div class="joumouaa">{{ 'noJumua'|trans|raw }}</div>
                     {% endif %}
                 </div>
-
-                {% if mosque.configuration.showNextAdhanCountdown %}
-                    <div class="col-sm-12 next-prayer-bloc">
-                        <div class="next-prayer">
-                            {{ 'next_prayer'|trans }}
-                            <div class="countdown"></div>
-                        </div>
+            </div>
+            <div class="dates-bloc">
+                {% if mosque.configuration.hijriDateEnabled %}
+                    <div class="hijriDate bottom-block">
+                        <span></span>
+                        <img class="full-moon" src="{{ asset('bundles/app/prayer-times/img/full-moon.png') }}" alt="">
                     </div>
                 {% endif %}
+                <div class="gregorianDate bottom-block"></div>
             </div>
         </div>
 
@@ -292,7 +292,7 @@
 
             <div class="store">
                 {% if mosque.configuration.footer %}
-                    <div id="qrcode" data-url="{{ site }}/app/store-url"></div>
+                    <div id="qrcode" data-url="{{ site }}/mobile/store-url"></div>
                 {% endif %}
                 <div>
                     {% if mosque.configuration.footer %}

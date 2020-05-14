@@ -88,6 +88,7 @@ class Mosque
      */
     private $type = "MOSQUE";
     /**
+     * @Groups({"elastic"})
      * @var string
      */
     private $slug;
@@ -296,6 +297,11 @@ class Mosque
      */
     private $similar = [];
 
+    /**
+     * @var int
+     */
+    private $mobileFavoriteCounter;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
@@ -356,6 +362,17 @@ class Mosque
             $name .= " - " . $this->getCity();
         }
         return $name;
+    }
+
+    /**
+     * Label for web search autocomplete
+     *
+     * @Groups({"elastic"})
+     * @return string
+     */
+    function getLabel()
+    {
+        return $this->getTitle();
     }
 
     /**
@@ -1107,15 +1124,6 @@ class Mosque
     }
 
     /**
-     * @Groups({"elastic"})
-     * @return string
-     */
-    public function getUrl()
-    {
-        return "https://mawaqit.net/ar/" . $this->slug;
-    }
-
-    /**
      * @return string
      */
     public function getStatus(): string
@@ -1248,8 +1256,8 @@ class Mosque
             $this->isCalendarCompleted = true;
             $configuration = $this->configuration;
             if ($configuration->isCalendar()) {
-                if (!empty($configuration->getCalendar())) {
-                    foreach ($configuration->getCalendar() as $month => $days) {
+                if (!empty($configuration->getDecodedCalendar())) {
+                    foreach ($configuration->getDecodedCalendar() as $month => $days) {
                         foreach ($days as $day => $prayers) {
                             foreach ($prayers as $prayerIndex => $prayer) {
                                 if (empty($prayer)) {
@@ -1691,6 +1699,25 @@ class Mosque
     {
         $this->similar = $similar;
         return $this;
+    }
+
+    /**
+     * @param int $mobileFavoriteCounter
+     *
+     * @return Mosque
+     */
+    public function setMobileFavoriteCounter(?int $mobileFavoriteCounter): Mosque
+    {
+        $this->mobileFavoriteCounter = $mobileFavoriteCounter;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMobileFavoriteCounter(): ?int
+    {
+        return $this->mobileFavoriteCounter;
     }
 
 }
