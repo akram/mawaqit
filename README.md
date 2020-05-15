@@ -1,5 +1,7 @@
 # MAWAQIT
 
+#### THIS IS A WAQF FI SABILI ALLAH, PLEASE DON'T USE IT IN COMMERCIAL PURPOSES.
+
 ## Install the project
 ### Requirements 
 * Linux OS

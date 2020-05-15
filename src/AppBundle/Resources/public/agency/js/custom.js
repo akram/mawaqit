@@ -7,7 +7,7 @@ $("#whatsapp-select").bind("change keyup", function (event) {
 
     $.ajax({
         url: $(this).data("remote"),
-        headers: {'Api-Access-Token': $(this).data("token")},
+        headers: {'t': $(this).data("t")},
         data: {
             country: $(this).val()
         },

@@ -63,7 +63,7 @@ var randomHadith = {
                 if (!hadith) {
                     $.ajax({
                         url: $randomHadithEl.data("remote"),
-                        headers: {'Api-Access-Token': $(".main").data("apiAccessToken")},
+                        headers: {'t': $(".main").data("t")},
                         success: function (resp) {
                             if (resp.text) {
                                 hadith = resp.text;

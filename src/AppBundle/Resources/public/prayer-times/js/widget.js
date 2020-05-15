@@ -29,7 +29,7 @@ function getTimesFromCalendar(mosque) {
 
 $.ajax({
     url: widget.data("remote") + "?calendar",
-    headers: {'Api-Access-Token': widget.data("apiAccessToken")},
+    headers: {'t': widget.data("t")},
     success: function (mosque) {
 
         // hijri date

@@ -19,11 +19,13 @@ use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterfa
 class UuidTokenAuthenticator implements SimplePreAuthenticatorInterface, AuthenticationFailureHandlerInterface
 {
 
-    const TOKEN_NAME = 'Api-Access-Token';
+    public const TOKEN_NAME = 'Api-Access-Token';
+    public const SHORT_TOKEN_NAME = 't';
 
     public function createToken(Request $request, $providerKey)
     {
-        $apiAccessToken = $request->headers->get(self::TOKEN_NAME);
+        $headers = $request->headers;
+        $apiAccessToken = $headers->get(self::SHORT_TOKEN_NAME, $headers->get(self::TOKEN_NAME));
 
         if (!$apiAccessToken) {
             throw new AccessDeniedHttpException(self::TOKEN_NAME . ' header is required');

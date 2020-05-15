@@ -24,7 +24,7 @@
     {% include "partial/background_style.html.twig" %}
 </head>
 <body class="text-center">
-<div class="widget" data-remote="{{ path('app_api_mosque_praytimes', {uuid: mosque.uuid}) }}" data-api-access-token="{{ mawaqitApiAccessToken }}">
+<div class="widget" data-remote="{{ path('app_api_mosque_praytimes', {uuid: mosque.uuid}) }}" data-t="{{ mawaqitApiAccessToken }}">
 
     <div class="top">
         <div class="shuruq">

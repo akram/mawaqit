@@ -58,7 +58,7 @@
 
 <div id="main" class="main mobile display-none"
      data-remote="{{ path('mosque_has_been_updated', {slug: mosque.slug}) }}"
-     data-api-access-token="{{ mawaqitApiAccessToken }}">
+     data-t="{{ mawaqitApiAccessToken }}">
 
     {% if mosque.isMosque and showNotification != 0 %}
         <div class="toggle"><i class="fa fa-bell"></i></div>

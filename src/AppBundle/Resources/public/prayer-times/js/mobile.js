@@ -17,7 +17,7 @@ $("#search").autocomplete({
     source: function (request, response) {
         $.ajax({
             url: $("#search").data("remote"),
-            headers: {'Api-Access-Token': $("#main").data("apiAccessToken")},
+            headers: {'t': $("#main").data("t")},
             data: {
                 word: request.term
             },

@@ -165,7 +165,7 @@
                     <i class="fab fa-whatsapp"></i> {{ 'home.text.contactUsText3'|trans }}<br>
                     <div class="row">
                         <div class="col-md-4 form-group mt-1">
-                            <select id="whatsapp-select" class="form-control" data-remote="{{ path('app_api_v2_support_support') }}" data-token="{{ token }}">
+                            <select id="whatsapp-select" class="form-control" data-remote="{{ path('app_api_v2_support_support') }}" data-t="{{ token }}">
                                 <option value="">{{ 'home.text.contactUsSelectNumber'|trans }}</option>
                                 {% for countryCode, phones in yamlLoader.support %}
                                     {% if  countryCode != 'OC' %}
