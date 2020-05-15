@@ -8,13 +8,12 @@ use AppBundle\Service\RequestService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class MosqueController extends Controller
+class MosqueController extends BaseController
 {
 
     /**
@@ -120,7 +119,7 @@ class MosqueController extends Controller
                 'version' => $this->getParameter('version'),
                 "support_email" => $this->getParameter("support_email"),
                 "postmasterAddress" => $this->getParameter("postmaster_address"),
-                "mawaqitApiAccessToken" => $this->getParameter("mawaqit_api_access_token"),
+                "mawaqitApiAccessToken" => $this->token(),
                 'form' => $form,
             ],
             new Response(null, Response::HTTP_OK, ["X-Frame-Options" => "deny"])
@@ -160,7 +159,7 @@ class MosqueController extends Controller
                 'version' => $this->getParameter('version'),
                 "support_email" => $this->getParameter("support_email"),
                 "postmasterAddress" => $this->getParameter("postmaster_address"),
-                "mawaqitApiAccessToken" => $this->getParameter("mawaqit_api_access_token"),
+                "mawaqitApiAccessToken" => $this->token(),
                 'messages' => $em->getRepository("AppBundle:Message")->getMessagesByMosque($mosque, null, true)
             ],
             $response
@@ -183,7 +182,7 @@ class MosqueController extends Controller
         return $this->render(
             "mosque/widget.html.twig",
             [
-                'mawaqitApiAccessToken' => $this->getParameter("mawaqit_api_access_token"),
+                'mawaqitApiAccessToken' => $this->token(),
                 'mosque' => $mosque
             ]
         );

@@ -9,13 +9,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class DefaultController extends Controller
+class DefaultController extends BaseController
 {
 
     /**
@@ -54,7 +53,7 @@ class DefaultController extends Controller
             "mosquesWithImage" => $mosquesWithImage,
             "mosqueNumberByCountry" => $mosqueNumberByCountry,
             "nextPage" => ++$page,
-            "mawaqitApiAccessToken" => $this->getParameter("mawaqit_api_access_token"),
+            "mawaqitApiAccessToken" => $this->token(),
             "faqs" => $em->getRepository('AppBundle:Faq')->getPublicFaq()
         ]);
     }

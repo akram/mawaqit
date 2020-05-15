@@ -25,7 +25,7 @@ class UuidTokenAuthenticator implements SimplePreAuthenticatorInterface, Authent
     public function createToken(Request $request, $providerKey)
     {
         $headers = $request->headers;
-        $apiAccessToken = $headers->get(self::SHORT_TOKEN_NAME, $headers->get(self::TOKEN_NAME));
+        $apiAccessToken = $headers->get(self::TOKEN_NAME, strrev($headers->get(self::SHORT_TOKEN_NAME)));
 
         if (!$apiAccessToken) {
             throw new AccessDeniedHttpException(self::TOKEN_NAME . ' header is required');
