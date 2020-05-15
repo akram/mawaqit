@@ -33,8 +33,14 @@ framework:
 assetic:
   debug:          '%kernel.debug%'
   use_controller: '%kernel.debug%'
+  node: /usr/bin/nodejs
   filters:
     cssrewrite: ~
+    uglifycss:
+      bin: /usr/local/bin/uglifycss
+    uglifyjs:
+      #bin: /usr/local/bin/uglifyjs
+      bin: /usr/local/lib/node_modules/uglify-es/bin/uglifyjs
   bundles:
     - AppBundle
     - FOSUserBundle

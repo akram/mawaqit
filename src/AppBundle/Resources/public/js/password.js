@@ -1,7 +1,7 @@
 function ruleChangeStatus(elm) {
     elm.removeClass('text-danger');
     elm.addClass('text-success');
-    let i = elm.find('i');
+    let i = elm.find('i')
     i.removeClass('fas fa-times-circle');
     i.addClass('fas fa-check-circle');
 }
