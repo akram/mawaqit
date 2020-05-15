@@ -437,7 +437,7 @@ class Mosque
         }
         $id = YoutubeHelper::extractId($this->streamUrl);
         return YoutubeHelper::buildEmbedUrl(
-                $this->video
+                $this->streamUrl
             ) . "?enablejsapi=1&autoplay=1&showinfo=0&loop=1&iv_load_policy=3&playlist={$id}";
     }
 
