@@ -294,14 +294,6 @@ user:
       help: Attention vous perdez toutes nos communications importantes
 
 mosque:
-  streamUrl:
-    title: Ajouter un flux vidéo (béta)
-    subTitle: |
-      A l'heure du jumua, l'écran mawaqit affiche automatiquement le flux de la caméra
-      et ce, jusqu'à la fin de la prière (délai choisi dans les paramètres de la jumua)
-    label: Lien du flux vidéo
-    placeholder: https://rtsp.me/embed/XXXXXXX/
-    info: Pour le moment mawaqit gère uniquement le flux http fourni par le site https://rtsp.me/#create
   title:
     HOME: Mawaqit %city% - Domicile
     SCHOOL: Mawaqit %city% - École
@@ -365,6 +357,16 @@ mosque:
   update_hijri_date:
     success: La date hégirienne a été mise à jour pour toutes les mosquées
   form:
+    streamUrl:
+      title: Ajouter un flux vidéo (béta)
+      subTitle: |
+        A l'heure du jumua, l'écran mawaqit affiche automatiquement le flux de la caméra
+        et ce, jusqu'à la fin de la prière (délai choisi dans les paramètres de la jumua)
+      label: Lien du flux vidéo
+      placeholder: https://youtu.be/c6FB9FKIvGo
+      info1: Pour le moment mawaqit gère uniquement un flux d'un live Youtube
+      info2: Demandez le lien du live Youtube à votre mosquée
+      info3: "Vous pouvez utiliser une caméra qui diffuse directement sur Youtube exemple : dddsd"
     status:
       label: Statut
     type:

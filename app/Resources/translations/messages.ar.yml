@@ -329,6 +329,16 @@ mosque:
     type:
       label: النوع
       placeholder: إختر النوع
+    streamUrl:
+      title: إضافة فيديو للبث المباشر (تجريبي)
+      subTitle: |
+        عند دخول وقت الجمعة ، تعرض شاشة مواقيت تلقائيًا البث المباشر للكاميرا حتى
+                 نهاية الصلاة (حسب الوقت المختار في إعدادات الجمعة)
+      label: رابط البث الحي
+      placeholder: https://youtu.be/c6FB9FKIvGo
+      info1: في الوقت الحالي ، يدير موقع مواقيت فقط البث المباشر على Youtube
+      info2: اطلب رابط يوتيوب للبث المباشر من مسجدك
+      info3: "Vous pouvez utiliser une caméra qui diffuse directement sur Youtube exemple : dddsd"
     name:
       placeholder: مثلا مسجد السنة، بيتي
     slug:

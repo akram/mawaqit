@@ -522,9 +522,9 @@ var prayer = {
 
                             // hilight asr
                             prayer.setNextTimeHilight(1);
-
-                            if (prayer.confData.streamUrl) {
-                                $("#streamer").attr("src", prayer.confData.streamUrl);
+                            let streamer = $("#streamer");
+                            if (streamer.data("url")) {
+                                streamer.attr("src", streamer.data("url"));
                                 prayer.jumuaHandler.showFrame("#streamer");
                             }
                             else if (prayer.confData.jumuaDhikrReminderEnabled === true) {

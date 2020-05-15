@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Util\YoutubeHelper;
 use Symfony\Component\HttpFoundation\File\File;
 
 /**
@@ -263,13 +264,17 @@ class Message
 
     public function getEmbedVideo(): ?string
     {
-        if(empty($this->video)){
+        if (empty($this->video)) {
             return null;
         }
 
-        preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $this->video, $match);
-        return "https://www.youtube.com/embed/{$match[1]}?enablejsapi=1&rel=0&loop=1&iv_load_policy=3&playlist={$match[1]}";
+        $id = YoutubeHelper::extractId($this->video);
+
+        return YoutubeHelper::buildEmbedUrl(
+                $this->video
+            ) . "?enablejsapi=1&rel=0&loop=1&iv_load_policy=3&playlist={$id}";
     }
+
     /**
      * @param string $video
      *
@@ -278,6 +283,7 @@ class Message
     public function setVideo(?string $video): Message
     {
         $this->video = $video;
+
         return $this;
     }
 

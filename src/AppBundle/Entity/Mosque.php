@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Util\YoutubeHelper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Ramsey\Uuid\Uuid;
@@ -425,6 +426,18 @@ class Mosque
     public function getStreamUrl(): ?string
     {
         return $this->streamUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getYoutubeEmbedStreamUrl(): ?string
+    {
+        if(empty($this->streamUrl)){
+            return null;
+        }
+
+        return YoutubeHelper::buildEmbedUrl($this->streamUrl) . "?enablejsapi=1&autoplay=1&showinfo=0";
     }
 
     /**

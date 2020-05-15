@@ -341,10 +341,11 @@ mosque:
         At the time of the jumu'a, the mawaqit screen automatically displays the stream vidéo of the camera until
         the end of the prayer (time chosen in the jumua settings)
       label: Video stream link
-      placeholder: https://rtsp.me/embed/XXXXXXX/
-      info: |
-        For the moment mawaqit only manages the http stream provided by the site
-        <a href="https://rtsp.me/#create" target="_blanc">https://rtsp.me</a>
+      placeholder: https://youtu.be/c6FB9FKIvGo
+      info1: For the moment mawaqit only manages the http stream provided by the live of Youtube
+      info2: Ask for the link to the live YouTube at your mosque
+      info3: "Vous pouvez utiliser une caméra qui diffuse directement sur Youtube exemple : dddsd"
+
     slug:
       label: "Change the website url"
     city:
