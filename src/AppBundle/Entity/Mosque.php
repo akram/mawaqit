@@ -367,7 +367,6 @@ class Mosque
 
     /**
      * Label for web search autocomplete
-     *
      * @Groups({"elastic"})
      * @return string
      */
@@ -433,11 +432,13 @@ class Mosque
      */
     public function getYoutubeEmbedStreamUrl(): ?string
     {
-        if(empty($this->streamUrl)){
+        if (empty($this->streamUrl)) {
             return null;
         }
-
-        return YoutubeHelper::buildEmbedUrl($this->streamUrl) . "?enablejsapi=1&autoplay=1&showinfo=0";
+        $id = YoutubeHelper::extractId($this->video);
+        return YoutubeHelper::buildEmbedUrl(
+                $this->video
+            ) . "?enablejsapi=1&autoplay=1&showinfo=0&loop=1&iv_load_policy=3&playlist={$id}";
     }
 
     /**
@@ -762,7 +763,8 @@ class Mosque
      */
     public function getLocalisation()
     {
-        return ($this->address ? $this->address . ' ' : '') . $this->zipcode . ' ' . $this->city . ' ' . $this->getCountryFullName();
+        return ($this->address ? $this->address . ' ' : '') . $this->zipcode . ' ' . $this->city . ' ' . $this->getCountryFullName(
+            );
     }
 
     /**
@@ -964,7 +966,6 @@ class Mosque
 
     public function getEnabledMessages($desktop = null, $mobile = null)
     {
-
         $messages = [];
 
         foreach ($this->messages as $message) {
@@ -980,7 +981,6 @@ class Mosque
                 continue;
             }
             $messages[] = $message;
-
         }
         return $messages;
     }
@@ -1200,10 +1200,13 @@ class Mosque
 
     public function isValidated()
     {
-        return in_array($this->status, [
-            self::STATUS_VALIDATED,
-            self::STATUS_WATCHED,
-        ]);
+        return in_array(
+            $this->status,
+            [
+                self::STATUS_VALIDATED,
+                self::STATUS_WATCHED,
+            ]
+        );
     }
 
     public function isCheckingInProgress()
@@ -1216,9 +1219,12 @@ class Mosque
         if ($this->isValidated()) {
             return true;
         }
-        return in_array($this->status, [
-            self::STATUS_SUSPENDED
-        ]);
+        return in_array(
+            $this->status,
+            [
+                self::STATUS_SUSPENDED
+            ]
+        );
     }
 
     public function isActionsAllowed()
@@ -1226,11 +1232,14 @@ class Mosque
         if ($this->isValidated()) {
             return true;
         }
-        return in_array($this->status, [
-            self::STATUS_CHECK,
-            self::STATUS_SUSPENDED,
-            self::STATUS_NEW,
-        ]);
+        return in_array(
+            $this->status,
+            [
+                self::STATUS_CHECK,
+                self::STATUS_SUSPENDED,
+                self::STATUS_NEW,
+            ]
+        );
     }
 
     public function isEditAllowed()
@@ -1239,9 +1248,12 @@ class Mosque
             return true;
         }
 
-        return in_array($this->status, [
-            self::STATUS_CHECK,
-        ]);
+        return in_array(
+            $this->status,
+            [
+                self::STATUS_CHECK,
+            ]
+        );
     }
 
     public function isNew()
