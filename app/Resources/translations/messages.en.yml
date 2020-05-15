@@ -344,7 +344,10 @@ mosque:
       placeholder: https://youtu.be/c6FB9FKIvGo
       info1: For the moment mawaqit only manages the http stream provided by the live of Youtube
       info2: Ask for the link to the live YouTube at your mosque
-      info3: "Vous pouvez utiliser une caméra qui diffuse directement sur Youtube exemple : dddsd"
+      info3: |
+        You can use an HD camera connected to a computer and then broadcast directly on Youtube.
+        You can then enter the link in the box below and share the live link with the faithful who own mawaqit.
+        So the women at home can follow the Friday sermon automatically. And soon on mobile app insh'Allah.
 
     slug:
       label: "Change the website url"
