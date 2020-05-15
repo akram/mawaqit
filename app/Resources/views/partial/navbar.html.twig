@@ -1,7 +1,9 @@
 {% block aditional_stylesheets %}
     {% stylesheets
         "bundles/app/css/navbar.css"
-        filter="cssrewrite" %}
+        filter="uglifycss"
+        filter="cssrewrite"
+    %}
         <link rel="stylesheet" href="{{ asset_url }}" type="text/css">
     {% endstylesheets %}
 {% endblock %}
