@@ -26,7 +26,7 @@
                 "bundles/app/keyboard/keyboard.css"
                 "bundles/app/css/fonts.css"
                 "bundles/app/css/main.css"
-                filter="uglifycss"
+                filter="?uglifycss"
                 filter="cssrewrite"
             %}
             <link rel="stylesheet" href="{{ asset_url }}" type="text/css">
@@ -73,7 +73,7 @@
                 '@AppBundle/Resources/public/js/waiting_dialog.js'
                 '@AppBundle/Resources/public/js/terms_of_use.js'
                 '@AppBundle/Resources/public/js/main.js'
-                filter="uglifyjs"
+                filter='?uglifyjs'
             %}
                 <script src="{{ asset_url }}"></script>
             {% endjavascripts %}

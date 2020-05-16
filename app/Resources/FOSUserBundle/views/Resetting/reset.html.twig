@@ -18,7 +18,7 @@
 
 {% block additional_javascripts %}
     {% javascripts
-        '@AppBundle/Resources/public/js/password.js' %}
+        '@AppBundle/Resources/public/js/password.js' filter='?uglifyjs' %}
         <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}

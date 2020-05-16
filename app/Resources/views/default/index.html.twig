@@ -371,7 +371,7 @@
 {% block additional_javascripts %}
     {% javascripts
         '@AppBundle/Resources/public/flexSlider/jquery.flexslider-min.js'
-        '@AppBundle/Resources/public/agency/js/index.js' %}
+        '@AppBundle/Resources/public/agency/js/index.js' filter='?uglifyjs' %}
         <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 

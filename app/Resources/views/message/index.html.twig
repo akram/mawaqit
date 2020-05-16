@@ -188,7 +188,7 @@
     {% javascripts
         '@AppBundle/Resources/public/js/message_index.js'
         '@AppBundle/Resources/public/js/delete_modal.js'
-        '@AppBundle/Resources/public/js/sort.js' %}
+        '@AppBundle/Resources/public/js/sort.js' filter='?uglifyjs' %}
         <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}

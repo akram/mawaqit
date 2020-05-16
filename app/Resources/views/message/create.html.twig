@@ -19,7 +19,7 @@
 
 {% block additional_javascripts %}
     {% javascripts
-        '@AppBundle/Resources/public/js/message_edit.js' %}
+        '@AppBundle/Resources/public/js/message_edit.js' filter='?uglifyjs' %}
         <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}
