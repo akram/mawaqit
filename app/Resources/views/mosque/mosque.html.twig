@@ -16,6 +16,7 @@
         "bundles/app/prayer-times/css/slider.css"
         "bundles/app/weather/weather-icons.min.css"
         "bundles/app/font-awesome/css/all.min.css"
+        filter="?uglifycss"
         filter="cssrewrite" %}
         <link rel="stylesheet" href="{{ asset_url }}" type="text/css">
         <link href="{{ asset('bundles/app/prayer-times/css/themes/' ~ mosque.conf.theme ~ '.css') }}" type="text/css"
@@ -369,13 +370,13 @@
     '@AppBundle/Resources/public/prayer-times/js/weather.js'
     '@AppBundle/Resources/public/prayer-times/js/main.js'
     '@AppBundle/Resources/public/prayer-times/js/common.js'
-    '@AppBundle/Resources/public/prayer-times/js/fullscreen.js' %}
+    '@AppBundle/Resources/public/prayer-times/js/fullscreen.js' filter='?uglifyjs' %}
     <script src="{{ asset_url }}"></script>
 {% endjavascripts %}
 
 {% if isLocal() and not mosque.synchronized %}
     {% javascripts
-        '@AppBundle/Resources/public/keyboard/keyboard.js' %}
+        '@AppBundle/Resources/public/keyboard/keyboard.js' filter='?uglifyjs' %}
         <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endif %}

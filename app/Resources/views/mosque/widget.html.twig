@@ -9,6 +9,7 @@
         "bundles/app/jquery/css/jquery-ui.min.css"
         "bundles/app/prayer-times/css/widget.css"
         "bundles/app/css/fonts.css"
+        filter="?uglifycss"
         filter="cssrewrite" %}
         <link rel="stylesheet" href="{{ asset_url }}" type="text/css">
     {% endstylesheets %}
@@ -82,7 +83,7 @@
     '@AppBundle/Resources/public/prayer-times/js/vendor/hijriDate.js'
     '@AppBundle/Resources/public/js/tools.js'
     '@AppBundle/Resources/public/prayer-times/js/date.js'
-    '@AppBundle/Resources/public/prayer-times/js/widget.js' %}
+    '@AppBundle/Resources/public/prayer-times/js/widget.js' filter='?uglifyjs' %}
     <script src="{{ asset_url }}"></script>
 {% endjavascripts %}
 

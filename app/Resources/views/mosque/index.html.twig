@@ -3,9 +3,7 @@
 {% block title  'my_mosques' %}
 
 {% block additional_stylesheets %}
-    {% stylesheets
-        "bundles/app/css/mosque_index.css"
-        filter="cssrewrite" %}
+    {% stylesheets "bundles/app/css/mosque_index.css" filter="?uglifycss" filter="cssrewrite" %}
         <link rel="stylesheet" href="{{ asset_url }}" type="text/css">
     {% endstylesheets %}
 {% endblock %}
@@ -383,7 +381,7 @@
         '@AppBundle/Resources/public/js/tools.js'
         '@AppBundle/Resources/public/js/mosque_index.js'
         '@AppBundle/Resources/public/js/iframe_modal.js'
-        '@AppBundle/Resources/public/js/delete_modal.js' %}
+        '@AppBundle/Resources/public/js/delete_modal.js' filter='?uglifyjs' %}
         <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}

@@ -2,11 +2,8 @@
 {% block title  'add' %}
 
 {% block additional_stylesheets %}
-    {% stylesheets 
-            "bundles/app/css/message.css"
-            filter="cssrewrite"
-    %}
-    <link rel="stylesheet" href="{{ asset_url }}" type="text/css">
+    {% stylesheets "bundles/app/css/message.css" filter="?uglifycss" filter="cssrewrite" %}
+        <link rel="stylesheet" href="{{ asset_url }}" type="text/css">
     {% endstylesheets %}
 {% endblock %}
 

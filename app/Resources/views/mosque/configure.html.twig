@@ -2,9 +2,7 @@
 {% block title  'configuration' %}
 
 {% block additional_stylesheets %}
-    {% stylesheets
-        "bundles/app/css/configure.css"
-        filter="cssrewrite" %}
+    {% stylesheets "bundles/app/css/configure.css" filter="?uglifycss" filter="cssrewrite" %}
         <link rel="stylesheet" href="{{ asset_url }}" type="text/css">
     {% endstylesheets %}
 {% endblock %}
@@ -659,7 +657,7 @@
     {% javascripts
         '@AppBundle/Resources/public/prayer-times/js/vendor/PrayTimes.js'
         '@AppBundle/Resources/public/jscolor/jscolor.js'
-        '@AppBundle/Resources/public/js/configure.js' %}
+        '@AppBundle/Resources/public/js/configure.js' filter='?uglifyjs' %}
         <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}

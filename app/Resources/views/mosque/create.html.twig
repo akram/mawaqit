@@ -1,11 +1,8 @@
 {% extends 'base.html.twig' %}
 {% block title  'add' %}
 {% block additional_stylesheets %}
-    {% stylesheets 
-            "bundles/app/css/mosque.css"
-            filter="cssrewrite"
-    %}
-    <link rel="stylesheet" href="{{ asset_url }}" type="text/css">
+    {% stylesheets "bundles/app/css/mosque.css" filter="?uglifycss" filter="cssrewrite" %}
+        <link rel="stylesheet" href="{{ asset_url }}" type="text/css">
     {% endstylesheets %}
 {% endblock %}
 
@@ -18,7 +15,7 @@
 
 {% block additional_javascripts %}
     {% javascripts
-        '@AppBundle/Resources/public/js/mosque_edit.js' %}
+        '@AppBundle/Resources/public/js/mosque_edit.js' filter='?uglifyjs' %}
         <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 

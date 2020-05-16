@@ -13,6 +13,7 @@
         "bundles/app/bootstrap-3.3.7/css/bootstrap.min.css"
         "bundles/app/css/message_flash.css"
         "bundles/app/css/full_message_slider.css"
+        filter="?uglifycss"
         filter="cssrewrite" %}
         <link rel="stylesheet" href="{{ asset_url }}" type="text/css">
     {% endstylesheets %}
@@ -93,7 +94,7 @@
     '@AppBundle/Resources/public/js/tools.js'
     '@AppBundle/Resources/public/prayer-times/js/date.js'
     '@AppBundle/Resources/public/js/full_message_slider.js'
-    '@AppBundle/Resources/public/prayer-times/js/fullscreen.js' %}
+    '@AppBundle/Resources/public/prayer-times/js/fullscreen.js' filter='?uglifyjs' %}
     <script src="{{ asset_url }}"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
 {% endjavascripts %}

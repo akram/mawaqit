@@ -15,7 +15,7 @@
 </div>        
 
 {% block additional_javascripts %}
-    {% javascripts '@AppBundle/Resources/public/js/global_modal.js' %}
+    {% javascripts '@AppBundle/Resources/public/js/global_modal.js' filter='?uglifyjs' %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}    
 {% endblock %}   

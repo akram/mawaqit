@@ -4,9 +4,7 @@
 
 
 {% block additional_stylesheets %}
-    {% stylesheets
-        "bundles/app/css/stats.css"
-        filter="cssrewrite" %}
+    {% stylesheets "bundles/app/css/stats.css" filter="?uglifycss" filter="cssrewrite" %}
         <link rel="stylesheet" href="{{ asset_url }}" type="text/css">
     {% endstylesheets %}
 {% endblock %}
