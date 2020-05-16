@@ -32,17 +32,19 @@ fi
 
 docker exec $dockerContainer sed -i "s/version: .*/version: $version/" app/config/parameters.yml
 
-# Install vendors and assets
+# Install vendors
 docker exec $dockerContainer sh -c "SYMFONY_ENV=prod composer install -o -n --no-dev --no-suggest --prefer-dist --no-progress"
-docker exec $dockerContainer bin/console assets:install -e prod --no-debug
-docker exec $dockerContainer bin/console assetic:dump -e prod --no-debug
 
 # Migrate DB
 docker exec $dockerContainer bin/console doc:mig:mig -n --allow-no-migration -e prod
 
 # cache
-docker exec $dockerContainer bin/console c:c -e prod --no-debug --no-warmup
-docker exec $dockerContainer bin/console c:w -e prod --no-debug
+docker exec $dockerContainer bin/console c:c -e prod --no-warmup
+docker exec $dockerContainer bin/console c:w -e prod
+
+# Install assets
+docker exec $dockerContainer bin/console assets:install -e prod
+docker exec $dockerContainer bin/console assetic:dump -e prod
 
 # Restart php
 docker exec $dockerContainer kill -USR2 1
