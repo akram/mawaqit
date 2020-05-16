@@ -336,18 +336,22 @@ mosque:
     name:
       placeholder: "Ex. Essunna mosque, My home"
     streamUrl:
-      title: Add a video stream (béta)
+      title: Add a video stream (beta)
       subTitle: |
-        At the time of the jumu'a, the mawaqit screen automatically displays the stream vidéo of the camera until
+        At the time of the jumu'a, the mawaqit screen automatically displays the stream video of the camera until
         the end of the prayer (time chosen in the jumua settings)
       label: Video stream link
       placeholder: https://youtu.be/c6FB9FKIvGo
-      info1: For the moment mawaqit only manages the http stream provided by the live of Youtube
-      info2: Ask for the link to the live YouTube at your mosque
+      info1: For the moment mawaqit only manages a stream from a live YouTube.
+      info2: Ask for the YouTube live link at your mosque and type it in the box below.
       info3: |
-        You can use an HD camera connected to a computer and then broadcast directly on Youtube.
-        You can then enter the link in the box below and share the live link with the faithful who own mawaqit.
-        So the women at home can follow the Friday sermon automatically. And soon on mobile app insh'Allah.
+        You can enter the live link in the box below and share it with the faithful who own mawaqit.
+        So women and elderly people at home can follow the Friday sermon and prayer automatically.
+        And soon on the mobile app insh'Allah.
+      info4: Find out how to broadcast on YouTube?
+      info5: |
+        Here is <a target="_blank" href="http://store.novasud.com/index.php?route=product/product&product_id=60">the camera model</a>
+        which allows you to broadcast the Friday sermon directly on YouTube.
 
     slug:
       label: "Change the website url"

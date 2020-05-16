@@ -15,11 +15,16 @@
 
             <h5></h5>
             {{ form(form) }}
-            <div>
-                <a href="{{ asset('bundles/app/img/rtsp.me.png') }}">
-                    {#<img src="{{ asset('bundles/app/img/rtsp.me.png') }}" width="100%">#}
-                </a>
-            </div>
+
+            <p class="mt-2">{{ 'mosque.form.streamUrl.info4'|trans|raw }}</p>
+            <iframe class="mt-1" width="360" height="215" src="https://www.youtube.com/embed/60ywUZf0RbU" frameborder="0" allowfullscreen></iframe>
+
+            <p class="mt-2">{{ 'mosque.form.streamUrl.info5'|trans|raw }}</p>
+
+            <a href="http://store.novasud.com/index.php?route=product/product&product_id=60" target="_blank">
+                <img src="http://store.novasud.com/image/cache/catalog/PTZ-Optics-20X-SDI-Front1-500x500.png"
+                     width="200px">
+            </a>
         </div>
     </div>
 {% endblock %}

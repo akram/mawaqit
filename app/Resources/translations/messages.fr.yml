@@ -358,19 +358,22 @@ mosque:
     success: La date hégirienne a été mise à jour pour toutes les mosquées
   form:
     streamUrl:
-      title: Ajouter un flux vidéo (béta)
+      title: Ajouter un flux vidéo (beta)
       subTitle: |
         A l'heure du jumua, l'écran mawaqit affiche automatiquement le flux de la caméra
         et ce, jusqu'à la fin de la prière (délai choisi dans les paramètres de la jumua)
       label: Lien du flux vidéo
       placeholder: https://youtu.be/c6FB9FKIvGo
-      info1: Pour le moment mawaqit gère uniquement un flux d'un live Youtube
-      info2: Demandez le lien du live Youtube à votre mosquée
+      info1: Pour le moment mawaqit gère uniquement un flux d'un live YouTube.
+      info2: Demandez le lien du live YouTube à votre mosquée et saisissez dans la case ci-dessous.
       info3: |
-        Vous pouvez utiliser une caméra HD branchée à un ordinateur puis diffuser directement sur Youtube.
-        Vous pouvez par là suite saisir le lien dans la case ci-dessous et partager le lien du live avec les fidèles qui possèdent mawaqit.
-        Ainsi les femmes à la maison peuvent suivre le prèche du vendredi d'une manière automatique.
+        Vous pouvez saisir le lien du live dans la case ci-dessous et le partager avec les fidèles qui possèdent mawaqit.
+        Ainsi les femmes et personnes agées à la maison peuvent suivre le prêche et prière du vendredi d'une manière automatique.
         Et bientôt sur l'application mobile insh'Allah.
+      info4: Découvrez comment diffuser sur YouTube ?
+      info5: |
+        Voici <a target="_blank" href="http://store.novasud.com/index.php?route=product/product&product_id=60">le modèle de caméra</a>
+        qui vous permet de diffuser le prêche du vendredi directement sur YouTube.
     status:
       label: Statut
     type:
