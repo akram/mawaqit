@@ -41,14 +41,19 @@ body {
 
 .currentTime {
     font-size: 300%;
+    margin-bottom: 1rem;
+}
+
+.dates {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 2rem;
+    padding: 0 1rem;
 }
 
 .gregorianDate, .hijriDate {
     font-size: 120%
-}
-
-.top-content {
-    margin-bottom: 10px;
 }
 
 .prayers {
@@ -56,7 +61,7 @@ body {
 }
 
 .prayers > div {
-    padding:  10px;
+    padding: 10px;
     display: -ms-flexbox;
     display: -moz-flex;
     display: -webkit-flex;
@@ -67,7 +72,7 @@ body {
     margin: auto;
 }
 
-.prayers > div > div{
+.prayers > div > div {
     width: 100%;
 }
 
@@ -125,7 +130,11 @@ small {
 
 .next-prayer {
     font-size: 150%;
-    color: #ec7047;
+    padding: 5px 15px;
+    border-radius: 1rem;
+    margin: auto;
+    background-color: rgba(74, 12, 87, 0.7);
+    width: 60%;
 }
 
 .next-prayer .countdown {
@@ -212,10 +221,6 @@ small {
     height: 400px;
 }
 
-.hijriDate {
-    margin: 10px 0;
-}
-
 .col-xs-4 {
     padding-right: 5px;
     padding-left: 5px;
@@ -247,7 +252,7 @@ small {
     border-color: rgba(0, 0, 0, 0) !important;
 }
 
-.usefulInfos{
+.usefulInfos {
     margin-bottom: 5px !important;
 }
 
@@ -308,11 +313,11 @@ small {
     -webkit-box-shadow: 0 0 5px rgba(109, 207, 246, .5);
 }
 
-#search::placeholder{
+#search::placeholder {
     color: transparent;
 }
 
-#search:focus::placeholder{
+#search:focus::placeholder {
     color: #777777;
 }
 

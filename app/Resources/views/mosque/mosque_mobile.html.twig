@@ -92,19 +92,18 @@
 
     <div class="header">{{ mosque.isMosque ? mosque.title : mosque.title|trans({'%city%': mosque.city}) }}</div>
 
-    <div class="top-content">
-        <div class="currentTime"></div>
+    <div class="currentTime"></div>
+
+    <div class="next-prayer text-center">
+        {{ 'next_prayer'|trans }}
+        <div class="countdown"></div>
+    </div>
+
+    <div class="dates">
         {% if mosque.configuration.hijriDateEnabled %}
             <div class="hijriDate"><span></span> <img class="full-moon" src="{{ asset('bundles/app/prayer-times/img/full-moon.png') }}" alt=""></div>
         {% endif %}
         <div class="gregorianDate"></div>
-    </div>
-
-    <div class="row">
-        <div class="next-prayer text-center">
-            {{ 'next_prayer'|trans }}
-            <div class="countdown"></div>
-        </div>
     </div>
 
     {% if mosque.flashMessage and mosque.flashMessage.available and showFlashMessage != 0 %}

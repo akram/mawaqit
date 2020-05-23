@@ -267,7 +267,7 @@ class Message
             return null;
         }
 
-        preg_match("/.*\?v=(.*)/", $this->video, $match);
+        preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $this->video, $match);
         return "https://www.youtube.com/embed/{$match[1]}?enablejsapi=1&rel=0&loop=1&iv_load_policy=3&playlist={$match[1]}";
     }
     /**
